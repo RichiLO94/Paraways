@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://paraways.com/</loc>
+    <lastmod>2026-08-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://paraways.com/" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://paraways.com/pt/" />
+  </url>
+  <url>
+    <loc>https://paraways.com/pt/</loc>
+    <lastmod>2026-08-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://paraways.com/" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://paraways.com/pt/" />
+  </url>
+</urlset>

@@ -1,12 +1,15 @@
 const recipients = ['ricardo@paraways.com', 'paolo@paraways.com'];
-const interests = new Set([
-  'Residencia o radicación',
-  'Inversión o empresa',
-  'Operativa local o documentación',
-  'Otro',
-]);
+
+const interestLabels = {
+  residencia: 'Residencia o radicación',
+  investor: 'Investor Pass / inversión',
+  sociedad: 'Empresa o sociedad',
+  operativa: 'Banca, RUC u operativa local',
+  otro: 'Otro',
+};
 
 function readString(value, limit, required = false) {
+  if (value === undefined) return '';
   if (typeof value !== 'string') return null;
   const cleaned = value.trim();
   if ((required && !cleaned) || cleaned.length > limit) return null;
@@ -17,30 +20,35 @@ function containsControlCharacters(value) {
   return /[\u0000-\u001F\u007F]/.test(value);
 }
 
-async function notifySlack({ name, email, interest }) {
+async function notifySlack({ name, email, phone, interest, lang, route }) {
   if (!process.env.SLACK_LEAD_WEBHOOK_URL) return;
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 8_000);
+
+  const fields = [
+    { type: 'mrkdwn', text: `*Nombre*\n${name}` },
+    { type: 'mrkdwn', text: `*Interés*\n${interestLabels[interest]}` },
+    { type: 'mrkdwn', text: `*Correo*\n${email}` },
+    { type: 'mrkdwn', text: `*Origen*\nFormulario web (${lang === 'pt' ? 'PT' : 'ES'})` },
+  ];
+  if (phone) fields.push({ type: 'mrkdwn', text: `*WhatsApp*\n${phone}` });
+
+  const blocks = [
+    { type: 'header', text: { type: 'plain_text', text: 'Nuevo lead · Paraways' } },
+    { type: 'section', fields },
+  ];
+  if (route) {
+    blocks.push({ type: 'section', text: { type: 'mrkdwn', text: `*Ruta del pre-check*\n${route}` } });
+  }
+  blocks.push({ type: 'context', elements: [{ type: 'mrkdwn', text: 'Crear o calificar el candidato en Sales Tracker.' }] });
 
   try {
     const slackResponse = await fetch(process.env.SLACK_LEAD_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       signal: controller.signal,
-      body: JSON.stringify({
-        text: `Nuevo lead de Paraways: ${name}`,
-        blocks: [
-          { type: 'header', text: { type: 'plain_text', text: 'Nuevo lead · Paraways' } },
-          { type: 'section', fields: [
-            { type: 'mrkdwn', text: `*Nombre*\n${name}` },
-            { type: 'mrkdwn', text: `*Interés*\n${interest}` },
-            { type: 'mrkdwn', text: `*Correo*\n${email}` },
-            { type: 'mrkdwn', text: '*Origen*\nFormulario web' },
-          ] },
-          { type: 'context', elements: [{ type: 'mrkdwn', text: 'Crear o calificar el candidato en Sales Tracker.' }] },
-        ],
-      }),
+      body: JSON.stringify({ text: `Nuevo lead de Paraways: ${name}`, blocks }),
     });
 
     if (!slackResponse.ok) console.warn('Slack lead notification was rejected.');
@@ -64,9 +72,12 @@ export default async function handler(request, response) {
 
   const name = readString(body.name, 120, true);
   const email = readString(body.email, 254, true);
-  const interest = readString(body.interest, 120, true);
-  const message = body.message === undefined ? '' : readString(body.message, 2000);
-  const website = body.website === undefined ? '' : readString(body.website, 200);
+  const interest = readString(body.interest, 40, true);
+  const phone = readString(body.phone, 30);
+  const message = readString(body.message, 2000);
+  const route = readString(body.route, 1200);
+  const lang = body.lang === 'pt' ? 'pt' : 'es';
+  const website = readString(body.website, 200);
 
   if (website === null) {
     return response.status(400).json({ error: 'Datos de consulta no válidos.' });
@@ -76,7 +87,11 @@ export default async function handler(request, response) {
     return response.status(204).end();
   }
 
-  if (!name || !email || !interest || message === null || containsControlCharacters(name) || !/^\S+@\S+\.\S+$/.test(email) || !interests.has(interest)) {
+  if (
+    !name || !email || !interest || message === null || phone === null || route === null ||
+    containsControlCharacters(name) || (phone && containsControlCharacters(phone)) ||
+    !/^\S+@\S+\.\S+$/.test(email) || !(interest in interestLabels)
+  ) {
     return response.status(400).json({ error: 'Completa nombre, correo y el motivo de tu consulta.' });
   }
 
@@ -99,15 +114,18 @@ export default async function handler(request, response) {
         from: 'Paraways <contact@paraways.com>',
         to: recipients,
         reply_to: email,
-        subject: `Nueva consulta: ${name.replace(/\s+/g, ' ')}`,
+        subject: `Nueva consulta (${lang.toUpperCase()}): ${name.replace(/\s+/g, ' ')}`,
         text: [
           `Nombre: ${name}`,
           `Correo: ${email}`,
-          `Interés: ${interest}`,
+          phone ? `WhatsApp: ${phone}` : null,
+          `Interés: ${interestLabels[interest]}`,
+          `Idioma: ${lang === 'pt' ? 'Portugués' : 'Español'}`,
           '',
+          route ? `Ruta del pre-check:\n${route}\n` : null,
           'Mensaje:',
           message || 'Sin mensaje adicional.',
-        ].join('\n'),
+        ].filter((line) => line !== null).join('\n'),
       }),
     });
 
@@ -115,7 +133,7 @@ export default async function handler(request, response) {
       return response.status(502).json({ error: 'No se pudo enviar la consulta. Inténtalo de nuevo o escríbenos por correo.' });
     }
 
-    await notifySlack({ name, email, interest });
+    await notifySlack({ name, email, phone, interest, lang, route });
     return response.status(200).json({ ok: true });
   } catch {
     return response.status(502).json({ error: 'No se pudo enviar la consulta. Inténtalo de nuevo o escríbenos por correo.' });
