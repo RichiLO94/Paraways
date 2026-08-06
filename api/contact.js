@@ -17,6 +17,40 @@ function containsControlCharacters(value) {
   return /[\u0000-\u001F\u007F]/.test(value);
 }
 
+async function notifySlack({ name, email, interest }) {
+  if (!process.env.SLACK_LEAD_WEBHOOK_URL) return;
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8_000);
+
+  try {
+    const slackResponse = await fetch(process.env.SLACK_LEAD_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
+      body: JSON.stringify({
+        text: `Nuevo lead de Paraways: ${name}`,
+        blocks: [
+          { type: 'header', text: { type: 'plain_text', text: 'Nuevo lead · Paraways' } },
+          { type: 'section', fields: [
+            { type: 'mrkdwn', text: `*Nombre*\n${name}` },
+            { type: 'mrkdwn', text: `*Interés*\n${interest}` },
+            { type: 'mrkdwn', text: `*Correo*\n${email}` },
+            { type: 'mrkdwn', text: '*Origen*\nFormulario web' },
+          ] },
+          { type: 'context', elements: [{ type: 'mrkdwn', text: 'Crear o calificar el candidato en Sales Tracker.' }] },
+        ],
+      }),
+    });
+
+    if (!slackResponse.ok) console.warn('Slack lead notification was rejected.');
+  } catch {
+    console.warn('Slack lead notification failed.');
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 export default async function handler(request, response) {
   if (request.method !== 'POST') {
     response.setHeader('Allow', 'POST');
@@ -81,6 +115,7 @@ export default async function handler(request, response) {
       return response.status(502).json({ error: 'No se pudo enviar la consulta. Inténtalo de nuevo o escríbenos por correo.' });
     }
 
+    await notifySlack({ name, email, interest });
     return response.status(200).json({ ok: true });
   } catch {
     return response.status(502).json({ error: 'No se pudo enviar la consulta. Inténtalo de nuevo o escríbenos por correo.' });
