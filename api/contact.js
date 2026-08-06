@@ -1,10 +1,10 @@
 const recipients = ['ricardo@paraways.com', 'paolo@paraways.com'];
 
 const interestLabels = {
-  residencia: 'Residencia o radicación',
-  investor: 'Investor Pass / inversión',
-  sociedad: 'Empresa o sociedad',
-  operativa: 'Banca, RUC u operativa local',
+  residencia: 'Residencia temporaria',
+  cedula: 'Cédula de identidad',
+  ruc: 'RUC / alta tributaria',
+  banco: 'Cuenta bancaria',
   otro: 'Otro',
 };
 
@@ -20,7 +20,7 @@ function containsControlCharacters(value) {
   return /[\u0000-\u001F\u007F]/.test(value);
 }
 
-async function notifySlack({ name, email, phone, interest, lang, route }) {
+async function notifySlack({ name, email, phone, interest, lang }) {
   if (!process.env.SLACK_LEAD_WEBHOOK_URL) return;
 
   const controller = new AbortController();
@@ -37,11 +37,8 @@ async function notifySlack({ name, email, phone, interest, lang, route }) {
   const blocks = [
     { type: 'header', text: { type: 'plain_text', text: 'Nuevo lead · Paraways' } },
     { type: 'section', fields },
+    { type: 'context', elements: [{ type: 'mrkdwn', text: 'Crear o calificar el candidato en Sales Tracker.' }] },
   ];
-  if (route) {
-    blocks.push({ type: 'section', text: { type: 'mrkdwn', text: `*Ruta del pre-check*\n${route}` } });
-  }
-  blocks.push({ type: 'context', elements: [{ type: 'mrkdwn', text: 'Crear o calificar el candidato en Sales Tracker.' }] });
 
   try {
     const slackResponse = await fetch(process.env.SLACK_LEAD_WEBHOOK_URL, {
@@ -75,7 +72,6 @@ export default async function handler(request, response) {
   const interest = readString(body.interest, 40, true);
   const phone = readString(body.phone, 30);
   const message = readString(body.message, 2000);
-  const route = readString(body.route, 1200);
   const lang = body.lang === 'pt' ? 'pt' : 'es';
   const website = readString(body.website, 200);
 
@@ -88,7 +84,7 @@ export default async function handler(request, response) {
   }
 
   if (
-    !name || !email || !interest || message === null || phone === null || route === null ||
+    !name || !email || !interest || message === null || phone === null ||
     containsControlCharacters(name) || (phone && containsControlCharacters(phone)) ||
     !/^\S+@\S+\.\S+$/.test(email) || !(interest in interestLabels)
   ) {
@@ -122,7 +118,6 @@ export default async function handler(request, response) {
           `Interés: ${interestLabels[interest]}`,
           `Idioma: ${lang === 'pt' ? 'Portugués' : 'Español'}`,
           '',
-          route ? `Ruta del pre-check:\n${route}\n` : null,
           'Mensaje:',
           message || 'Sin mensaje adicional.',
         ].filter((line) => line !== null).join('\n'),
@@ -133,7 +128,7 @@ export default async function handler(request, response) {
       return response.status(502).json({ error: 'No se pudo enviar la consulta. Inténtalo de nuevo o escríbenos por correo.' });
     }
 
-    await notifySlack({ name, email, phone, interest, lang, route });
+    await notifySlack({ name, email, phone, interest, lang });
     return response.status(200).json({ ok: true });
   } catch {
     return response.status(502).json({ error: 'No se pudo enviar la consulta. Inténtalo de nuevo o escríbenos por correo.' });
