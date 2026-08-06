@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="brand.css" />
   </head>
   <body>
     <div class="progress" aria-hidden="true"></div>
@@ -16,7 +17,7 @@
       <div class="glow" aria-hidden="true"></div>
       <div class="wrap">
         <nav class="top-nav" aria-label="Navegación principal">
-          <a class="brand" href="#inicio"><i class="brand-mark" aria-hidden="true"></i>paraways</a>
+          <a class="brand" href="#inicio"><img class="brand-mark" src="assets/paraways-mark.svg" alt="" />paraways</a>
           <div class="nav-links"><a href="#servicios">Servicios</a><a href="#proceso">Proceso</a><a href="#consulta">Contacto</a></div>
           <div class="langs" aria-label="Idiomas disponibles"><b>ES</b><span>EN</span><span>FR</span><span>RU</span></div>
         </nav>
@@ -51,7 +52,7 @@
 
       <section id="consulta" class="contact section"><div class="wrap"><p class="eyebrow gold">CONSULTA INICIAL</p><h2>Hablemos de tu próximo <em>paso.</em></h2><p class="contact-lead">Cuéntanos lo esencial. Revisaremos tu consulta y te indicaremos el siguiente paso.</p><form id="lead-form"><label>Nombre completo<input required name="name" autocomplete="name" placeholder="Tu nombre" /></label><label>Correo electrónico<input required type="email" name="email" autocomplete="email" placeholder="nombre@empresa.com" /></label><label>¿Qué buscas en Paraguay?<select required name="interest"><option value="" selected disabled>Seleccionar una opción</option><option>Residencia o radicación</option><option>Inversión o empresa</option><option>Operativa local o documentación</option><option>Otro</option></select></label><label>Cuéntanos brevemente<textarea name="message" rows="3" placeholder="Tu nacionalidad, objetivo y fecha estimada..."></textarea></label><button class="cta" type="submit">Enviar consulta <span>↗</span></button><p id="form-message" role="status"></p></form><p class="fine-print">No envíes documentos sensibles en este primer contacto.</p></div></section>
     </main>
-    <footer><div class="wrap"><a class="brand" href="#inicio"><i class="brand-mark" aria-hidden="true"></i>paraways</a><p>Asunción · Paraguay · Para quienes eligen moverse con intención.</p><a href="mailto:ricardo@paraways.com">ricardo@paraways.com</a></div></footer>
+    <footer><div class="wrap"><a class="brand" href="#inicio"><img class="brand-mark" src="assets/paraways-mark.svg" alt="" />paraways</a><p>Asunción · Paraguay · Para quienes eligen moverse con intención.</p><a href="mailto:ricardo@paraways.com">ricardo@paraways.com</a></div></footer>
     <script src="script.js"></script>
   </body>
 </html>
