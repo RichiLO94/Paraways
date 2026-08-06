@@ -1,0 +1,2 @@
+.brand-mark{width:22px;height:22px;border:0!important;border-radius:0!important;background:transparent!important;object-fit:contain;animation:mark-drift 18s ease-in-out infinite!important}
+@keyframes mark-drift{0%,100%{transform:rotate(0deg)}50%{transform:rotate(2deg)}}
