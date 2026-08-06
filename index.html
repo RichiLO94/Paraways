@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="brand.css" />
+    <link rel="stylesheet" href="enhancements.css" />
   </head>
   <body>
     <div class="progress" aria-hidden="true"></div>
@@ -25,7 +26,7 @@
           <p class="eyebrow">PARAGUAY · DERECHO, INVERSIÓN E INSTALACIÓN</p>
           <h1>Una decisión de vida.<br /><em>Un país por descubrir.</em><br />Un equipo en el terreno.</h1>
           <p class="lead">Acompañamos a personas, familias y empresas internacionales en su llegada, residencia e instalación en Paraguay, con criterio jurídico y presencia local.</p>
-          <a class="cta" href="#consulta">Consulta confidencial <span>↗</span></a>
+          <div class="hero-actions"><a class="cta" href="#consulta">Consulta confidencial <span>↗</span></a><a class="quiet-link" href="#mapa">Cómo empezamos <span>↓</span></a></div>
         </div>
         <div class="stat-row reveal"><div><strong>Un solo</strong><small>interlocutor para tu caso</small></div><div><strong>Local</strong><small>presencia real en Asunción</small></div><div><strong>Global</strong><small>atención internacional</small></div><div><strong>Claro</strong><small>proceso y alcance definidos</small></div></div>
       </div>
@@ -46,11 +47,20 @@
         </div>
       </section>
 
+      <section id="mapa" class="arrival section">
+        <div class="wrap arrival-grid">
+          <div class="arrival-intro reveal"><p class="eyebrow">ANTES DE MOVERSE</p><h2>Una llegada bien pensada empieza por las <em>preguntas correctas.</em></h2><p>No hay dos casos iguales. Por eso no vendemos un paquete ciego: ubicamos tu punto de partida y construimos un recorrido que se pueda entender, ejecutar y seguir.</p></div>
+          <div class="arrival-card reveal delay-1"><p class="card-kicker">EL MAPA INICIAL</p><ol><li><span>01</span><strong>¿Quién llega?</strong><small>Nacionalidad, familia, actividad y horizonte.</small></li><li><span>02</span><strong>¿Para qué?</strong><small>Residencia, inversión, empresa o una combinación.</small></li><li><span>03</span><strong>¿Qué exige el caso?</strong><small>Documentos, decisiones y coordinación local.</small></li><li><span>04</span><strong>¿Qué sigue?</strong><small>Un plan con responsables y próximos hitos.</small></li></ol></div>
+        </div>
+      </section>
+
       <section id="proceso" class="process section"><div class="wrap split"><div><p class="eyebrow">EL RECORRIDO</p><h2>Tres etapas.<br /><em>Un solo equipo.</em></h2></div><ol class="reveal"><li><b>01</b><div><h3>Entender y evaluar</h3><p>Revisamos nacionalidad, objetivo, horizonte y documentación disponible.</p></div></li><li><b>02</b><div><h3>Definir el plan</h3><p>Presentamos prioridades, alcance, requisitos y estimación de honorarios.</p></div></li><li><b>03</b><div><h3>Ejecutar y acompañar</h3><p>Coordinamos el trabajo jurídico y operativo con seguimiento claro de cada hito.</p></div></li></ol></div></section>
 
       <section class="statement section"><div class="wrap reveal"><p class="eyebrow">NUESTRO CRITERIO</p><h2>Menos promesas.<br />Más <em>claridad, presencia y método.</em></h2><p>No automatizamos decisiones legales ni prometemos resultados sin conocer los hechos. Cada caso merece una estrategia propia.</p></div></section>
 
-      <section id="consulta" class="contact section"><div class="wrap"><p class="eyebrow gold">CONSULTA INICIAL</p><h2>Hablemos de tu próximo <em>paso.</em></h2><p class="contact-lead">Cuéntanos lo esencial. Revisaremos tu consulta y te indicaremos el siguiente paso.</p><form id="lead-form"><label class="hp-field" aria-hidden="true">Sitio web<input tabindex="-1" autocomplete="off" name="website" /></label><label>Nombre completo<input required name="name" autocomplete="name" maxlength="120" placeholder="Tu nombre" /></label><label>Correo electrónico<input required type="email" name="email" autocomplete="email" maxlength="254" placeholder="nombre@empresa.com" /></label><label>¿Qué buscas en Paraguay?<select required name="interest"><option value="" selected disabled>Seleccionar una opción</option><option>Residencia o radicación</option><option>Inversión o empresa</option><option>Operativa local o documentación</option><option>Otro</option></select></label><label>Cuéntanos brevemente<textarea name="message" rows="3" maxlength="2000" placeholder="Tu nacionalidad, objetivo y fecha estimada..."></textarea></label><button class="cta" type="submit">Enviar consulta <span>↗</span></button><p id="form-message" role="status"></p></form><p class="form-fallback">¿Prefieres escribirnos? <a href="mailto:ricardo@paraways.com">ricardo@paraways.com</a></p><p class="fine-print">No envíes documentos sensibles en este primer contacto.</p></div></section>
+      <section class="proof section"><div class="wrap proof-grid"><p class="eyebrow">LA DIFERENCIA ESTÁ EN EL TERRENO</p><div class="proof-copy"><h2>Una conversación internacional.<br />Una ejecución <em>local.</em></h2><p>Traducimos el proceso en decisiones concretas y mantenemos el hilo entre lo jurídico, lo administrativo y lo presencial.</p></div><div class="proof-notes"><p><b>Comunicación directa</b><span>Un punto de contacto y un proceso legible.</span></p><p><b>Presencia en Asunción</b><span>Coordinación local cuando el caso lo necesita.</span></p><p><b>Alcance definido</b><span>Primero entendemos; después proponemos.</span></p></div></div></section>
+
+      <section id="consulta" class="contact section"><div class="wrap"><p class="eyebrow gold">CONSULTA INICIAL</p><h2>Hablemos de tu próximo <em>paso.</em></h2><p class="contact-lead">Cuéntanos lo esencial. Revisaremos tu consulta y te indicaremos el siguiente paso.</p><div class="contact-options"><a class="whatsapp-link" href="https://wa.me/595993474309" target="_blank" rel="noopener">WhatsApp Business <span>↗</span></a><small>Para una primera conversación rápida.</small></div><form id="lead-form"><label class="hp-field" aria-hidden="true">Sitio web<input tabindex="-1" autocomplete="off" name="website" /></label><label>Nombre completo<input required name="name" autocomplete="name" maxlength="120" placeholder="Tu nombre" /></label><label>Correo electrónico<input required type="email" name="email" autocomplete="email" maxlength="254" placeholder="nombre@empresa.com" /></label><label>¿Qué buscas en Paraguay?<select required name="interest"><option value="" selected disabled>Seleccionar una opción</option><option>Residencia o radicación</option><option>Inversión o empresa</option><option>Operativa local o documentación</option><option>Otro</option></select></label><label>Cuéntanos brevemente<textarea name="message" rows="3" maxlength="2000" placeholder="Tu nacionalidad, objetivo y fecha estimada..."></textarea></label><button class="cta" type="submit">Enviar consulta <span>↗</span></button><p id="form-message" role="status"></p></form><p class="form-fallback">¿Prefieres escribirnos? <a href="mailto:ricardo@paraways.com">ricardo@paraways.com</a></p><p class="fine-print">No envíes documentos sensibles en este primer contacto.</p></div></section>
     </main>
     <footer><div class="wrap"><a class="brand" href="#inicio"><img class="brand-mark" src="assets/paraways-mark.svg" alt="" />paraways</a><p>Asunción · Paraguay · Para quienes eligen moverse con intención.</p><a href="mailto:ricardo@paraways.com">ricardo@paraways.com</a></div></footer>
     <script src="script.js"></script>
