@@ -196,13 +196,21 @@ p.lead.line-up { animation-delay: 0.62s; }
   border-left: 1px solid rgba(242, 237, 224, 0.22);
 }
 .service-grid article {
-  padding: 34px 30px 28px;
+  padding: 30px 30px 26px;
   border-right: 1px solid rgba(242, 237, 224, 0.22);
   border-bottom: 1px solid rgba(242, 237, 224, 0.22);
-  display: flex; flex-direction: column; min-height: 250px;
+  display: flex; flex-direction: column;
   position: relative;
   transition: background 0.4s;
 }
+.svc-head { display: flex; align-items: center; justify-content: space-between; }
+.glifo { width: 46px; height: 46px; opacity: 0.9; }
+.inc { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.inc li {
+  display: flex; gap: 10px;
+  font-size: 13.5px; line-height: 1.5; color: rgba(242, 237, 224, 0.7);
+}
+.inc li::before { content: "—"; color: var(--gold); flex: 0 0 auto; }
 .service-grid article::after {
   content: ""; position: absolute; inset: auto 0 0 0; height: 2px;
   background: linear-gradient(90deg, var(--gold), transparent 70%);
@@ -212,8 +220,8 @@ p.lead.line-up { animation-delay: 0.62s; }
 .service-grid article:hover { background: rgba(242, 237, 224, 0.045); }
 .service-grid article:hover::after { transform: scaleX(1); }
 .service-grid .code { color: var(--gold); font: 11px var(--ff-mono); letter-spacing: 0.1em; }
-.service-grid h3 { font: 500 27px/1.15 var(--ff-display); margin: 26px 0 12px; }
-.service-grid p { font-size: 14px; line-height: 1.65; color: rgba(242, 237, 224, 0.65); margin: 0; flex: 1; }
+.service-grid h3 { font: 500 27px/1.15 var(--ff-display); margin: 20px 0 8px; }
+.service-grid p { font-size: 14px; line-height: 1.6; color: rgba(242, 237, 224, 0.65); margin: 0; }
 .service-price {
   margin-top: 22px; padding-top: 14px;
   border-top: 1px solid rgba(242, 237, 224, 0.16);
@@ -264,12 +272,48 @@ p.lead.line-up { animation-delay: 0.62s; }
 .statement { background: var(--paper-2); }
 .statement h2 { max-width: 800px; }
 .statement-note { max-width: 560px; color: var(--muted); margin: 28px 0 0; }
+.why { list-style: none; margin: 44px 0 0; padding: 0; max-width: 720px; }
+.why li {
+  padding: 20px 0 20px 34px;
+  border-top: 1px solid rgba(11, 23, 56, 0.18);
+  font-size: 15px; line-height: 1.65; color: var(--muted);
+  position: relative;
+}
+.why li:last-child { border-bottom: 1px solid rgba(11, 23, 56, 0.18); }
+.why li::before {
+  content: ""; position: absolute; left: 4px; top: 30px;
+  width: 8px; height: 8px; border-radius: 50%;
+  border: 1.5px solid var(--gold-ink);
+}
+.why li b { color: var(--text); font-weight: 600; }
+
+/* ── FAQ ─────────────────────────────────────────────────────── */
+.faq-list { margin-top: 48px; border-top: 1px solid rgba(11, 23, 56, 0.18); max-width: 860px; }
+.faq-list details { border-bottom: 1px solid rgba(11, 23, 56, 0.18); }
+.faq-list summary {
+  cursor: pointer; list-style: none;
+  display: flex; align-items: baseline; justify-content: space-between; gap: 24px;
+  padding: 21px 4px;
+  font: 400 clamp(17px, 1.9vw, 21px)/1.35 var(--ff-display);
+  transition: color 0.2s;
+}
+.faq-list summary::-webkit-details-marker { display: none; }
+.faq-list summary::after {
+  content: "+"; font: 300 26px/1 var(--ff-display);
+  color: var(--gold-ink); transition: transform 0.25s; flex: 0 0 auto;
+}
+.faq-list details[open] summary { color: var(--wine); }
+.faq-list details[open] summary::after { transform: rotate(45deg); }
+.faq-list summary:hover { color: var(--wine); }
+.faq-a { padding: 0 4px 24px; max-width: 760px; font-size: 14.5px; line-height: 1.7; color: var(--muted); }
 .signature { margin-top: 40px; }
 .signature b { font: 400 clamp(26px, 2.8vw, 34px)/1.1 var(--ff-display); font-style: italic; color: var(--ink); }
 .signature small { display: block; margin-top: 8px; font: 500 10.5px/1.5 var(--ff-mono); letter-spacing: 0.18em; text-transform: uppercase; color: var(--mute-2); }
 
 /* ── Contacto ────────────────────────────────────────────────── */
-.contact { background: var(--ink); color: var(--paper); }
+.contact { background: var(--ink); color: var(--paper); position: relative; overflow: hidden; }
+.contact .wrap { position: relative; z-index: 1; }
+.constellation { position: absolute; inset: 0; pointer-events: none; }
 .contact h2 { color: var(--paper); }
 .contact h2 em { color: var(--gold); }
 .contact-lead { color: rgba(242, 237, 224, 0.7); max-width: 510px; }
