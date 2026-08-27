@@ -84,6 +84,14 @@ form?.addEventListener('submit', (event) => {
     });
 });
 
+/* ── Botón flotante de WhatsApp ────────────────────────────── */
+const waFloat = document.querySelector('.wa-float');
+if (waFloat) {
+  const toggleFloat = () => waFloat.classList.toggle('is-on', window.scrollY > 520);
+  document.addEventListener('scroll', toggleFloat, { passive: true });
+  toggleFloat();
+}
+
 /* ── Analytics de WhatsApp ─────────────────────────────────── */
 document.querySelectorAll('a[href*="wa.me"]').forEach((a) => {
   a.addEventListener('click', () => track('whatsapp_click', a.dataset.waFrom || 'page'));

@@ -268,6 +268,32 @@ p.lead.line-up { animation-delay: 0.62s; }
 .process h3 { font: 500 26px/1.15 var(--ff-display); margin: 0 0 8px; }
 .process p { font-size: 14px; color: var(--muted); margin: 0; }
 
+/* ── Nota post-proceso ──────────────────────────────────────── */
+.after-note {
+  grid-column: 1 / -1;
+  margin: 30px 0 0;
+  padding-top: 24px;
+  border-top: 1px solid rgba(11, 23, 56, 0.2);
+  max-width: 760px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+/* ── WhatsApp flotante ──────────────────────────────────────── */
+.wa-float {
+  position: fixed; right: 18px; bottom: 18px; z-index: 50;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--wine); color: var(--paper);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 12px 26px -10px rgba(11, 23, 56, 0.5);
+  opacity: 0; transform: translateY(14px); pointer-events: none;
+  transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out), background 0.25s;
+}
+.wa-float svg { width: 25px; height: 25px; }
+.wa-float:hover { background: var(--wine-2); }
+.wa-float.is-on { opacity: 1; transform: none; pointer-events: auto; }
+
 /* ── Nota bajo grilla de servicios ──────────────────────────── */
 .grid-note {
   margin: 26px 0 0;
