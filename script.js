@@ -193,3 +193,154 @@ document.querySelectorAll('.glifo').forEach((svg) => {
   place();
   window.addEventListener('resize', place, { passive: true });
 })();
+
+/* ═══ Materia y Luz — capa cinemática ══════════════════════════ */
+
+/* ── Nav de vidrio líquido ─────────────────────────────────── */
+const topNav = document.querySelector('.top-nav');
+if (topNav) {
+  let glassOn = false;
+  const glassToggle = () => {
+    const on = window.scrollY > window.innerHeight * 1.15;
+    if (on !== glassOn) {
+      glassOn = on;
+      topNav.classList.toggle('is-glass', on);
+    }
+  };
+  document.addEventListener('scroll', glassToggle, { passive: true });
+  glassToggle();
+}
+
+/* ── Linterna de cursor en servicios ───────────────────────── */
+if (!reducedMotion && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  document.querySelectorAll('.service-grid article').forEach((card) => {
+    card.addEventListener('pointermove', (e) => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+      card.style.setProperty('--my', `${e.clientY - r.top}px`);
+    });
+  });
+}
+
+/* ── Polvo de oro: motas de luz en el hero ─────────────────── */
+(function goldDust() {
+  const hero = document.querySelector('.hero');
+  if (!hero || reducedMotion) return;
+  const canvas = document.createElement('canvas');
+  canvas.className = 'dust';
+  canvas.setAttribute('aria-hidden', 'true');
+  hero.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  const DPR = Math.min(window.devicePixelRatio || 1, 1.5);
+  const N = window.innerWidth < 720 ? 20 : 42;
+  let w = 0, h = 0, inView = false, running = false, raf = 0;
+  const dots = [];
+  const reset = (d, anywhere) => {
+    d.x = Math.random() * w;
+    d.y = anywhere ? Math.random() * h : h + 8;
+    d.r = 0.6 + Math.random() * 1.6;
+    d.vy = 0.06 + Math.random() * 0.2;
+    d.vx = -0.05 + Math.random() * 0.1;
+    d.tw = Math.random() * Math.PI * 2;
+    d.ts = 0.004 + Math.random() * 0.012;
+  };
+  const size = () => {
+    w = hero.clientWidth;
+    h = hero.clientHeight;
+    canvas.width = Math.round(w * DPR);
+    canvas.height = Math.round(h * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  };
+  size();
+  for (let i = 0; i < N; i++) { const d = {}; reset(d, true); dots.push(d); }
+  const step = () => {
+    ctx.clearRect(0, 0, w, h);
+    for (const d of dots) {
+      d.y -= d.vy;
+      d.x += d.vx;
+      d.tw += d.ts;
+      if (d.y < -8 || d.x < -8 || d.x > w + 8) reset(d, false);
+      const a = 0.08 + 0.34 * (0.5 + Math.sin(d.tw) / 2);
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(143, 109, 51, ${a.toFixed(3)})`;
+      ctx.fill();
+    }
+    raf = requestAnimationFrame(step);
+  };
+  const sync = () => {
+    const on = inView && !document.hidden;
+    if (on && !running) { running = true; raf = requestAnimationFrame(step); }
+    else if (!on && running) { running = false; cancelAnimationFrame(raf); }
+  };
+  const io = new IntersectionObserver(([entry]) => { inView = entry.isIntersecting; sync(); });
+  io.observe(canvas);
+  document.addEventListener('visibilitychange', sync);
+  window.addEventListener('resize', size, { passive: true });
+})();
+
+/* ── Glifos de fase que se dibujan al entrar en viewport ───── */
+(function glifosVivos() {
+  const svgs = document.querySelectorAll('.glifo');
+  if (reducedMotion || !svgs.length || !('IntersectionObserver' in window)) return;
+  svgs.forEach((svg) => {
+    svg.querySelectorAll('path, circle').forEach((el, i) => {
+      const fill = el.getAttribute('fill');
+      if (fill && fill !== 'none') {
+        el.dataset.pop = '1';
+        el.style.opacity = '0';
+        el.style.transition = 'opacity 0.7s 1.1s ease';
+        return;
+      }
+      const len = el.getTotalLength();
+      el.style.strokeDasharray = len;
+      el.style.strokeDashoffset = len;
+      el.style.transition = `stroke-dashoffset 1.35s ${0.15 + i * 0.2}s cubic-bezier(0.22, 1, 0.36, 1)`;
+    });
+  });
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.querySelectorAll('path, circle').forEach((el) => {
+        if (el.dataset.pop) el.style.opacity = '';
+        else el.style.strokeDashoffset = '0';
+      });
+      io.unobserve(entry.target);
+    });
+  }, { threshold: 0.5 });
+  svgs.forEach((svg) => io.observe(svg));
+})();
+
+/* ── La regla del hero mide la lectura de la página ────────── */
+(function reglaViva() {
+  const regla = document.querySelector('.regla');
+  if (!regla) return;
+  const medir = () => {
+    const h = document.documentElement;
+    const p = h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight);
+    regla.style.setProperty('--lectura', `${(2 + p * 94).toFixed(2)}%`);
+  };
+  document.addEventListener('scroll', medir, { passive: true });
+  medir();
+})();
+
+/* ── Estrella fugaz ocasional en la banda de contacto ──────── */
+if (!reducedMotion) {
+  const fugazBand = document.querySelector('.contact');
+  if (fugazBand) {
+    let fugazVisible = false;
+    new IntersectionObserver(([e]) => { fugazVisible = e.isIntersecting; }).observe(fugazBand);
+    const spawnFugaz = () => {
+      if (fugazVisible && !document.hidden) {
+        const s = document.createElement('span');
+        s.className = 'fugaz';
+        s.style.top = `${8 + Math.random() * 40}%`;
+        s.style.left = `${5 + Math.random() * 65}%`;
+        s.addEventListener('animationend', () => s.remove());
+        fugazBand.insertBefore(s, fugazBand.firstChild);
+      }
+      setTimeout(spawnFugaz, 18000 + Math.random() * 22000);
+    };
+    setTimeout(spawnFugaz, 6000 + Math.random() * 10000);
+  }
+}
