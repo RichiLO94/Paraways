@@ -70,7 +70,7 @@ form?.addEventListener('submit', (event) => {
     .then(async (response) => {
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.error || 'No se pudo enviar la consulta.');
-      message.textContent = 'Gracias. Ricardo recibió tu consulta y te responderá pronto.';
+      message.textContent = 'Gracias. Nuestro equipo recibió tu consulta y te responderá dentro de las próximas 48 horas.';
       message.classList.add('ok');
       form.reset();
       track('form_submit', data.interest || '');
