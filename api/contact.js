@@ -5,6 +5,7 @@ const interestLabels = {
   cedula: 'Cédula de identidad',
   ruc: 'RUC / alta tributaria',
   banco: 'Cuenta bancaria',
+  observatorio: 'Suscripción al Observatorio',
   otro: 'Otro',
 };
 
