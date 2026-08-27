@@ -52,13 +52,35 @@ if (threadField && !reducedMotion) {
 const form = document.querySelector('#lead-form');
 const message = document.querySelector('#form-message');
 
+const FORM_TEXTS = {
+  es: {
+    sending: 'Enviando…',
+    ok: 'Gracias. Nuestro equipo recibió tu consulta y te responderá dentro de las próximas 48 horas.',
+    fail: 'No se pudo enviar la consulta. Inténtalo de nuevo o escríbenos por correo.',
+    button: 'Enviar consulta <span>↗</span>',
+  },
+  pt: {
+    sending: 'Enviando…',
+    ok: 'Obrigado. Nossa equipe recebeu a sua consulta e vai responder dentro das próximas 48 horas.',
+    fail: 'Não foi possível enviar a consulta. Tente novamente ou escreva para o nosso e-mail.',
+    button: 'Enviar consulta <span>↗</span>',
+  },
+  en: {
+    sending: 'Sending…',
+    ok: 'Thank you. Our team has received your inquiry and will reply within 48 hours.',
+    fail: 'Your inquiry could not be sent. Please try again or email us.',
+    button: 'Send inquiry <span>↗</span>',
+  },
+};
+const formText = FORM_TEXTS[document.documentElement.lang] || FORM_TEXTS.es;
+
 form?.addEventListener('submit', (event) => {
   event.preventDefault();
   const submit = form.querySelector('button[type="submit"]');
   const data = Object.fromEntries(new FormData(form).entries());
 
   submit.disabled = true;
-  submit.textContent = 'Enviando…';
+  submit.textContent = formText.sending;
   message.textContent = '';
   message.classList.remove('ok');
 
@@ -69,18 +91,18 @@ form?.addEventListener('submit', (event) => {
   })
     .then(async (response) => {
       const result = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(result.error || 'No se pudo enviar la consulta.');
-      message.textContent = 'Gracias. Nuestro equipo recibió tu consulta y te responderá dentro de las próximas 48 horas.';
+      if (!response.ok) throw new Error(result.error || formText.fail);
+      message.textContent = formText.ok;
       message.classList.add('ok');
       form.reset();
       track('form_submit', data.interest || '');
     })
     .catch((error) => {
-      message.textContent = error.message || 'No se pudo enviar la consulta. Inténtalo de nuevo o escríbenos por correo.';
+      message.textContent = error.message || formText.fail;
     })
     .finally(() => {
       submit.disabled = false;
-      submit.innerHTML = 'Enviar consulta <span>↗</span>';
+      submit.innerHTML = formText.button;
     });
 });
 

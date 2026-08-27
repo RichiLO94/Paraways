@@ -86,6 +86,9 @@ h1 em, h2 em { font-style: italic; color: var(--wine); }
 .langs { margin-left: 42px; display: flex; gap: 9px; font: 500 10px/1 var(--ff-mono); letter-spacing: 0.12em; }
 .langs b { color: var(--wine); border-bottom: 1px solid var(--wine); font-weight: 500; }
 .langs span { opacity: 0.45; }
+.langs a { opacity: 0.45; transition: opacity 0.2s, color 0.2s; }
+.langs a:hover { opacity: 1; color: var(--wine); }
+.ed-hero .langs a:hover, .night .langs a:hover { color: var(--gold); }
 
 /* ── Botones ─────────────────────────────────────────────────── */
 .cta {
