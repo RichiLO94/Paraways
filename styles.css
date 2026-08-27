@@ -12,15 +12,15 @@
   --wine-2: #7A1420;
   --wine-hi: #A81E2B;
   --gold: #B8935A;
-  --gold-ink: #9A7743;
+  --gold-ink: #8F6D33;
   --text: #1A1A1A;
   --muted: rgba(26, 26, 26, 0.7);
   --mute-2: rgba(26, 26, 26, 0.52);
-  --line: rgba(11, 23, 56, 0.14);
+  --line: rgba(11, 23, 56, 0.16);
   --line-2: rgba(11, 23, 56, 0.24);
   --ff-display: "Newsreader", Georgia, serif;
   --ff-ui: "Inter", Arial, sans-serif;
-  --ff-mono: "DM Mono", ui-monospace, monospace;
+  --ff-mono: "JetBrains Mono", ui-monospace, monospace;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -30,7 +30,7 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--text);
-  font: 400 16px/1.6 var(--ff-ui);
+  font: 300 16px/1.62 var(--ff-ui);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -176,7 +176,7 @@ p.lead.line-up { animation-delay: 0.62s; }
 .stat-row small { font-size: 12px; color: var(--muted); }
 
 /* ── Banda midnight ──────────────────────────────────────────── */
-.night { background: var(--ink); color: var(--paper); position: relative; }
+.night { background: linear-gradient(165deg, var(--ink) 55%, #070E22); color: var(--paper); position: relative; }
 .night:before {
   content: ""; position: absolute; inset: 0;
   background:
@@ -311,7 +311,7 @@ p.lead.line-up { animation-delay: 0.62s; }
 .signature small { display: block; margin-top: 8px; font: 500 10.5px/1.5 var(--ff-mono); letter-spacing: 0.18em; text-transform: uppercase; color: var(--mute-2); }
 
 /* ── Contacto ────────────────────────────────────────────────── */
-.contact { background: var(--ink); color: var(--paper); position: relative; overflow: hidden; }
+.contact { background: linear-gradient(150deg, var(--ink) 45%, #070E22); color: var(--paper); position: relative; overflow: hidden; }
 .contact .wrap { position: relative; z-index: 1; }
 .constellation { position: absolute; inset: 0; pointer-events: none; }
 .contact h2 { color: var(--paper); }
