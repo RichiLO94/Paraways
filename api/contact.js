@@ -74,7 +74,7 @@ export default async function handler(request, response) {
   const interest = readString(body.interest, 40, true);
   const phone = readString(body.phone, 30);
   const message = readString(body.message, 2000);
-  const lang = body.lang === 'pt' ? 'pt' : body.lang === 'en' ? 'en' : 'es';
+  const lang = ['pt', 'en', 'fr'].includes(body.lang) ? body.lang : 'es';
   const website = readString(body.website, 200);
 
   if (website === null) {
@@ -118,7 +118,7 @@ export default async function handler(request, response) {
           `Correo: ${email}`,
           phone ? `WhatsApp: ${phone}` : null,
           `Interés: ${interestLabels[interest]}`,
-          `Idioma: ${lang === 'pt' ? 'Portugués' : lang === 'en' ? 'Inglés' : 'Español'}`,
+          `Idioma: ${{ pt: 'Portugués', en: 'Inglés', fr: 'Francés', es: 'Español' }[lang]}`,
           '',
           'Mensaje:',
           message || 'Sin mensaje adicional.',

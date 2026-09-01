@@ -727,3 +727,36 @@ details[open] .faq-a { animation: faq-open 0.55s var(--ease-out); }
   12% { opacity: 0.8; }
   100% { opacity: 0; transform: rotate(24deg) translateX(260px); }
 }
+
+/* ── Residencia por inversión (Investor Pass) ───────────────── */
+.ip-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 48px; }
+.ip-card {
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 24px 22px 22px;
+  display: flex; flex-direction: column; gap: 12px;
+  position: relative;
+}
+.ip-card.destacada { border: 2px solid var(--wine); }
+.ip-chip {
+  align-self: flex-start;
+  font: 500 9.5px/1 var(--ff-mono); letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--gold-ink);
+  border: 1px solid rgba(184, 147, 90, 0.55);
+  padding: 5px 8px; border-radius: 2px;
+}
+.ip-card.destacada .ip-chip { background: var(--wine); border-color: var(--wine); color: var(--paper); }
+.ip-card h3 { font: 500 22px/1.15 var(--ff-display); margin: 2px 0 0; }
+.ip-monto { font: 400 30px/1 var(--ff-display); color: var(--wine); }
+.ip-monto small { font: 500 10px/1.4 var(--ff-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute-2); display: block; margin-bottom: 6px; }
+.ip-card p { font-size: 13.5px; line-height: 1.55; color: var(--muted); margin: 0; }
+.ip-compare {
+  margin-top: 40px; max-width: 760px;
+  font-size: 15px; line-height: 1.65; color: var(--muted);
+  border-top: 1px solid rgba(11, 23, 56, 0.18); padding-top: 22px;
+}
+.ip-compare b { color: var(--text); font-weight: 600; }
+.ip-actions { margin-top: 30px; display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+@media (max-width: 900px) { .ip-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 720px) { .ip-grid { grid-template-columns: 1fr; } }

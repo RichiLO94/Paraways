@@ -71,6 +71,12 @@ const FORM_TEXTS = {
     fail: 'Your inquiry could not be sent. Please try again or email us.',
     button: 'Send inquiry <span>↗</span>',
   },
+  fr: {
+    sending: 'Envoi en cours…',
+    ok: 'Merci. Notre équipe a bien reçu votre demande et vous répondra sous 48 heures.',
+    fail: "Votre demande n'a pas pu être envoyée. Réessayez, ou écrivez-nous par e-mail.",
+    button: 'Envoyer ma demande <span>↗</span>',
+  },
 };
 const formText = FORM_TEXTS[document.documentElement.lang] || FORM_TEXTS.es;
 
