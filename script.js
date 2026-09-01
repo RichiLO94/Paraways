@@ -57,32 +57,35 @@ const FORM_TEXTS = {
     sending: 'Enviando…',
     ok: 'Gracias. Nuestro equipo recibió tu consulta y te responderá dentro de las próximas 48 horas.',
     fail: 'No se pudo enviar la consulta. Inténtalo de nuevo o escríbenos por correo.',
-    button: 'Enviar consulta <span>↗</span>',
   },
   pt: {
     sending: 'Enviando…',
     ok: 'Obrigado. Nossa equipe recebeu a sua consulta e vai responder dentro das próximas 48 horas.',
     fail: 'Não foi possível enviar a consulta. Tente novamente ou escreva para o nosso e-mail.',
-    button: 'Enviar consulta <span>↗</span>',
   },
   en: {
     sending: 'Sending…',
     ok: 'Thank you. Our team has received your inquiry and will reply within 48 hours.',
     fail: 'Your inquiry could not be sent. Please try again or email us.',
-    button: 'Send inquiry <span>↗</span>',
   },
   fr: {
     sending: 'Envoi en cours…',
     ok: 'Merci. Notre équipe a bien reçu votre demande et vous répondra sous 48 heures.',
     fail: "Votre demande n'a pas pu être envoyée. Réessayez, ou écrivez-nous par e-mail.",
-    button: 'Envoyer ma demande <span>↗</span>',
   },
 };
 const formText = FORM_TEXTS[document.documentElement.lang] || FORM_TEXTS.es;
 
+/* Textos de interfaz por página (FAB y diagnóstico) — JSON embebido en cada HTML. */
+const PW_I18N = (() => {
+  try { return JSON.parse(document.querySelector('#pw-i18n')?.textContent || '{}'); }
+  catch { return {}; }
+})();
+
 form?.addEventListener('submit', (event) => {
   event.preventDefault();
   const submit = form.querySelector('button[type="submit"]');
+  const submitHTML = submit.innerHTML;
   const data = Object.fromEntries(new FormData(form).entries());
 
   submit.disabled = true;
@@ -108,17 +111,9 @@ form?.addEventListener('submit', (event) => {
     })
     .finally(() => {
       submit.disabled = false;
-      submit.innerHTML = formText.button;
+      submit.innerHTML = submitHTML;
     });
 });
-
-/* ── Botón flotante de WhatsApp ────────────────────────────── */
-const waFloat = document.querySelector('.wa-float');
-if (waFloat) {
-  const toggleFloat = () => waFloat.classList.toggle('is-on', window.scrollY > 520);
-  document.addEventListener('scroll', toggleFloat, { passive: true });
-  toggleFloat();
-}
 
 /* ── Analytics de WhatsApp ─────────────────────────────────── */
 document.querySelectorAll('a[href*="wa.me"]').forEach((a) => {
@@ -350,3 +345,169 @@ if (!reducedMotion) {
     setTimeout(spawnFugaz, 6000 + Math.random() * 10000);
   }
 }
+
+/* ═══ Capa v2 — FAB, diagnóstico, mapa ═════════════════════════ */
+
+/* ── FAB 3D de WhatsApp: aparece cuando el CTA del hero sale de vista ── */
+(function fab() {
+  const fab = document.querySelector('.fab');
+  if (!fab || !('IntersectionObserver' in window)) return;
+  const heroCta = document.querySelector('[data-hero-cta]');
+  const stop = document.querySelector('[data-fab-stop]');
+  const i18n = PW_I18N.fab || {};
+  const names = PW_I18N.sections || {};
+  const base = fab.getAttribute('href').split('?')[0];
+  const genericHref = fab.getAttribute('href');
+  let pulsed = false, compactTimer = 0;
+
+  const onShow = () => {
+    if (!pulsed) {
+      pulsed = true;
+      fab.addEventListener('transitionend', (e) => {
+        if (e.propertyName === 'opacity') fab.classList.add('pulse');
+      }, { once: true });
+    }
+    if (!compactTimer && matchMedia('(max-width: 720px)').matches) {
+      compactTimer = setTimeout(() => fab.classList.add('is-compact'), 4000);
+    }
+  };
+
+  if (heroCta) {
+    new IntersectionObserver(([e]) => {
+      const show = !e.isIntersecting && e.boundingClientRect.top < 0;
+      fab.classList.toggle('is-visible', show);
+      if (show) onShow();
+    }, { threshold: 0.2 }).observe(heroCta);
+  } else {
+    const byScroll = () => {
+      const show = window.scrollY > 520;
+      fab.classList.toggle('is-visible', show);
+      if (show) onShow();
+    };
+    document.addEventListener('scroll', byScroll, { passive: true });
+    byScroll();
+  }
+  if (stop) {
+    new IntersectionObserver(([e]) => {
+      fab.classList.toggle('is-hidden', e.isIntersecting);
+    }, { rootMargin: '0px 0px -30% 0px', threshold: 0 }).observe(stop);
+  }
+
+  /* El mensaje prellenado nombra la sección desde la que se escribe. */
+  if (i18n.text) {
+    const sections = document.querySelectorAll('main section[id], header[id]');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const id = e.target.id;
+        const name = names[id];
+        fab.setAttribute('href', name
+          ? `${base}?text=${encodeURIComponent(i18n.text.replace('{s}', name))}`
+          : genericHref);
+        fab.dataset.waFrom = `fab-${id}`;
+      });
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+    sections.forEach((s) => io.observe(s));
+  }
+})();
+
+/* ── Diagnóstico en 30 segundos ────────────────────────────── */
+(function diagnostico() {
+  const root = document.querySelector('.diag');
+  const i18n = PW_I18N.diag;
+  if (!root || !i18n) return;
+  const card = root.querySelector('.diag-card');
+  const opts = Array.from(root.querySelectorAll('.diag-opt'));
+  const leadForm = document.querySelector('#lead-form');
+  const KEY = 'pw_diag';
+  const state = {};
+
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { return null; } };
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ ...state, t: Date.now() })); } catch { /* sin persistencia */ } };
+  const clear = () => { try { localStorage.removeItem(KEY); } catch { /* nada */ } };
+  const label = (q, v) => {
+    const b = opts.find((o) => o.dataset.q === q && o.dataset.v === v);
+    return b ? b.textContent.trim() : '';
+  };
+  const fill = (tpl) => tpl
+    .replace('{nac}', label('nac', state.nac))
+    .replace('{obj}', label('obj', state.obj))
+    .replace('{mom}', label('mom', state.mom));
+
+  const syncButtons = () => {
+    opts.forEach((o) => o.setAttribute('aria-pressed', state[o.dataset.q] === o.dataset.v ? 'true' : 'false'));
+  };
+
+  const prefillForm = () => {
+    if (!leadForm) return;
+    const select = leadForm.querySelector('select[name="interest"]');
+    const area = leadForm.querySelector('textarea[name="message"]');
+    const interest = (i18n.interest || {})[state.obj];
+    if (select && interest && !select.value) select.value = interest;
+    if (area && i18n.form && !area.value.trim()) area.value = fill(i18n.form);
+  };
+
+  const render = (announce) => {
+    const answered = ['nac', 'obj', 'mom'].filter((q) => state[q]).length;
+    const count = card.querySelector('.diag-count');
+    if (count && i18n.count) count.textContent = i18n.count.replace('{n}', answered);
+    if (answered < 3) { card.classList.add('is-waiting'); return; }
+
+    const via = (i18n.via || {})[state.obj];
+    if (!via) return;
+    card.querySelector('.diag-via').innerHTML = via.via;
+    card.querySelector('.diag-chips').innerHTML = (via.chips || []).map((c) => `<li>${c}</li>`).join('');
+    const notes = [(i18n.nac || {})[state.nac], (i18n.mom || {})[state.mom]].filter(Boolean);
+    card.querySelector('.diag-notes').innerHTML = notes.map((n) => `<li>${n}</li>`).join('');
+    const wa = card.querySelector('a[href*="wa.me"]');
+    if (wa && i18n.wa) {
+      wa.setAttribute('href', `${wa.getAttribute('href').split('?')[0]}?text=${encodeURIComponent(fill(i18n.wa))}`);
+    }
+    card.classList.remove('is-waiting');
+    prefillForm();
+    if (announce) {
+      track('diag_complete', `${state.nac}-${state.obj}-${state.mom}`);
+      if (matchMedia('(max-width: 900px)').matches && !reducedMotion) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+  };
+
+  opts.forEach((o) => o.addEventListener('click', () => {
+    state[o.dataset.q] = o.dataset.v;
+    syncButtons();
+    if (state.nac && state.obj && state.mom) save();
+    render(true);
+  }));
+
+  root.querySelector('.diag-reset')?.addEventListener('click', () => {
+    delete state.nac; delete state.obj; delete state.mom;
+    clear();
+    syncButtons();
+    render(false);
+    root.querySelector('.diag-opt')?.focus();
+  });
+
+  const saved = load();
+  if (saved && saved.nac && saved.obj && saved.mom) {
+    Object.assign(state, { nac: saved.nac, obj: saved.obj, mom: saved.mom });
+    syncButtons();
+  }
+  render(false);
+})();
+
+/* ── El mapa de Paraguay se dibuja al entrar en viewport ───── */
+(function mapaVivo() {
+  const map = document.querySelector('.py-map');
+  const path = map?.querySelector('.py-borde');
+  if (!map || !path || reducedMotion || !('IntersectionObserver' in window)) return;
+  const len = path.getTotalLength();
+  path.style.strokeDasharray = len;
+  path.style.strokeDashoffset = len;
+  path.style.transition = 'stroke-dashoffset 2.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s';
+  new IntersectionObserver(([e], io) => {
+    if (!e.isIntersecting) return;
+    path.style.strokeDashoffset = '0';
+    io.disconnect();
+  }, { threshold: 0.3 }).observe(map);
+})();

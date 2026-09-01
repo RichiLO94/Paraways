@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Observatorio Paraways</title>
+    <link>https://paraways.com/observatorio/</link>
+    <description>Novedades regulatorias, estadísticas oficiales de Migraciones y señales económicas de Paraguay — leídas por el equipo de Paraways, con fuentes. Sin ruido.</description>
+    <language>es</language>
+    <copyright>Paraways · Asunción, Paraguay</copyright>
+    <lastBuildDate>Sat, 01 Aug 2026 12:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://paraways.com/assets/og-observatorio.png</url>
+      <title>Observatorio Paraways</title>
+      <link>https://paraways.com/observatorio/</link>
+    </image>
+    <atom:link href="https://paraways.com/observatorio/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Edición I — Agosto 2026: Paraguay, en cifras que no necesitan adjetivos</title>
+      <link>https://paraways.com/observatorio/</link>
+      <guid isPermaLink="false">paraways-observatorio-2026-08</guid>
+      <pubDate>Sat, 01 Aug 2026 12:00:00 +0000</pubDate>
+      <description>Récord histórico de residencias (33.243 solicitudes en el primer semestre de 2026, +62%), el mapa completo de las cuatro vías hacia la residencia — incluido el Investor Pass de la Res. MIC 0283/2026 — y el radar regulatorio del mes, con la economía de fondo. Con fuentes oficiales.</description>
+      <category>Migraciones</category>
+      <category>Investor Pass</category>
+      <category>Regulación</category>
+    </item>
+  </channel>
+</rss>

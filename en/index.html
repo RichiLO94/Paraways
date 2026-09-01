@@ -12,6 +12,7 @@
     <link rel="alternate" hreflang="fr" href="https://paraways.com/fr/" />
     <link rel="alternate" hreflang="x-default" href="https://paraways.com/" />
     <link rel="icon" type="image/svg+xml" href="/assets/paraways-mark.svg" />
+    <link rel="alternate" type="application/rss+xml" title="Observatorio Paraways" href="/observatorio/feed.xml" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Paraways" />
     <meta property="og:title" content="Paraways | Your residency in Paraguay, handled from start to finish" />
@@ -24,7 +25,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/styles.css" />
-    <noscript><style>.reveal, .hero .line span { opacity: 1; transform: none; filter: none; }</style></noscript>
+    <noscript><style>.reveal, .hero .line span { opacity: 1; transform: none; filter: none; } .umbral .umbral-bar i { width: var(--w); }</style></noscript>
     <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
     <script defer src="/_vercel/insights/script.js"></script>
     <script type="application/ld+json">
@@ -36,8 +37,11 @@
       "logo": "https://paraways.com/assets/paraways-mark.svg",
       "description": "Temporary residency in Paraguay, cédula (national ID), RUC tax registration and bank account assistance, with a legal team in Asunción. Service in English.",
       "email": "ricardo@paraways.com",
+      "telephone": "+595993474309",
       "address": { "@type": "PostalAddress", "addressLocality": "Asunción", "addressCountry": "PY" },
-      "availableLanguage": ["es", "pt", "en"],
+      "areaServed": { "@type": "Country", "name": "Paraguay" },
+      "serviceType": ["Temporary residency", "Residency by investment", "ID card (cédula)", "RUC tax registration", "Bank account opening"],
+      "availableLanguage": ["es", "pt", "en", "fr"],
       "sameAs": ["https://wa.me/595993474309"]
     }
     </script>
@@ -75,7 +79,7 @@
         {
           "@type": "Question",
           "name": "Can you guarantee my residency or bank account will be approved?",
-          "acceptedAnswer": { "@type": "Answer", "text": "The final decision rests with Migraciones and with each bank; no one can seriously guarantee it. What we do control: filing complete, correct cases — which is what prevents rejections and delays in practice." }
+          "acceptedAnswer": { "@type": "Answer", "text": "The final decision rests with Migraciones and with each bank; no one can guarantee it. What we do control: filing complete, correct cases — which is what prevents rejections and delays in practice." }
         },
         {
           "@type": "Question",
@@ -118,7 +122,7 @@
       <div class="glow" aria-hidden="true"></div>
       <div class="wrap">
         <nav class="top-nav" aria-label="Main navigation">
-          <a class="brand" href="#inicio"><img class="brand-mark" src="/assets/paraways-mark.svg" alt="" />paraways</a>
+          <a class="brand" href="#inicio"><svg class="brand-mark" viewBox="0 0 120 120" aria-hidden="true"><g stroke="#6B1018" stroke-width="2.6" stroke-linecap="round"><line x1="60" y1="24" x2="60" y2="49"/><line x1="60" y1="71" x2="60" y2="96"/><line x1="24" y1="60" x2="49" y2="60"/><line x1="71" y1="60" x2="96" y2="60"/><line x1="34.5" y1="34.5" x2="52.2" y2="52.2"/><line x1="67.8" y1="67.8" x2="85.5" y2="85.5"/><line x1="85.5" y1="34.5" x2="67.8" y2="52.2"/><line x1="52.2" y1="67.8" x2="34.5" y2="85.5"/></g><circle cx="60" cy="60" r="5" fill="none" stroke="#B8935A" stroke-width="2"/></svg>paraways</a>
           <div class="nav-links"><a href="#services">Services</a><a href="#investment">Investment</a><a href="#requirements">Requirements</a><a href="#process">Process</a><a href="#faq">Questions</a><a href="/observatorio/">Observatory</a><a href="#consulta">Contact</a></div>
           <div class="langs" aria-label="Service languages"><a href="/">ES</a><a href="/pt/">PT</a><b>EN</b><a href="/fr/">FR</a></div>
         </nav>
@@ -130,8 +134,8 @@
           </h1>
           <p class="lead line-up">Temporary residency, cédula, RUC and bank account. We tell you exactly which documents you need and how the process works, in writing — and we stand next to you at every government office, in your language.</p>
           <div class="hero-actions line-up">
-            <a class="cta" href="https://wa.me/595993474309?text=Hello%2C%20I%20would%20like%20an%20assessment%20of%20my%20residency%20case." target="_blank" rel="noopener" data-wa-from="hero-en">Free assessment on WhatsApp <span>↗</span></a>
-            <a class="quiet-link" href="#services">See the services <span>↓</span></a>
+            <a class="cta" href="https://wa.me/595993474309?text=Hello%2C%20I%20would%20like%20an%20assessment%20of%20my%20residency%20case." target="_blank" rel="noopener" data-hero-cta data-wa-from="hero-en">Free assessment on WhatsApp <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+            <a class="quiet-link" href="#services">See the services <span class="arw down"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M3.5 8.5 8 13l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           </div>
           <div class="regla line-up" aria-hidden="true"><span class="regla-lectura">25°16′S · 57°38′O — ASU&nbsp;</span></div>
         </div>
@@ -139,7 +143,7 @@
           <div><strong>48h</strong><small>reply with an assessment of your case</small></div>
           <div><strong>1 trip</strong><small>is enough, with a coordinated agenda</small></div>
           <div><strong>100%</strong><small>handled by a licensed attorney</small></div>
-          <div><strong>EN·ES·PT</strong><small>direct contact, no middlemen</small></div>
+          <div class="stat-langs"><strong>ES · PT · EN · FR</strong><small>direct contact, no middlemen</small></div>
         </div>
       </div>
       <div class="thread-field" aria-hidden="true"><div class="thread-core"></div></div>
@@ -148,6 +152,7 @@
     <main>
       <section id="services" class="night section">
         <div class="wrap">
+          <span class="marginalia" aria-hidden="true">I</span>
           <p class="eyebrow">SERVICES</p>
           <h2 class="reveal">Everything you need<br />to <em>settle in and operate.</em></h2>
           <p class="section-lead reveal">The scope of each service, clear from the start. Fees and an estimated timeline for your case: in writing, in your private assessment.</p>
@@ -200,6 +205,7 @@
 
       <section id="investment" class="statement section" style="background:var(--paper)">
         <div class="wrap">
+          <span class="marginalia" aria-hidden="true">II</span>
           <p class="eyebrow">RESIDENCY BY INVESTMENT · RES. MIC 0283/2026</p>
           <h2 class="reveal">The Investor Pass:<br />permanent, <em>directly.</em></h2>
           <p class="section-lead reveal">Since April 2026, Paraguay grants permanent residency without the temporary stage: a 10-year cédula, family included under a single investment, and one day of presence every three years to keep the status. Eligibility and granting are decided by the authorities (SUACE and Migraciones) — our job is making sure your file arrives impeccable.</p>
@@ -229,16 +235,27 @@
               <p>Minimum two-year holding, with annual reporting on the investment.</p>
             </article>
           </div>
+          <p class="ip-common reveal"><span>Permanent from day one</span><span>10-year ID card</span><span>Family included</span><span>1 day every 3 years</span></p>
+          <figure class="umbral reveal" aria-label="The threshold rule: legal minimum investment in Greece, Portugal and Paraguay, in proportion">
+            <p class="umbral-kicker">The threshold rule · legal minimum investment</p>
+            <ol class="umbral-list">
+              <li style="--w:100%"><span class="umbral-pais">Greece</span><span class="umbral-bar"><i></i></span><span class="umbral-val">€800,000</span></li>
+              <li style="--w:62.5%"><span class="umbral-pais">Portugal</span><span class="umbral-bar"><i></i></span><span class="umbral-val">€500,000</span></li>
+              <li class="py" style="--w:8.75%"><span class="umbral-pais">Paraguay</span><span class="umbral-bar"><i></i></span><span class="umbral-val">USD 70,000</span><small class="umbral-nota">legal threshold — Res. MIC 0283/2026</small></li>
+            </ol>
+            <figcaption class="umbral-foot">European programme figures as of August 2026, with sources in the Observatory. Bars proportional to each programme's nominal amount.</figcaption>
+          </figure>
           <p class="ip-compare reveal">For perspective: Portugal asks for <b>€500,000</b> in investment funds; Greece, <b>€800,000</b> in its prime areas. Paraguay: <b>from USD 70,000</b> — the lowest entry threshold among the relevant jurisdictions, with permanent residency from day one.</p>
           <div class="ip-actions reveal">
-            <a class="cta" href="https://wa.me/595993474309?text=Hello%2C%20I%20would%20like%20to%20assess%20my%20residency-by-investment%20case." target="_blank" rel="noopener" data-wa-from="inversion-en">Assess my investment case <span>↗</span></a>
-            <a class="quiet-link" href="https://wa.me/595993474309?text=Hello%2C%20I%20would%20like%20to%20receive%20Private%20Briefing%20No.%2001%20%E2%80%94%20Paraguay%2C%20on%20its%20merits." target="_blank" rel="noopener" data-wa-from="briefing-en">Request Private Briefing No. 01 <span>↗</span></a>
+            <a class="cta" href="https://wa.me/595993474309?text=Hello%2C%20I%20would%20like%20to%20assess%20my%20residency-by-investment%20case." target="_blank" rel="noopener" data-wa-from="inversion-en">Assess my investment case <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+            <span class="ip-brief"><a class="quiet-link" href="https://wa.me/595993474309?text=Hello%2C%20I%20would%20like%20to%20receive%20Private%20Briefing%20No.%2001%20%E2%80%94%20Paraguay%2C%20on%20its%20merits." target="_blank" rel="noopener" data-wa-from="briefing-en">Request Private Briefing No. 01 <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a><small>Three pages on Paraguay, with sources.</small></span>
           </div>
         </div>
       </section>
 
       <section id="requirements" class="arrival section">
         <div class="wrap arrival-grid">
+          <span class="marginalia" aria-hidden="true">III</span>
           <div class="arrival-intro reveal">
             <p class="eyebrow">REQUIREMENTS</p>
             <h2>The documents you will need, <em>no runaround.</em></h2>
@@ -258,6 +275,7 @@
 
       <section id="process" class="process section">
         <div class="wrap split">
+          <span class="marginalia" aria-hidden="true">IV</span>
           <div>
             <p class="eyebrow">HOW WE WORK</p>
             <h2 class="reveal">Four steps,<br />with <em>dates and owners.</em></h2>
@@ -269,15 +287,41 @@
             <li><b>III</b><div><h3>Filing in Asunción</h3><p>One short trip with a coordinated agenda: your entry duly recorded (keep the slip), local clearances, filing before Migraciones and biometrics. We are with you at every office.</p></div></li>
             <li><b>IV</b><div><h3>Tracking and delivery</h3><p>We monitor the file until your card is issued and leave your cédula on track — enrolment can be completed during your same stay, and we handle collection and delivery. If you have already flown home, follow-up continues under a power of attorney.</p></div></li>
           </ol>
+          <div class="expediente reveal">
+            <p class="expediente-kicker">This is what your file looks like</p>
+            <div class="expediente-doc">
+              <div class="expediente-head"><span><b>Paraways</b> · File timeline</span><span>Holder: ____________</span><span>No. ____ / ____</span></div>
+              <table>
+                <thead><tr><th>Stage</th><th>Owner</th><th>Deliverable</th><th>Date</th></tr></thead>
+                <tbody>
+                  <tr><td class="etapa"><b>I</b>Documents</td><td data-l="Owner">You, with our guidance — reviewed by the team</td><td data-l="Deliverable">Complete, apostilled folder, checked before you travel</td><td class="fecha" data-l="Date">__ / __ / ____</td></tr>
+                  <tr><td class="etapa"><b>II</b>Filing</td><td data-l="Owner">A lawyer from the team, with you at the office</td><td data-l="Deliverable">File lodged with Migraciones, with proof of filing</td><td class="fecha" data-l="Date">__ / __ / ____</td></tr>
+                  <tr><td class="etapa"><b>III</b>ID card</td><td data-l="Owner">Dedicated associate</td><td data-l="Deliverable">Enrolment at Identificaciones and coordinated delivery</td><td class="fecha" data-l="Date">__ / __ / ____</td></tr>
+                  <tr><td class="etapa"><b>IV</b>RUC</td><td data-l="Owner">Accountant from the team</td><td data-l="Deliverable">DNIT registration and Marángatu access key</td><td class="fecha" data-l="Date">__ / __ / ____</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="expediente-note">Mock-up of the timeline you receive in writing with your assessment. Dates are set with your schedule and each agency's pace — and we notify you at every step.</p>
+          </div>
           <p class="after-note reveal">And the cédula is not the end: RUC, accounting, annual compliance, a company if your project calls for it — the same team stays with you for what comes next, without starting from zero with anyone.</p>
         </div>
       </section>
 
       <section id="team" class="statement section">
         <div class="wrap reveal">
+          <span class="marginalia" aria-hidden="true">V</span>
           <p class="eyebrow">THE TEAM</p>
           <h2>A complete team,<br />a single <em>case file.</em></h2>
           <p class="statement-note">Your case does not depend on one person: it is carried by a team covering every front of the process, with a single point of contact who keeps you informed at every step.</p>
+          <div class="py-map" aria-hidden="true">
+            <svg viewBox="0 0 900 870">
+              <path class="py-borde" d="M 35 324 C 35 324 63 231 70 205 C 77 179 93 81 105 65 C 117 49 171 51 190 48 C 209 45 275 32 295 33 C 315 34 371 47 390 55 C 409 63 472 102 484 115 C 496 128 502 176 505 190 C 508 204 514 248 515 260 C 516 272 508 304 515 310 C 522 316 566 320 580 320 C 594 320 640 314 655 315 C 670 316 716 327 725 335 C 734 343 740 383 745 395 C 750 407 766 446 775 455 C 784 464 825 485 835 490 C 845 495 872 505 872 505 C 872 505 858 546 855 560 C 852 574 843 636 840 650 C 837 664 832 686 828 695 C 824 704 803 730 795 740 C 787 750 758 780 750 790 C 742 800 721 830 710 835 C 699 840 654 842 640 842 C 626 842 584 832 570 830 C 556 828 513 820 500 820 C 487 820 440 825 440 825 C 440 825 468 780 475 770 C 482 760 504 731 510 720 C 516 709 532 671 535 662 C 538 653 537 628 537 628 C 537 628 469 600 450 590 C 431 580 368 541 350 530 C 332 519 287 491 270 480 C 253 469 197 431 180 420 C 163 409 114 380 100 370 C 86 360 35 324 35 324 Z" />
+              <line class="py-lead" x1="531" y1="636" x2="497" y2="684" />
+              <circle class="py-ring" cx="537" cy="628" r="9" />
+              <circle class="py-asu" cx="537" cy="628" r="6" />
+              <text class="py-coord" x="40" y="702">ASUNCIÓN · 25°16′S · 57°38′O</text>
+            </svg>
+          </div>
           <ul class="team">
             <li><b>Immigration lawyers</b> Licensed in Asunción, in charge of strategy and of every filing before Migraciones and Identificaciones.</li>
             <li><b>Accountants and tax compliance</b> RUC registration, applicable regime and obligations kept current with the DNIT from day one.</li>
@@ -290,6 +334,7 @@
 
       <section id="claro" class="statement section" style="background:#E8E0D1">
         <div class="wrap">
+          <span class="marginalia" aria-hidden="true">VI</span>
           <p class="eyebrow">BEFORE YOU PAY ANYONE</p>
           <h2 class="reveal">Four truths,<br /><em>free of charge.</em></h2>
           <p class="statement-note">Some things you should know for free, whether you hire us or not. We start there.</p>
@@ -303,8 +348,37 @@
         </div>
       </section>
 
+      <section id="who-its-for" class="statement section">
+        <div class="wrap">
+          <span class="marginalia" aria-hidden="true">VII</span>
+          <p class="eyebrow">THE PROFILE</p>
+          <h2 class="reveal">Who it's for —<br />and who it <em>isn't.</em></h2>
+          <p class="statement-note">Our work pays off for a specific profile. If it's yours, the assessment confirms it; if it isn't, we tell you that too — free.</p>
+          <div class="fit-grid reveal">
+            <div class="fit yes">
+              <h3>It's for you if…</h3>
+              <ul>
+                <li>You want to live and operate by the book: residency, ID card, RUC and a bank account in your name.</li>
+                <li>You want to put your tax life in order with advice in both countries — Paraguay and your own.</li>
+                <li>You're going to invest and want a flawless file, filed and answered for by a lawyer.</li>
+              </ul>
+            </div>
+            <div class="fit no">
+              <h3>It's not for you if…</h3>
+              <ul>
+                <li>You're after an express passport: residency is not citizenship, and we don't sell shortcuts.</li>
+                <li>You want to hide income or stop declaring in your country without exiting its system properly.</li>
+                <li>You can't appear in person at Migraciones: filing is personal, and nobody can change that.</li>
+              </ul>
+            </div>
+          </div>
+          <p class="statement-note reveal">If you recognise yourself in the first column, write to us. If in the second, we'll tell you just as clearly — at no cost.</p>
+        </div>
+      </section>
+
       <section id="faq" class="statement section" style="background:var(--paper)">
         <div class="wrap">
+          <span class="marginalia" aria-hidden="true">VIII</span>
           <p class="eyebrow">FREQUENTLY ASKED QUESTIONS</p>
           <h2 class="reveal">What everyone asks,<br />answered <em>straight.</em></h2>
           <div class="faq-list reveal">
@@ -330,7 +404,7 @@
             </details>
             <details>
               <summary>Can you guarantee approval?</summary>
-              <p class="faq-a">The final decision rests with Migraciones and with each bank; no one can seriously guarantee it. What we do control: that your file enters complete and correct — which is what prevents rejections and delays in practice.</p>
+              <p class="faq-a">The final decision rests with Migraciones and with each bank; no one can guarantee it. What we do control: that your file enters complete and correct — which is what prevents rejections and delays in practice.</p>
             </details>
             <details>
               <summary>Why do banks turn foreigners away?</summary>
@@ -338,7 +412,7 @@
             </details>
             <details>
               <summary>Do I stop paying taxes in my home country?</summary>
-              <p class="faq-a">Not automatically — and be wary of anyone who says otherwise. Migration residency and tax residency are two different things: Paraguay does not tax your foreign-source income, but your home country only stops taxing you if you exit its system properly, and that is planned with a tax adviser there. We build the Paraguayan side and tell you honestly which part does not depend on Paraguay.</p>
+              <p class="faq-a">Not automatically — and be wary of anyone who says otherwise. Migration residency and tax residency are two different things: Paraguay does not tax your foreign-source income, but your home country only stops taxing you if you exit its system properly, and that is planned with a tax adviser there. We handle the Paraguayan side; your tax adviser, your country's — and we tell you honestly which part doesn't depend on Paraguay.</p>
             </details>
             <details>
               <summary>Is residency by investment really direct?</summary>
@@ -367,26 +441,74 @@
             <h2>What is moving in Paraguay,<br /><em>measured and explained.</em></h2>
             <p class="obs-lead">Regulatory news, official migration statistics and economic signals — read by the team, with sources. No noise.</p>
           </div>
-          <a class="cta obs-cta" href="/observatorio/">Read the edition <span>↗</span></a>
+          <a class="cta obs-cta" href="/observatorio/">Read the edition <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
         </div>
       </section>
 
-      <section id="consulta" class="contact section">
+      <section id="diagnosis" class="statement section">
+        <div class="wrap">
+          <span class="marginalia" aria-hidden="true">IX</span>
+          <p class="eyebrow">30-SECOND DIAGNOSIS · INDICATIVE</p>
+          <h2 class="reveal">Three answers,<br />and your <em>likely route.</em></h2>
+          <p class="statement-note">No forms, no personal data: three taps and we show you where a case like yours usually goes. The definitive route is confirmed in your assessment, in writing.</p>
+          <div class="diag reveal">
+            <div class="diag-qs">
+              <div class="diag-q" role="group" aria-labelledby="dq1">
+                <p id="dq1"><small>01 · Nationality</small>Where is your passport from?</p>
+                <div class="diag-opts">
+                  <button type="button" class="diag-opt" data-q="nac" data-v="brasil" aria-pressed="false">Brazil</button>
+                  <button type="button" class="diag-opt" data-q="nac" data-v="mercosur" aria-pressed="false">Argentina, Uruguay or another MERCOSUR country</button>
+                  <button type="button" class="diag-opt" data-q="nac" data-v="resto" aria-pressed="false">Rest of the world</button>
+                </div>
+              </div>
+              <div class="diag-q" role="group" aria-labelledby="dq2">
+                <p id="dq2"><small>02 · Goal</small>What are you looking for in Paraguay?</p>
+                <div class="diag-opts">
+                  <button type="button" class="diag-opt" data-q="obj" data-v="operar" aria-pressed="false">Live and operate</button>
+                  <button type="button" class="diag-opt" data-q="obj" data-v="invertir" aria-pressed="false">Live and invest</button>
+                  <button type="button" class="diag-opt" data-q="obj" data-v="documentos" aria-pressed="false">Documents only (I already have residency)</button>
+                </div>
+              </div>
+              <div class="diag-q" role="group" aria-labelledby="dq3">
+                <p id="dq3"><small>03 · Timing</small>When do you want to start?</p>
+                <div class="diag-opts">
+                  <button type="button" class="diag-opt" data-q="mom" data-v="ahora" aria-pressed="false">This year</button>
+                  <button type="button" class="diag-opt" data-q="mom" data-v="calma" aria-pressed="false">No rush</button>
+                </div>
+              </div>
+            </div>
+            <div class="diag-card is-waiting" aria-live="polite">
+              <p class="card-kicker">YOUR LIKELY ROUTE</p>
+              <p class="diag-wait">Answer the three questions and your likely route appears here — based on what we already publish on this page, no new figures.</p>
+              <span class="diag-count">0 / 3 answered</span>
+              <div class="diag-fill">
+                <p class="diag-via"></p>
+                <ul class="diag-chips"></ul>
+                <ul class="diag-notes"></ul>
+                <div class="diag-actions">
+                  <a class="cta" href="https://wa.me/595993474309" target="_blank" rel="noopener" data-wa-from="diagnostico">Confirm my route on WhatsApp <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+                  <button type="button" class="diag-reset">Start over</button>
+                </div>
+                <p class="diag-fine">Indicative — the definitive route is confirmed in your assessment, in writing and free of charge.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="consulta" class="contact section" data-fab-stop>
         <div class="constellation" aria-hidden="true"></div>
         <div class="wrap">
           <p class="eyebrow gold">FREE ASSESSMENT</p>
           <h2 class="reveal">Tell us your case.</h2>
           <p class="contact-lead">Your nationality, your goal and your estimated date. We reply within 48 hours with the viability, the document list and a written quote.</p>
           <div class="contact-options">
-            <a class="whatsapp-link" href="https://wa.me/595993474309" target="_blank" rel="noopener" data-wa-from="contact-en">WhatsApp Business <span>↗</span></a>
+            <a class="whatsapp-link" href="https://wa.me/595993474309" target="_blank" rel="noopener" data-wa-from="contact-en">WhatsApp Business <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
             <small>The fastest channel — in your language.</small>
           </div>
           <form id="lead-form">
             <input type="hidden" name="lang" value="en" />
             <label class="hp-field" aria-hidden="true">Website<input tabindex="-1" autocomplete="off" name="website" /></label>
-            <label>Full name<input required name="name" autocomplete="name" maxlength="120" placeholder="Your name" /></label>
-            <label>Email<input required type="email" name="email" autocomplete="email" maxlength="254" placeholder="name@company.com" /></label>
-            <label>WhatsApp (optional)<input name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="+44 ..." /></label>
             <label>What do you need?
               <select required name="interest">
                 <option value="" selected disabled>Select an option</option>
@@ -398,8 +520,11 @@
                 <option value="otro">Other</option>
               </select>
             </label>
+            <label>Full name<input required name="name" autocomplete="name" maxlength="120" placeholder="Your name" /></label>
+            <label>Email<input required type="email" name="email" autocomplete="email" maxlength="254" placeholder="name@company.com" /></label>
+            <label>WhatsApp (optional)<input name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="+44 ..." /></label>
             <label class="full">Tell us briefly<textarea name="message" rows="3" maxlength="2000" placeholder="Your nationality, goal and estimated date..."></textarea></label>
-            <button class="cta" type="submit">Send inquiry <span>↗</span></button>
+            <div class="form-actions"><button class="cta" type="submit">Send inquiry <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button><span class="form-note">We reply within 48 h</span></div>
             <p id="form-message" role="status"></p>
           </form>
           <p class="form-fallback">Prefer email? <a href="mailto:ricardo@paraways.com">ricardo@paraways.com</a></p>
@@ -418,7 +543,39 @@
       </div>
     </footer>
 
-    <a class="wa-float" href="https://wa.me/595993474309?text=Hello%2C%20I%20would%20like%20an%20assessment%20of%20my%20residency%20case." target="_blank" rel="noopener" aria-label="Write to us on WhatsApp" data-wa-from="float-en"><svg viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg></a>
+    <a class="fab" href="https://wa.me/595993474309?text=Hello%2C%20I%20would%20like%20a%20free%20assessment%20of%20my%20residency%20case." target="_blank" rel="noopener" aria-label="Free assessment via WhatsApp" data-wa-from="fab">
+      <span class="fab__shadow"></span><span class="fab__edge"></span>
+      <span class="fab__front">
+        <span class="fab__disc"><svg viewBox="0 0 448 512" aria-hidden="true"><path fill="#fff" d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg></span>
+        <span class="fab__text"><b><span class="fab__full">Free assessment</span><span class="fab__brief">Assessment</span></b><small>We reply on WhatsApp</small></span>
+      </span>
+    </a>
+    <script type="application/json" id="pw-i18n">
+    {
+      "fab": { "text": "Hello, I'm coming from the {s} section of paraways.com and would like a free assessment of my case." },
+      "sections": { "inicio": "Home", "services": "Services", "investment": "Investor Pass", "requirements": "Requirements", "process": "How we work", "team": "Team", "claro": "Before you pay anyone", "who-its-for": "Who it's for", "faq": "FAQ", "observatorio": "Observatory", "diagnosis": "Diagnosis" },
+      "diag": {
+        "via": {
+          "operar": { "via": "Temporary residency, <em>general regime.</em>", "chips": ["1 trip, schedule coordinated", "4 core documents", "ID card: enrolment during the same stay"] },
+          "invertir": { "via": "Investor Pass: <em>permanent, from day one.</em>", "chips": ["10-year ID card", "family included", "legal threshold from USD 70,000"] },
+          "documentos": { "via": "ID card, RUC and bank account, <em>on your existing residency.</em>", "chips": ["appointment at Identificaciones", "DNIT registration", "account once the ID card is in hand"] }
+        },
+        "nac": {
+          "brasil": "Your Portuguese-language documents are accepted without translation at Migraciones.",
+          "mercosur": "Your Spanish-language documents go apostilled in your country, no translation needed.",
+          "resto": "Your documents go apostilled in your country and, if not in Spanish, translated."
+        },
+        "mom": {
+          "ahora": "We start with remote preparation: documents and apostilles in your country, before you travel.",
+          "calma": "You get the exact list and the order. When you set a date, the file is already on its way."
+        },
+        "wa": "Hello, I completed the diagnosis on paraways.com — {nac} · {obj} · {mom}. I would like a free assessment of my case.",
+        "form": "30-second diagnosis: {nac} · {obj} · {mom}.",
+        "interest": { "operar": "residencia", "invertir": "inversion", "documentos": "cedula" },
+        "count": "{n} / 3 answered"
+      }
+    }
+    </script>
     <script src="/script.js"></script>
   </body>
 </html>

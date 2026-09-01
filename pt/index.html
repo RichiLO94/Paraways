@@ -12,6 +12,7 @@
     <link rel="alternate" hreflang="fr" href="https://paraways.com/fr/" />
     <link rel="alternate" hreflang="x-default" href="https://paraways.com/" />
     <link rel="icon" type="image/svg+xml" href="/assets/paraways-mark.svg" />
+    <link rel="alternate" type="application/rss+xml" title="Observatorio Paraways" href="/observatorio/feed.xml" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Paraways" />
     <meta property="og:title" content="Paraways | Sua residência no Paraguai, cuidada do início ao fim" />
@@ -24,7 +25,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/styles.css" />
-    <noscript><style>.reveal, .hero .line span { opacity: 1; transform: none; filter: none; }</style></noscript>
+    <noscript><style>.reveal, .hero .line span { opacity: 1; transform: none; filter: none; } .umbral .umbral-bar i { width: var(--w); }</style></noscript>
     <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
     <script defer src="/_vercel/insights/script.js"></script>
     <script type="application/ld+json">
@@ -36,8 +37,11 @@
       "logo": "https://paraways.com/assets/paraways-mark.svg",
       "description": "Residência temporária no Paraguai, cédula de identidade, RUC e assistência para abertura de conta bancária, com equipe jurídica em Assunção. Atendimento em português.",
       "email": "ricardo@paraways.com",
+      "telephone": "+595993474309",
       "address": { "@type": "PostalAddress", "addressLocality": "Asunción", "addressCountry": "PY" },
-      "availableLanguage": ["es", "pt", "en"],
+      "areaServed": { "@type": "Country", "name": "Paraguay" },
+      "serviceType": ["Residência temporária", "Residência por investimento", "Cédula de identidade", "RUC", "Abertura de conta bancária"],
+      "availableLanguage": ["es", "pt", "en", "fr"],
       "sameAs": ["https://wa.me/595993474309"]
     }
     </script>
@@ -75,7 +79,7 @@
         {
           "@type": "Question",
           "name": "Vocês podem garantir a aprovação da residência ou da conta bancária?",
-          "acceptedAnswer": { "@type": "Answer", "text": "A decisão final é de Migraciones e de cada banco; ninguém pode garantir isso com seriedade. O que controlamos: apresentar processos completos e corretos — o que, na prática, evita recusas e atrasos." }
+          "acceptedAnswer": { "@type": "Answer", "text": "A decisão final é de Migraciones e de cada banco; ninguém pode garantir isso. O que controlamos: apresentar processos completos e corretos — o que, na prática, evita recusas e atrasos." }
         },
         {
           "@type": "Question",
@@ -118,7 +122,7 @@
       <div class="glow" aria-hidden="true"></div>
       <div class="wrap">
         <nav class="top-nav" aria-label="Navegação principal">
-          <a class="brand" href="#inicio"><img class="brand-mark" src="/assets/paraways-mark.svg" alt="" />paraways</a>
+          <a class="brand" href="#inicio"><svg class="brand-mark" viewBox="0 0 120 120" aria-hidden="true"><g stroke="#6B1018" stroke-width="2.6" stroke-linecap="round"><line x1="60" y1="24" x2="60" y2="49"/><line x1="60" y1="71" x2="60" y2="96"/><line x1="24" y1="60" x2="49" y2="60"/><line x1="71" y1="60" x2="96" y2="60"/><line x1="34.5" y1="34.5" x2="52.2" y2="52.2"/><line x1="67.8" y1="67.8" x2="85.5" y2="85.5"/><line x1="85.5" y1="34.5" x2="67.8" y2="52.2"/><line x1="52.2" y1="67.8" x2="34.5" y2="85.5"/></g><circle cx="60" cy="60" r="5" fill="none" stroke="#B8935A" stroke-width="2"/></svg>paraways</a>
           <div class="nav-links"><a href="#servicos">Serviços</a><a href="#investimento">Investimento</a><a href="#requisitos">Requisitos</a><a href="#processo">Processo</a><a href="#faq">Perguntas</a><a href="/observatorio/">Observatório</a><a href="#consulta">Contato</a></div>
           <div class="langs" aria-label="Idiomas de atendimento"><a href="/">ES</a><b>PT</b><a href="/en/">EN</a><a href="/fr/">FR</a></div>
         </nav>
@@ -130,8 +134,8 @@
           </h1>
           <p class="lead line-up">Residência temporária, cédula, RUC e conta bancária. Dizemos exatamente quais documentos você precisa e como é o processo, por escrito — e acompanhamos você em cada órgão público, no seu idioma.</p>
           <div class="hero-actions line-up">
-            <a class="cta" href="https://wa.me/595993474309?text=Ol%C3%A1%2C%20quero%20uma%20avalia%C3%A7%C3%A3o%20do%20meu%20caso%20de%20resid%C3%AAncia." target="_blank" rel="noopener" data-wa-from="hero-pt">Avaliação gratuita pelo WhatsApp <span>↗</span></a>
-            <a class="quiet-link" href="#servicos">Ver os serviços <span>↓</span></a>
+            <a class="cta" href="https://wa.me/595993474309?text=Ol%C3%A1%2C%20quero%20uma%20avalia%C3%A7%C3%A3o%20do%20meu%20caso%20de%20resid%C3%AAncia." target="_blank" rel="noopener" data-hero-cta data-wa-from="hero-pt">Avaliação gratuita pelo WhatsApp <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+            <a class="quiet-link" href="#servicos">Ver os serviços <span class="arw down"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M3.5 8.5 8 13l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           </div>
           <div class="regla line-up" aria-hidden="true"><span class="regla-lectura">25°16′S · 57°38′O — ASU&nbsp;</span></div>
         </div>
@@ -139,7 +143,7 @@
           <div><strong>48h</strong><small>resposta com avaliação do seu caso</small></div>
           <div><strong>1 viagem</strong><small>com agenda coordenada, é o suficiente</small></div>
           <div><strong>100%</strong><small>conduzido por advogado habilitado</small></div>
-          <div><strong>PT·ES·EN</strong><small>atendimento direto, sem intermediários</small></div>
+          <div class="stat-langs"><strong>ES · PT · EN · FR</strong><small>atendimento direto, sem intermediários</small></div>
         </div>
       </div>
       <div class="thread-field" aria-hidden="true"><div class="thread-core"></div></div>
@@ -148,6 +152,7 @@
     <main>
       <section id="servicos" class="night section">
         <div class="wrap">
+          <span class="marginalia" aria-hidden="true">I</span>
           <p class="eyebrow">SERVIÇOS</p>
           <h2 class="reveal">Tudo o que você precisa<br />para <em>se instalar e operar.</em></h2>
           <p class="section-lead reveal">O alcance de cada serviço, claro desde o início. Honorários e cronograma estimado do seu caso: por escrito, na sua avaliação privada.</p>
@@ -200,6 +205,7 @@
 
       <section id="investimento" class="statement section" style="background:var(--paper)">
         <div class="wrap">
+          <span class="marginalia" aria-hidden="true">II</span>
           <p class="eyebrow">RESIDÊNCIA POR INVESTIMENTO · RES. MIC 0283/2026</p>
           <h2 class="reveal">O Investor Pass:<br />permanente <em>direta.</em></h2>
           <p class="section-lead reveal">Desde abril de 2026, o Paraguai concede a residência permanente sem passar pela etapa temporária: cédula de 10 anos, família incluída com um único investimento e um dia de presença a cada três anos para manter o status. A elegibilidade e a concessão são decisão das autoridades (SUACE e Migraciones) — o nosso trabalho é fazer o seu processo chegar impecável.</p>
@@ -229,16 +235,27 @@
               <p>Permanência mínima de dois anos, com informação anual do investimento.</p>
             </article>
           </div>
+          <p class="ip-common reveal"><span>Permanente direta</span><span>Cédula de 10 anos</span><span>Família incluída</span><span>1 dia a cada 3 anos</span></p>
+          <figure class="umbral reveal" aria-label="Régua dos limites: investimento mínimo legal na Grécia, em Portugal e no Paraguai, em proporção">
+            <p class="umbral-kicker">Régua dos limites · investimento mínimo legal</p>
+            <ol class="umbral-list">
+              <li style="--w:100%"><span class="umbral-pais">Grécia</span><span class="umbral-bar"><i></i></span><span class="umbral-val">€800.000</span></li>
+              <li style="--w:62.5%"><span class="umbral-pais">Portugal</span><span class="umbral-bar"><i></i></span><span class="umbral-val">€500.000</span></li>
+              <li class="py" style="--w:8.75%"><span class="umbral-pais">Paraguai</span><span class="umbral-bar"><i></i></span><span class="umbral-val">USD 70.000</span><small class="umbral-nota">limite legal — Res. MIC 0283/2026</small></li>
+            </ol>
+            <figcaption class="umbral-foot">Valores dos programas europeus em agosto de 2026, com fontes no Observatório. Barras proporcionais ao valor nominal de cada programa.</figcaption>
+          </figure>
           <p class="ip-compare reveal">Para dimensionar: Portugal pede <b>€500.000</b> em fundos de investimento; a Grécia, <b>€800.000</b> nas suas zonas principais. Paraguai: <b>a partir de US$ 70.000</b> — o menor valor de entrada entre as jurisdições relevantes, com residência permanente desde o primeiro dia.</p>
           <div class="ip-actions reveal">
-            <a class="cta" href="https://wa.me/595993474309?text=Ol%C3%A1%2C%20quero%20avaliar%20meu%20caso%20de%20resid%C3%AAncia%20por%20investimento." target="_blank" rel="noopener" data-wa-from="inversion-pt">Avaliar meu caso de investimento <span>↗</span></a>
-            <a class="quiet-link" href="https://wa.me/595993474309?text=Ol%C3%A1%2C%20quero%20receber%20o%20Private%20Briefing%20N%C2%BA%2001%20%E2%80%94%20Paraguay%2C%20on%20its%20merits." target="_blank" rel="noopener" data-wa-from="briefing-pt">Pedir o Private Briefing N.º 01 <span>↗</span></a>
+            <a class="cta" href="https://wa.me/595993474309?text=Ol%C3%A1%2C%20quero%20avaliar%20meu%20caso%20de%20resid%C3%AAncia%20por%20investimento." target="_blank" rel="noopener" data-wa-from="inversion-pt">Avaliar meu caso de investimento <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+            <span class="ip-brief"><a class="quiet-link" href="https://wa.me/595993474309?text=Ol%C3%A1%2C%20quero%20receber%20o%20Private%20Briefing%20N%C2%BA%2001%20%E2%80%94%20Paraguay%2C%20on%20its%20merits." target="_blank" rel="noopener" data-wa-from="briefing-pt">Pedir o Private Briefing N.º 01 <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a><small>Três páginas sobre o Paraguai, com fontes.</small></span>
           </div>
         </div>
       </section>
 
       <section id="requisitos" class="arrival section">
         <div class="wrap arrival-grid">
+          <span class="marginalia" aria-hidden="true">III</span>
           <div class="arrival-intro reveal">
             <p class="eyebrow">REQUISITOS</p>
             <h2>Os documentos que você vai precisar, <em>sem rodeios.</em></h2>
@@ -258,6 +275,7 @@
 
       <section id="processo" class="process section">
         <div class="wrap split">
+          <span class="marginalia" aria-hidden="true">IV</span>
           <div>
             <p class="eyebrow">COMO TRABALHAMOS</p>
             <h2 class="reveal">Quatro passos,<br />com <em>datas e responsáveis.</em></h2>
@@ -269,15 +287,41 @@
             <li><b>III</b><div><h3>Trâmite em Assunção</h3><p>Uma viagem curta com agenda coordenada: ingresso registrado (guarde seu comprovante), antecedentes locais, protocolo em Migraciones e biometria. Acompanhamos você em cada órgão.</p></div></li>
             <li><b>IV</b><div><h3>Acompanhamento e entrega</h3><p>Monitoramos o processo até o cartão de residência e deixamos a sua cédula encaminhada — o registro pode ficar pronto na sua mesma estadia e a entrega fica com a gente. Se você já voltou ao Brasil, o acompanhamento segue por procuração.</p></div></li>
           </ol>
+          <div class="expediente reveal">
+            <p class="expediente-kicker">Assim é o seu expediente</p>
+            <div class="expediente-doc">
+              <div class="expediente-head"><span><b>Paraways</b> · Cronograma do expediente</span><span>Titular: ____________</span><span>N.º ____ / ____</span></div>
+              <table>
+                <thead><tr><th>Etapa</th><th>Responsável</th><th>Entregável</th><th>Data</th></tr></thead>
+                <tbody>
+                  <tr><td class="etapa"><b>I</b>Documentos</td><td data-l="Responsável">Você, com a nossa orientação — revisão da equipe</td><td data-l="Entregável">Pasta completa e apostilada, revisada antes de viajar</td><td class="fecha" data-l="Data">__ / __ / ____</td></tr>
+                  <tr><td class="etapa"><b>II</b>Apresentação</td><td data-l="Responsável">Advogado da equipe, com você no órgão</td><td data-l="Entregável">Expediente protocolado em Migraciones, com comprovante</td><td class="fecha" data-l="Data">__ / __ / ____</td></tr>
+                  <tr><td class="etapa"><b>III</b>Cédula</td><td data-l="Responsável">Associado dedicado</td><td data-l="Entregável">Inscrição em Identificaciones e entrega coordenada</td><td class="fecha" data-l="Data">__ / __ / ____</td></tr>
+                  <tr><td class="etapa"><b>IV</b>RUC</td><td data-l="Responsável">Contador da equipe</td><td data-l="Entregável">Inscrição na DNIT e senha Marángatu</td><td class="fecha" data-l="Data">__ / __ / ____</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="expediente-note">Maquete do cronograma que você recebe por escrito na avaliação. As datas são definidas com a sua agenda e o ritmo de cada órgão — e avisamos a cada avanço.</p>
+          </div>
           <p class="after-note reveal">E a cédula não é o fim: RUC, contabilidade, obrigações anuais, empresa se o seu projeto pedir — a mesma equipe acompanha você no que vem depois, sem começar do zero com ninguém.</p>
         </div>
       </section>
 
       <section id="equipe" class="statement section">
         <div class="wrap reveal">
+          <span class="marginalia" aria-hidden="true">V</span>
           <p class="eyebrow">A EQUIPE</p>
           <h2>Uma equipe completa,<br />um único <em>processo.</em></h2>
           <p class="statement-note">Seu caso não depende de uma única pessoa: é conduzido por uma equipe que cobre cada frente do processo, com um interlocutor único que informa você a cada avanço.</p>
+          <div class="py-map" aria-hidden="true">
+            <svg viewBox="0 0 900 870">
+              <path class="py-borde" d="M 35 324 C 35 324 63 231 70 205 C 77 179 93 81 105 65 C 117 49 171 51 190 48 C 209 45 275 32 295 33 C 315 34 371 47 390 55 C 409 63 472 102 484 115 C 496 128 502 176 505 190 C 508 204 514 248 515 260 C 516 272 508 304 515 310 C 522 316 566 320 580 320 C 594 320 640 314 655 315 C 670 316 716 327 725 335 C 734 343 740 383 745 395 C 750 407 766 446 775 455 C 784 464 825 485 835 490 C 845 495 872 505 872 505 C 872 505 858 546 855 560 C 852 574 843 636 840 650 C 837 664 832 686 828 695 C 824 704 803 730 795 740 C 787 750 758 780 750 790 C 742 800 721 830 710 835 C 699 840 654 842 640 842 C 626 842 584 832 570 830 C 556 828 513 820 500 820 C 487 820 440 825 440 825 C 440 825 468 780 475 770 C 482 760 504 731 510 720 C 516 709 532 671 535 662 C 538 653 537 628 537 628 C 537 628 469 600 450 590 C 431 580 368 541 350 530 C 332 519 287 491 270 480 C 253 469 197 431 180 420 C 163 409 114 380 100 370 C 86 360 35 324 35 324 Z" />
+              <line class="py-lead" x1="531" y1="636" x2="497" y2="684" />
+              <circle class="py-ring" cx="537" cy="628" r="9" />
+              <circle class="py-asu" cx="537" cy="628" r="6" />
+              <text class="py-coord" x="40" y="702">ASUNCIÓN · 25°16′S · 57°38′O</text>
+            </svg>
+          </div>
           <ul class="team">
             <li><b>Advogados de direito migratório</b> Habilitados em Assunção, responsáveis pela estratégia e por cada protocolo em Migraciones e Identificaciones.</li>
             <li><b>Contadores e compliance tributário</b> Abertura do RUC, regime aplicável e obrigações em dia na DNIT desde o primeiro dia.</li>
@@ -290,6 +334,7 @@
 
       <section id="claro" class="statement section" style="background:#E8E0D1">
         <div class="wrap">
+          <span class="marginalia" aria-hidden="true">VI</span>
           <p class="eyebrow">ANTES DE PAGAR A QUALQUER UM</p>
           <h2 class="reveal">Quatro verdades,<br /><em>de graça.</em></h2>
           <p class="statement-note">Há coisas que você deveria saber de graça, contratando a gente ou não. Começamos por aí.</p>
@@ -303,8 +348,37 @@
         </div>
       </section>
 
+      <section id="para-quem" class="statement section">
+        <div class="wrap">
+          <span class="marginalia" aria-hidden="true">VII</span>
+          <p class="eyebrow">O PERFIL</p>
+          <h2 class="reveal">Para quem é —<br />e para quem <em>não.</em></h2>
+          <p class="statement-note">Nosso trabalho rende com um perfil concreto. Se for o seu, a avaliação confirma; se não for, também dizemos — de graça.</p>
+          <div class="fit-grid reveal">
+            <div class="fit yes">
+              <h3>É para você se…</h3>
+              <ul>
+                <li>Quer residir e operar em regra: residência, cédula, RUC e conta no seu nome.</li>
+                <li>Quer organizar a sua vida fiscal com assessoria nos dois países — o Paraguai e o seu.</li>
+                <li>Vai investir e quer um expediente impecável, apresentado e respondido por um advogado.</li>
+              </ul>
+            </div>
+            <div class="fit no">
+              <h3>Não é para você se…</h3>
+              <ul>
+                <li>Procura um passaporte expresso: residência não é nacionalidade, e não vendemos atalhos.</li>
+                <li>Quer esconder rendimentos ou deixar de declarar no seu país sem sair corretamente do sistema dele.</li>
+                <li>Não pode comparecer pessoalmente em Migraciones: a apresentação é pessoal, e isso ninguém muda.</li>
+              </ul>
+            </div>
+          </div>
+          <p class="statement-note reveal">Se você se reconhece na primeira coluna, escreva para nós. Se na segunda, dizemos com a mesma clareza — e sem custo.</p>
+        </div>
+      </section>
+
       <section id="faq" class="statement section" style="background:var(--paper)">
         <div class="wrap">
+          <span class="marginalia" aria-hidden="true">VIII</span>
           <p class="eyebrow">PERGUNTAS FREQUENTES</p>
           <h2 class="reveal">O que todos perguntam,<br />respondido <em>sem rodeios.</em></h2>
           <div class="faq-list reveal">
@@ -330,7 +404,7 @@
             </details>
             <details>
               <summary>Vocês podem garantir a aprovação?</summary>
-              <p class="faq-a">A decisão final é de Migraciones e de cada banco; ninguém pode garantir isso com seriedade. O que controlamos: que o seu processo entre completo e correto — o que, na prática, evita recusas e atrasos.</p>
+              <p class="faq-a">A decisão final é de Migraciones e de cada banco; ninguém pode garantir isso. O que controlamos: que o seu processo entre completo e correto — o que, na prática, evita recusas e atrasos.</p>
             </details>
             <details>
               <summary>Por que os bancos recusam estrangeiros?</summary>
@@ -338,7 +412,7 @@
             </details>
             <details>
               <summary>Com a residência eu paro de pagar impostos no Brasil?</summary>
-              <p class="faq-a">Não automaticamente — e desconfie de quem disser o contrário. Residência migratória e residência fiscal são coisas diferentes: o Paraguai não tributa a sua renda do exterior, mas o Brasil só deixa de tributar você se a saída fiscal for bem feita — comunicação e declaração de saída definitiva, planejadas com um tributarista de lá. Montamos o lado paraguaio e dizemos com honestidade o que não depende do Paraguai.</p>
+              <p class="faq-a">Não automaticamente — e desconfie de quem disser o contrário. Residência migratória e residência fiscal são coisas diferentes: o Paraguai não tributa a sua renda do exterior, mas o Brasil só deixa de tributar você se a saída fiscal for bem feita — comunicação e declaração de saída definitiva, planejadas com um tributarista de lá. Nós resolvemos a parte paraguaia; o seu tributarista, a do seu país — e dizemos com honestidade que parte não depende do Paraguai.</p>
             </details>
             <details>
               <summary>A residência por investimento é mesmo direta?</summary>
@@ -367,26 +441,74 @@
             <h2>O que se move no Paraguai,<br /><em>medido e explicado.</em></h2>
             <p class="obs-lead">Novidades regulatórias, estatísticas oficiais de Migraciones e sinais econômicos — lidos pela equipe, com fontes. Sem ruído.</p>
           </div>
-          <a class="cta obs-cta" href="/observatorio/">Ler a edição <span>↗</span></a>
+          <a class="cta obs-cta" href="/observatorio/">Ler a edição <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
         </div>
       </section>
 
-      <section id="consulta" class="contact section">
+      <section id="diagnostico" class="statement section">
+        <div class="wrap">
+          <span class="marginalia" aria-hidden="true">IX</span>
+          <p class="eyebrow">DIAGNÓSTICO EM 30 SEGUNDOS · ORIENTATIVO</p>
+          <h2 class="reveal">Três respostas,<br />e a sua <em>via provável.</em></h2>
+          <p class="statement-note">Sem formulários nem dados pessoais: três toques e mostramos por onde costuma ir um caso como o seu. A via definitiva confirmamos na avaliação, por escrito.</p>
+          <div class="diag reveal">
+            <div class="diag-qs">
+              <div class="diag-q" role="group" aria-labelledby="dq1">
+                <p id="dq1"><small>01 · Nacionalidade</small>De onde é o seu passaporte?</p>
+                <div class="diag-opts">
+                  <button type="button" class="diag-opt" data-q="nac" data-v="brasil" aria-pressed="false">Brasil</button>
+                  <button type="button" class="diag-opt" data-q="nac" data-v="mercosur" aria-pressed="false">Argentina, Uruguai ou outro do MERCOSUL</button>
+                  <button type="button" class="diag-opt" data-q="nac" data-v="resto" aria-pressed="false">Resto do mundo</button>
+                </div>
+              </div>
+              <div class="diag-q" role="group" aria-labelledby="dq2">
+                <p id="dq2"><small>02 · Objetivo</small>O que você busca no Paraguai?</p>
+                <div class="diag-opts">
+                  <button type="button" class="diag-opt" data-q="obj" data-v="operar" aria-pressed="false">Residir e operar</button>
+                  <button type="button" class="diag-opt" data-q="obj" data-v="invertir" aria-pressed="false">Residir investindo</button>
+                  <button type="button" class="diag-opt" data-q="obj" data-v="documentos" aria-pressed="false">Só documentação (já tenho residência)</button>
+                </div>
+              </div>
+              <div class="diag-q" role="group" aria-labelledby="dq3">
+                <p id="dq3"><small>03 · Momento</small>Quando quer começar?</p>
+                <div class="diag-opts">
+                  <button type="button" class="diag-opt" data-q="mom" data-v="ahora" aria-pressed="false">Este ano</button>
+                  <button type="button" class="diag-opt" data-q="mom" data-v="calma" aria-pressed="false">Sem pressa</button>
+                </div>
+              </div>
+            </div>
+            <div class="diag-card is-waiting" aria-live="polite">
+              <p class="card-kicker">A SUA VIA PROVÁVEL</p>
+              <p class="diag-wait">Responda às três perguntas e aqui aparece a sua via provável — com o que já publicamos nesta página, sem números novos.</p>
+              <span class="diag-count">0 / 3 respondidas</span>
+              <div class="diag-fill">
+                <p class="diag-via"></p>
+                <ul class="diag-chips"></ul>
+                <ul class="diag-notes"></ul>
+                <div class="diag-actions">
+                  <a class="cta" href="https://wa.me/595993474309" target="_blank" rel="noopener" data-wa-from="diagnostico">Confirmar a minha via pelo WhatsApp <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+                  <button type="button" class="diag-reset">Refazer</button>
+                </div>
+                <p class="diag-fine">Orientativo — a via definitiva confirmamos na avaliação, por escrito e sem custo.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="consulta" class="contact section" data-fab-stop>
         <div class="constellation" aria-hidden="true"></div>
         <div class="wrap">
           <p class="eyebrow gold">AVALIAÇÃO GRATUITA</p>
           <h2 class="reveal">Conte o seu caso.</h2>
           <p class="contact-lead">Sua nacionalidade, seu objetivo e sua data estimada. Respondemos em menos de 48 horas com a viabilidade, a lista de documentos e o orçamento por escrito.</p>
           <div class="contact-options">
-            <a class="whatsapp-link" href="https://wa.me/595993474309" target="_blank" rel="noopener" data-wa-from="contact-pt">WhatsApp Business <span>↗</span></a>
+            <a class="whatsapp-link" href="https://wa.me/595993474309" target="_blank" rel="noopener" data-wa-from="contact-pt">WhatsApp Business <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
             <small>O caminho mais rápido — no seu idioma.</small>
           </div>
           <form id="lead-form">
             <input type="hidden" name="lang" value="pt" />
             <label class="hp-field" aria-hidden="true">Site<input tabindex="-1" autocomplete="off" name="website" /></label>
-            <label>Nome completo<input required name="name" autocomplete="name" maxlength="120" placeholder="Seu nome" /></label>
-            <label>E-mail<input required type="email" name="email" autocomplete="email" maxlength="254" placeholder="nome@empresa.com" /></label>
-            <label>WhatsApp (opcional)<input name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="+55 11 ..." /></label>
             <label>O que você precisa?
               <select required name="interest">
                 <option value="" selected disabled>Selecionar uma opção</option>
@@ -398,8 +520,11 @@
                 <option value="otro">Outro</option>
               </select>
             </label>
+            <label>Nome completo<input required name="name" autocomplete="name" maxlength="120" placeholder="Seu nome" /></label>
+            <label>E-mail<input required type="email" name="email" autocomplete="email" maxlength="254" placeholder="nome@empresa.com" /></label>
+            <label>WhatsApp (opcional)<input name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="+55 11 ..." /></label>
             <label class="full">Conte brevemente<textarea name="message" rows="3" maxlength="2000" placeholder="Sua nacionalidade, objetivo e data estimada..."></textarea></label>
-            <button class="cta" type="submit">Enviar consulta <span>↗</span></button>
+            <div class="form-actions"><button class="cta" type="submit">Enviar consulta <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button><span class="form-note">Respondemos em 48 h</span></div>
             <p id="form-message" role="status"></p>
           </form>
           <p class="form-fallback">Prefere e-mail? <a href="mailto:ricardo@paraways.com">ricardo@paraways.com</a></p>
@@ -418,7 +543,39 @@
       </div>
     </footer>
 
-    <a class="wa-float" href="https://wa.me/595993474309?text=Ol%C3%A1%2C%20quero%20uma%20avalia%C3%A7%C3%A3o%20do%20meu%20caso%20de%20resid%C3%AAncia." target="_blank" rel="noopener" aria-label="Escreva pelo WhatsApp" data-wa-from="float-pt"><svg viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg></a>
+    <a class="fab" href="https://wa.me/595993474309?text=Ol%C3%A1%2C%20quero%20uma%20avalia%C3%A7%C3%A3o%20gratuita%20do%20meu%20caso%20de%20resid%C3%AAncia." target="_blank" rel="noopener" aria-label="Avaliação gratuita pelo WhatsApp" data-wa-from="fab">
+      <span class="fab__shadow"></span><span class="fab__edge"></span>
+      <span class="fab__front">
+        <span class="fab__disc"><svg viewBox="0 0 448 512" aria-hidden="true"><path fill="#fff" d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg></span>
+        <span class="fab__text"><b><span class="fab__full">Avaliação gratuita</span><span class="fab__brief">Avaliação</span></b><small>Respondemos pelo WhatsApp</small></span>
+      </span>
+    </a>
+    <script type="application/json" id="pw-i18n">
+    {
+      "fab": { "text": "Olá, venho da seção {s} do paraways.com e quero uma avaliação gratuita do meu caso." },
+      "sections": { "inicio": "Início", "servicos": "Serviços", "investimento": "Investor Pass", "requisitos": "Requisitos", "processo": "Como trabalhamos", "equipe": "Equipe", "claro": "Antes de pagar a alguém", "para-quem": "Para quem é", "faq": "Perguntas frequentes", "observatorio": "Observatório", "diagnostico": "Diagnóstico" },
+      "diag": {
+        "via": {
+          "operar": { "via": "Residência temporária, <em>regime geral.</em>", "chips": ["1 viagem com agenda coordenada", "4 documentos base", "cédula: inscrição na mesma estadia"] },
+          "invertir": { "via": "Investor Pass: <em>permanente direta.</em>", "chips": ["cédula de 10 anos", "família incluída", "limite legal a partir de USD 70.000"] },
+          "documentos": { "via": "Cédula, RUC e conta, <em>sobre a sua residência.</em>", "chips": ["agendamento em Identificaciones", "inscrição na DNIT", "conta com a cédula em mãos"] }
+        },
+        "nac": {
+          "brasil": "Seus documentos em português são aceitos sem tradução em Migraciones.",
+          "mercosur": "Seus documentos em espanhol vão apostilados no seu país, sem tradução.",
+          "resto": "Seus documentos vão apostilados no seu país e, se não estiverem em espanhol, traduzidos."
+        },
+        "mom": {
+          "ahora": "Começamos pela preparação remota: documentos e apostilas no seu país, antes de viajar.",
+          "calma": "Deixamos com você a lista exata e a ordem. Quando marcar a data, o expediente já está encaminhado."
+        },
+        "wa": "Olá, fiz o diagnóstico no paraways.com — {nac} · {obj} · {mom}. Quero uma avaliação gratuita do meu caso.",
+        "form": "Diagnóstico em 30 segundos: {nac} · {obj} · {mom}.",
+        "interest": { "operar": "residencia", "invertir": "inversion", "documentos": "cedula" },
+        "count": "{n} / 3 respondidas"
+      }
+    }
+    </script>
     <script src="/script.js"></script>
   </body>
 </html>

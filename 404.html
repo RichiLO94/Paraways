@@ -36,6 +36,8 @@
         transition: background 0.3s, transform 0.3s;
       }
       .cta:hover { background: #7A1420; transform: translateY(-2px); }
+      .arw { display: inline-flex; align-items: center; line-height: 0; }
+      .arw svg { width: 14px; height: 14px; display: block; }
       .coords { margin-top: 46px; font: 400 10.5px/1 "JetBrains Mono", monospace; letter-spacing: 0.16em; color: rgba(242, 237, 224, 0.35); }
       @keyframes drift { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(4deg); } }
       @media (prefers-reduced-motion: reduce) { .mark { animation: none; } }
@@ -48,8 +50,8 @@
       <p class="code">ERROR 404 · FUERA DE CARTA</p>
       <h1>Coordenadas<br /><em>no encontradas.</em></h1>
       <p>La página que buscas no está en este mapa. El resto del territorio sigue exactamente donde lo dejamos.</p>
-      <a class="cta" href="/">Volver al inicio <span>↗</span></a>
-      <p class="small"><a href="/pt/" style="color:rgba(242,237,224,.55)">Português</a> · <a href="/en/" style="color:rgba(242,237,224,.55)">English</a> · <a href="/observatorio/" style="color:rgba(242,237,224,.55)">Observatorio</a></p>
+      <a class="cta" href="/">Volver al inicio <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+      <p class="small"><a href="/pt/" style="color:rgba(242,237,224,.55)">Português</a> · <a href="/en/" style="color:rgba(242,237,224,.55)">English</a> · <a href="/fr/" style="color:rgba(242,237,224,.55)">Français</a> · <a href="/observatorio/" style="color:rgba(242,237,224,.55)">Observatorio</a></p>
       <p class="coords">25°16′S · 57°38′O — AQUÍ SÍ HAY MAPA</p>
     </div>
     <script>
