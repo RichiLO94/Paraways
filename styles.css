@@ -12,10 +12,11 @@
   --wine-2: #7A1420;
   --wine-hi: #A81E2B;
   --gold: #B8935A;
-  --gold-ink: #8F6D33;
+  --gold-ink: #7A5C28;
+  --gold-on-wine: #CFAD74;
   --text: #1A1A1A;
   --muted: rgba(26, 26, 26, 0.7);
-  --mute-2: rgba(26, 26, 26, 0.52);
+  --mute-2: rgba(26, 26, 26, 0.65);
   --line: rgba(11, 23, 56, 0.16);
   --line-2: rgba(11, 23, 56, 0.24);
   --ff-display: "Newsreader", Georgia, serif;
@@ -253,10 +254,10 @@ p.lead.line-up { animation-delay: 0.62s; }
   background: repeating-conic-gradient(rgba(242, 237, 224, 0.14) 0 0.3deg, transparent 0.5deg 15deg);
   opacity: 0.65;
 }
-.card-kicker { font: 500 10px var(--ff-mono); letter-spacing: 0.19em; color: var(--gold); position: relative; z-index: 1; margin: 0; }
+.card-kicker { font: 500 10px var(--ff-mono); letter-spacing: 0.19em; color: var(--gold-on-wine); position: relative; z-index: 1; margin: 0; }
 .arrival-card ol { list-style: none; padding: 0; margin: 28px 0 0; position: relative; z-index: 1; }
 .arrival-card li { display: grid; grid-template-columns: 38px 1fr; gap: 12px; padding: 16px 0; border-top: 1px solid rgba(242, 237, 224, 0.24); }
-.arrival-card li span { font: 11px var(--ff-mono); color: var(--gold); }
+.arrival-card li span { font: 11px var(--ff-mono); color: var(--gold-on-wine); }
 .arrival-card strong { font: 500 22px/1.1 var(--ff-display); display: block; }
 .arrival-card small { display: block; color: rgba(242, 237, 224, 0.7); font-size: 12px; margin-top: 5px; }
 
@@ -760,6 +761,10 @@ details[open] .faq-a { animation: faq-open 0.55s var(--ease-out); }
 .arw.down svg { width: 13px; height: 13px; }
 .cta:hover .arw svg, .quiet-link:hover .arw svg, .whatsapp-link:hover .arw svg { transform: translate(2px, -2px); }
 .quiet-link:hover .arw.down svg { transform: translateY(2px); }
+.quiet-link .arw { vertical-align: -2px; }
+
+/* ── El nav fijo sale del contexto de apilamiento del hero: queda encima de todo y recibe clics ── */
+.hero .wrap, .ed-hero .wrap { z-index: auto; }
 
 /* ── Marca radial que se dibuja una vez al cargar, y queda quieta ── */
 svg.brand-mark { animation: none; overflow: visible; }
@@ -802,10 +807,10 @@ svg.brand-mark circle { stroke-dasharray: 32; stroke-dashoffset: 32; animation: 
   z-index: 60; display: block;
   border: 0; border-radius: 999px; background: transparent;
   cursor: pointer; -webkit-tap-highlight-color: transparent;
-  opacity: 0; transform: translateY(12px); pointer-events: none;
-  transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+  opacity: 0; transform: translateY(12px); pointer-events: none; visibility: hidden;
+  transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out), visibility 0s linear 0.4s;
 }
-.fab.is-visible:not(.is-hidden) { opacity: 1; transform: none; pointer-events: auto; }
+.fab.is-visible:not(.is-hidden):not(.is-yield) { opacity: 1; transform: none; pointer-events: auto; visibility: visible; transition-delay: 0s; }
 .fab__shadow, .fab__edge { position: absolute; inset: 0; border-radius: 999px; }
 .fab__shadow {
   transform: translateY(2px);
@@ -843,7 +848,7 @@ svg.brand-mark circle { stroke-dasharray: 32; stroke-dashoffset: 32; animation: 
 .fab.is-compact .fab__full, .fab.is-compact .fab__text small { display: none; }
 .fab.is-compact .fab__brief { display: inline; }
 .fab.is-compact .fab__text { max-width: 110px; }
-.fab.is-visible.pulse .fab__front { animation: fab-pulse 1.4s ease-in-out 2; }
+.fab.pulse .fab__front { animation: fab-pulse 1.4s ease-in-out 0.4s 2; }
 @keyframes fab-pulse { 50% { transform: translateY(-7px); } }
 .fab:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
 @media (prefers-reduced-motion: reduce) {
@@ -896,7 +901,7 @@ svg.brand-mark circle { stroke-dasharray: 32; stroke-dashoffset: 32; animation: 
 
 /* ── Así se ve tu expediente (maqueta del entregable) ───────── */
 .expediente { grid-column: 1 / -1; margin-top: 46px; }
-.expediente-kicker {
+.expediente .expediente-kicker {
   font: 500 10px/1.4 var(--ff-mono); letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--gold-ink); margin: 0 0 14px;
 }
@@ -928,7 +933,7 @@ svg.brand-mark circle { stroke-dasharray: 32; stroke-dashoffset: 32; animation: 
 .expediente td.etapa { font: 500 16.5px/1.25 var(--ff-display); color: var(--text); white-space: nowrap; }
 .expediente td.etapa b { color: var(--wine); font-weight: 500; margin-right: 10px; }
 .expediente td.fecha { font: 500 12px/1.5 var(--ff-mono); letter-spacing: 0.1em; color: var(--gold-ink); white-space: nowrap; }
-.expediente-note { margin: 14px 0 0; font-size: 12.5px; line-height: 1.55; color: var(--mute-2); max-width: 640px; }
+.expediente .expediente-note { margin: 14px 0 0; font-size: 12.5px; line-height: 1.55; color: var(--mute-2); max-width: 640px; }
 @media (max-width: 720px) {
   .expediente table, .expediente tbody, .expediente tr, .expediente td { display: block; }
   .expediente thead { display: none; }
@@ -1003,7 +1008,7 @@ svg.brand-mark circle { stroke-dasharray: 32; stroke-dashoffset: 32; animation: 
 }
 .diag-card.is-waiting { background: transparent; color: var(--text); border: 1px dashed rgba(11, 23, 56, 0.35); box-shadow: none; }
 .diag-card .card-kicker { color: var(--gold-ink); }
-.diag-card:not(.is-waiting) .card-kicker { color: var(--gold); }
+.diag-card:not(.is-waiting) .card-kicker { color: var(--gold-on-wine); }
 .diag-wait { margin: 16px 0 0; font-size: 14.5px; line-height: 1.6; color: var(--muted); max-width: 380px; }
 .diag-count { display: block; margin-top: 18px; font: 500 11px/1 var(--ff-mono); letter-spacing: 0.16em; color: var(--gold-ink); }
 .diag-fill { display: none; }

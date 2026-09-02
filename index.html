@@ -25,7 +25,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/styles.css" />
-    <noscript><style>.reveal, .hero .line span { opacity: 1; transform: none; filter: none; } .umbral .umbral-bar i { width: var(--w); }</style></noscript>
+    <noscript><style>.reveal, .hero .line span { opacity: 1; transform: none; filter: none; } .umbral .umbral-bar i { width: var(--w); } h1 em::after, h2 em::after { transform: scaleX(1); } .glifo { display: none; }</style></noscript>
     <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
     <script defer src="/_vercel/insights/script.js"></script>
     <script type="application/ld+json">
@@ -49,6 +49,7 @@
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
+      "inLanguage": "es",
       "mainEntity": [
         {
           "@type": "Question",
@@ -506,6 +507,7 @@
             <small>La vía más rápida — en tu idioma.</small>
           </div>
           <form id="lead-form">
+            <input type="hidden" name="lang" value="es" />
             <label class="hp-field" aria-hidden="true">Sitio web<input tabindex="-1" autocomplete="off" name="website" /></label>
             <label>¿Qué necesitas?
               <select required name="interest">
@@ -554,7 +556,7 @@
       "sections": { "inicio": "Inicio", "servicios": "Servicios", "inversion": "Investor Pass", "requisitos": "Requisitos", "proceso": "Cómo trabajamos", "equipo": "Equipo", "claro": "Antes de pagarle a nadie", "para-quien": "Para quién es", "faq": "Preguntas frecuentes", "observatorio": "Observatorio", "diagnostico": "Diagnóstico" },
       "diag": {
         "via": {
-          "operar": { "via": "Residencia temporaria, <em>régimen general.</em>", "chips": ["1 viaje con agenda coordinada", "4 documentos base", "cédula: inscripción en la misma estadía"] },
+          "operar": { "via": "Residencia temporaria, <em>régimen general.</em>", "chips": ["1 viaje con agenda coordinada", "4 documentos base", "cédula: inscripción posible en la misma estadía"] },
           "invertir": { "via": "Investor Pass: <em>permanente directa.</em>", "chips": ["cédula de 10 años", "familia incluida", "umbral legal desde USD 70.000"] },
           "documentos": { "via": "Cédula, RUC y cuenta, <em>sobre tu residencia.</em>", "chips": ["turno en Identificaciones", "inscripción en la DNIT", "cuenta con la cédula en mano"] }
         },

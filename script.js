@@ -89,6 +89,7 @@ form?.addEventListener('submit', (event) => {
   const data = Object.fromEntries(new FormData(form).entries());
 
   submit.disabled = true;
+  submit.style.minWidth = `${submit.getBoundingClientRect().width}px`; /* el botón no se encoge mientras envía */
   submit.textContent = formText.sending;
   message.textContent = '';
   message.classList.remove('ok');
@@ -111,6 +112,7 @@ form?.addEventListener('submit', (event) => {
     })
     .finally(() => {
       submit.disabled = false;
+      submit.style.minWidth = '';
       submit.innerHTML = submitHTML;
     });
 });
@@ -200,10 +202,13 @@ document.querySelectorAll('.glifo').forEach((svg) => {
 /* ── Nav de vidrio líquido ─────────────────────────────────── */
 const topNav = document.querySelector('.top-nav');
 if (topNav) {
+  const navHost = topNav.parentElement;
   let glassOn = false;
   const glassToggle = () => {
     const on = window.scrollY > window.innerHeight * 1.15;
     if (on !== glassOn) {
+      /* Reserva el alto que el nav ocupaba en flujo (medido antes de fijarlo) para que la página no salte. */
+      navHost.style.paddingTop = on ? `${topNav.offsetHeight}px` : '';
       glassOn = on;
       topNav.classList.toggle('is-glass', on);
     }
@@ -363,9 +368,7 @@ if (!reducedMotion) {
   const onShow = () => {
     if (!pulsed) {
       pulsed = true;
-      fab.addEventListener('transitionend', (e) => {
-        if (e.propertyName === 'opacity') fab.classList.add('pulse');
-      }, { once: true });
+      fab.classList.add('pulse'); /* dos pulsos, una sola vez por visita; el CSS espera el fade-in */
     }
     if (!compactTimer && matchMedia('(max-width: 720px)').matches) {
       compactTimer = setTimeout(() => fab.classList.add('is-compact'), 4000);
@@ -391,6 +394,16 @@ if (!reducedMotion) {
     new IntersectionObserver(([e]) => {
       fab.classList.toggle('is-hidden', e.isIntersecting);
     }, { rootMargin: '0px 0px -30% 0px', threshold: 0 }).observe(stop);
+  }
+  /* En móvil, el FAB cede el paso a los CTAs con los que compite en pantalla. */
+  if (matchMedia('(max-width: 720px)').matches) {
+    const yielding = new Set();
+    document.querySelectorAll('.diag-actions, .ip-actions').forEach((el) => {
+      new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) yielding.add(el); else yielding.delete(el);
+        fab.classList.toggle('is-yield', yielding.size > 0);
+      }, { threshold: 0 }).observe(el);
+    });
   }
 
   /* El mensaje prellenado nombra la sección desde la que se escribe. */
@@ -438,14 +451,31 @@ if (!reducedMotion) {
     opts.forEach((o) => o.setAttribute('aria-pressed', state[o.dataset.q] === o.dataset.v ? 'true' : 'false'));
   };
 
+  const formFields = () => (leadForm
+    ? [leadForm.querySelector('select[name="interest"]'), leadForm.querySelector('textarea[name="message"]')]
+    : [null, null]);
+  /* Solo escribe sobre campos vacíos o sobre lo que el propio diagnóstico escribió antes; nunca pisa texto del usuario. */
   const prefillForm = () => {
-    if (!leadForm) return;
-    const select = leadForm.querySelector('select[name="interest"]');
-    const area = leadForm.querySelector('textarea[name="message"]');
+    const [select, area] = formFields();
     const interest = (i18n.interest || {})[state.obj];
-    if (select && interest && !select.value) select.value = interest;
-    if (area && i18n.form && !area.value.trim()) area.value = fill(i18n.form);
+    if (select && interest && (!select.value || select.value === select.dataset.pwDiag)) {
+      select.value = interest;
+      select.dataset.pwDiag = interest;
+    }
+    if (area && i18n.form) {
+      const txt = fill(i18n.form);
+      if (!area.value.trim() || area.value === area.dataset.pwDiag) {
+        area.value = txt;
+        area.dataset.pwDiag = txt;
+      }
+    }
   };
+  const clearPrefill = () => {
+    const [select, area] = formFields();
+    if (select && select.value === select.dataset.pwDiag) { select.value = ''; delete select.dataset.pwDiag; }
+    if (area && area.value === area.dataset.pwDiag) { area.value = ''; delete area.dataset.pwDiag; }
+  };
+  let completed = false;
 
   const render = (announce) => {
     const answered = ['nac', 'obj', 'mom'].filter((q) => state[q]).length;
@@ -466,7 +496,10 @@ if (!reducedMotion) {
     card.classList.remove('is-waiting');
     prefillForm();
     if (announce) {
-      track('diag_complete', `${state.nac}-${state.obj}-${state.mom}`);
+      if (!completed) {
+        completed = true;
+        track('diag_complete', `${state.nac}-${state.obj}-${state.mom}`);
+      }
       if (matchMedia('(max-width: 900px)').matches && !reducedMotion) {
         card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
@@ -483,6 +516,8 @@ if (!reducedMotion) {
   root.querySelector('.diag-reset')?.addEventListener('click', () => {
     delete state.nac; delete state.obj; delete state.mom;
     clear();
+    clearPrefill();
+    completed = false;
     syncButtons();
     render(false);
     root.querySelector('.diag-opt')?.focus();
