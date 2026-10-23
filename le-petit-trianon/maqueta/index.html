@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Le Petit Trianon</title>
+    <meta name="description" content="Maqueta 3D interactiva del fraccionamiento Le Petit Trianon en San Bernardino: siete lotes sobre el plano de la arquitecta, calle empedrada, portón y casa modelo. Prototipo de Paraways." />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="ui.css" />
+    <style>
+      html, body { margin: 0; height: 100%; background: #F2EDE0; overflow: hidden; -webkit-font-smoothing: antialiased; }
+      #escena { position: fixed; inset: 0; width: 100% !important; height: 100% !important; display: block; outline: none; }
+      noscript p { font: 15px/1.6 Inter, Arial, sans-serif; color: #1A1A1A; padding: 24px; }
+    </style>
+  </head>
+  <body>
+    <noscript><p>La maqueta 3D necesita JavaScript. Escríbenos por WhatsApp al <a href="https://wa.me/595993474309?text=Hola%2C%20quiero%20la%20ficha%20del%20desarrollo%20Le%20Petit%20Trianon%20(San%20Bernardino)." rel="noopener">+595 993 474 309</a> y te enviamos la ficha del desarrollo.</p></noscript>
+    <script src="three.min.js"></script>
+    <script type="importmap">{ "imports": { "three": "./addons/three.js" } }</script>
+    <script type="module" src="post.js"></script>
+    <script src="data.js"></script>
+    <script src="terrain.js"></script>
+    <script src="textures.js"></script>
+    <script src="vegetation.js"></script>
+    <script src="architecture.js"></script>
+    <script src="environment.js"></script>
+    <script src="ui.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

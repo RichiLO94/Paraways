@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="robots" content="noindex" />
+<title>textures · muestrario</title>
+<style>html,body{margin:0;height:100%;background:#F2EDE0;overflow:hidden}canvas{display:block}#hud{position:fixed;left:12px;top:10px;font:12px monospace;color:#6B1018;background:rgba(242,237,224,.85);padding:4px 8px;white-space:pre}</style>
+</head>
+<body>
+<div id="hud"></div>
+<script src="../three.min.js"></script>
+<script src="../textures.js"></script>
+<script>
+/* Muestrario aislado de PW.textures (no usa data.js ni terrain.js).
+   Uso: textures-test.html?night=0|1&rep=1&view=grid|close&quality=high|low
+   grid: todas las texturas en losas de 4×4 (rep repeticiones) + un cubo por textura, luz rasante para ver el relieve.
+   close: una sola textura (?name=cobble) en una losa grande con la cámara cerca. */
+(function () {
+  const q = new URLSearchParams(location.search);
+  const night = q.get('night') === '1', rep = +(q.get('rep') || 1), view = q.get('view') || 'grid';
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); renderer.setSize(innerWidth, innerHeight);
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
+  document.body.appendChild(renderer.domElement);
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(night ? 0x0B1738 : 0xDCE6EC);
+  const camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, 0.1, 200);
+  const sun = new THREE.DirectionalLight(night ? 0x5a6a9a : 0xFFE8C8, night ? 0.3 : 2.2); sun.position.set(-18, 14, 12); sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048); const sc = sun.shadow.camera; sc.left = -30; sc.right = 30; sc.top = 30; sc.bottom = -30; sc.near = 1; sc.far = 80; scene.add(sun);
+  scene.add(new THREE.HemisphereLight(night ? 0x24304f : 0xCFE2F3, night ? 0x0b1738 : 0x6b7a4a, night ? 0.35 : 0.9));
+  if (night) { const lamp = new THREE.PointLight(0xFFD9A0, 60, 40, 1.6); lamp.position.set(0, 9, 4); scene.add(lamp); }
+
+  const ctx = { THREE, scene, camera, renderer, quality: q.get('quality') || 'high', night };
+  const times = {};
+  window.PW_READY = (async () => {
+    const t0 = performance.now(); const tx = PW.textures.build(ctx); const tb = performance.now() - t0;
+    const names = q.get('name') ? [q.get('name')] : PW.textures.names;
+    const cols = 5, gap = 5.2, size = 4;
+    names.forEach((name, i) => {
+      const t1 = performance.now();
+      const c = i % cols, r = Math.floor(i / cols), x = (c - (cols - 1) / 2) * gap, z = (r - 1) * gap;
+      if (view === 'close') {
+        const slab = new THREE.Mesh(new THREE.PlaneGeometry(12, 12), tx.material(name, { repeat: [rep * 2, rep * 2], color: name === 'water' ? 0x4FA3C7 : 0xffffff }));
+        slab.rotation.x = -Math.PI / 2; slab.receiveShadow = true; scene.add(slab);
+        const cube = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), tx.material(name, { repeat: [rep, rep], color: name === 'water' ? 0x4FA3C7 : 0xffffff }));
+        cube.position.set(3.5, 1.5, 1.5); cube.castShadow = true; cube.receiveShadow = true; scene.add(cube);
+      } else {
+        const slab = new THREE.Mesh(new THREE.PlaneGeometry(size, size), tx.material(name, { repeat: [rep, rep], color: name === 'water' ? 0x4FA3C7 : 0xffffff }));
+        slab.rotation.x = -Math.PI / 2; slab.position.set(x, 0, z); slab.receiveShadow = true; scene.add(slab);
+        const cube = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 1.2), tx.material(name, { repeat: [rep * 0.3, rep * 0.3], color: name === 'water' ? 0x4FA3C7 : 0xffffff }));
+        cube.position.set(x + 1.3, 0.6, z + 1.3); cube.castShadow = true; cube.receiveShadow = true; scene.add(cube);
+        const tag = PW.textures.textSprite(THREE, name + (tx.bump(name) ? ' +bump' : tx.normal(name) ? ' +normal' : ''), { font: 'mono', size: 36, weight: 600, color: '#F2EDE0', bg: '#6B1018', padding: 10, radius: 8, height: 0.55 });
+        tag.position.set(x - 0.6, 1.5, z + 1.6); scene.add(tag);
+      }
+      times[name] = Math.round(performance.now() - t1);
+    });
+    /* muestras de texto: serif, sans, mono, con y sin fondo, con halo */
+    if (view === 'grid') {
+      const s1 = PW.textures.textSprite(THREE, 'Le Petit Trianon', { font: 'serif', size: 72, weight: 600, color: '#6B1018', height: 1.1 }); s1.position.set(-6, 3.2, -8); scene.add(s1);
+      const s2 = PW.textures.textSprite(THREE, 'San Bernardino · Ruta II', { font: 'sans', size: 48, color: '#F2EDE0', bg: '#0B1738', border: '#B8935A', borderWidth: 2, padding: 18, radius: 14, height: 0.9 }); s2.position.set(4, 3.2, -8); scene.add(s2);
+      const s3 = PW.textures.textSprite(THREE, '727,03 m²', { font: 'mono', size: 48, color: '#1A1A1A', stroke: '#F2EDE0', strokeWidth: 6, height: 0.8 }); s3.position.set(11, 3.2, -8); scene.add(s3);
+      const pl = PW.textures.textPlane(THREE, 'LE PETIT TRIANON', { font: 'serif', size: 64, weight: 600, color: '#F2EDE0', bg: '#0B1738', letterSpacing: 6, border: '#B8935A', borderWidth: 2, padding: 24, radius: 6, width: 5 });
+      pl.position.set(-8.5, 1.2, 6.5); pl.rotation.y = 0.5; scene.add(pl);
+    }
+    if (view === 'close') { camera.position.set(-2, 7, 9); camera.lookAt(0.5, 0, 0); }
+    else { camera.position.set(0, 17, 21); camera.lookAt(0, 0, -1.5); }
+    document.getElementById('hud').textContent = 'build ' + Math.round(tb) + ' ms · ' + JSON.stringify(times);
+    return tx;
+  })();
+  let last = performance.now(), tx = null; window.PW_READY.then(t => { tx = t; });
+  function loop() { const now = performance.now(), dt = (now - last) / 1000; last = now; if (tx) tx.update(dt, now / 1000); renderer.render(scene, camera);
+    document.getElementById('hud').textContent += ''; requestAnimationFrame(loop); }
+  loop();
+})();
+</script>
+</body>
+</html>

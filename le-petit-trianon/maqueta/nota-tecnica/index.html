@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nota técnica · Le Petit Trianon</title>
+    <meta name="robots" content="noindex" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" />
+    <style>
+      :root { --bordo: #6B1018; --marfil: #F2EDE0; --marfil2: #F8F4E8; --oro: #B8935A; --oroTinta: #7A5C28; --tinta: #1A1A1A; --gris: #5E5A52; --linea: rgba(107, 16, 24, 0.18); }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; background: var(--marfil); color: var(--tinta); font: 16px/1.6 Inter, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+      main { max-width: 860px; margin: 0 auto; padding: 48px 20px 80px; }
+      h1, h2, h3 { font-family: Newsreader, Georgia, "Times New Roman", serif; font-weight: 500; color: var(--bordo); letter-spacing: -0.01em; }
+      h1 { font-size: 40px; line-height: 1.1; margin: 8px 0 6px; }
+      h2 { font-size: 26px; margin: 44px 0 10px; }
+      h3 { font-size: 19px; margin: 22px 0 6px; color: var(--oroTinta); }
+      .kicker { font: 500 12px/1 "JetBrains Mono", ui-monospace, monospace; letter-spacing: 0.14em; text-transform: uppercase; color: var(--oroTinta); }
+      .lead { font-size: 19px; color: #2E2A24; }
+      p { margin: 10px 0; }
+      table { width: 100%; border-collapse: collapse; margin: 14px 0 6px; font-size: 15px; }
+      th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--linea); vertical-align: top; }
+      th { font: 500 12px/1.3 "JetBrains Mono", ui-monospace, monospace; letter-spacing: 0.08em; text-transform: uppercase; color: var(--oroTinta); }
+      td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 14px; }
+      td.mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 14px; }
+      .nota { background: var(--marfil2); border-left: 3px solid var(--oro); padding: 12px 16px; margin: 16px 0; }
+      a { color: var(--bordo); }
+      .volver { display: inline-block; margin-bottom: 28px; font: 500 13px/1 "JetBrains Mono", ui-monospace, monospace; letter-spacing: 0.06em; text-decoration: none; border: 1px solid var(--linea); padding: 10px 14px; border-radius: 999px; color: var(--bordo); background: var(--marfil2); }
+      figure { margin: 18px 0; }
+      figure img { width: 100%; height: auto; display: block; border-radius: 6px; border: 1px solid var(--linea); background: #fff; }
+      figcaption { font: 500 12px/1.5 "JetBrains Mono", ui-monospace, monospace; color: var(--gris); margin-top: 8px; letter-spacing: 0.02em; }
+      .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      dl.datos { display: grid; grid-template-columns: max-content 1fr; gap: 6px 18px; margin: 12px 0; font-size: 15px; }
+      dl.datos dt { font: 500 12px/1.6 "JetBrains Mono", ui-monospace, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--oroTinta); }
+      dl.datos dd { margin: 0; }
+      .firma { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--linea); color: var(--gris); font-size: 14px; }
+      @media (max-width: 640px) { h1 { font-size: 32px; } th, td { padding: 8px 6px; } .dos { grid-template-columns: 1fr; } dl.datos { grid-template-columns: 1fr; gap: 2px; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="volver" href="../">Abrir la maqueta</a> <a class="volver" href="/le-petit-trianon/">Página del desarrollo</a>
+      <div class="kicker">Nota técnica · Le Petit Trianon</div>
+      <h1>Cómo se construyó esta maqueta</h1>
+      <p class="lead">La maqueta une dos documentos: el <strong>plano de fraccionamiento de la arquitecta</strong> (calle, lotes, portón, casa modelo) y el <strong>plano de ubicación georreferenciado del título</strong>, medido con GNSS en tiempo real por un ingeniero en ciencias geográficas matriculado el 5 de junio de 2026. El límite del predio es el medido, al centímetro; el trazado interior es el de la arquitecta, sin redibujar nada a ojo.</p>
+
+      <h2>1. El límite del predio: mensura georreferenciada</h2>
+      <p>El plano de mensura, firmado por un ingeniero en ciencias geográficas matriculado (plano 1/1, escala 1:1.000, para asignación de cuenta corriente catastral), fija cuatro vértices con coordenadas UTM y confirma las seis cotas del título. Los dos vértices del quiebre, que el plano no tabula, se deducen de la geometría: el lado de 40 m y el de 60 m son paralelos al lindero de 100 m, y el quiebre de 30 m es paralelo al frente. Con esa construcción el lado deducido mide exactamente 60,00 m y la superficie resultante es 5.468,82 m², contra 5.468,8157 m² del título: una diferencia total de 45 cm² sobre todo el predio.</p>
+      <dl class="datos">
+        <dt>Inmueble</dt><dd>Fracción C</dd>
+        <dt>Ubicación</dt><dd>Pirayu'i · Distrito de San Bernardino · Departamento de Cordillera</dd>
+        <dt>Superficie</dt><dd>5.468 m² 8.157 cm² (título)</dd>
+        <dt>Sistema</dt><dd>Proyección UTM · Datum WGS84 · Zona 21 J Sur</dd>
+        <dt>Medición</dt><dd>Receptor GNSS (GPS) TOKNAV T10 PRO · precisión milimétrica según el rótulo del plano · tiempo real cinemática (RTK)</dd>
+        <dt>Profesional</dt><dd>Un ingeniero en ciencias geográficas matriculado (registro MOPC y CSJ)</dd>
+        <dt>Fecha</dt><dd>05-06-2026</dd>
+        <dt>Centro del predio</dt><dd class="mono">25°19′59,5″ S · 57°15′24,2″ O (UTM E 474.163,3 · N 7.198.134,0)</dd>
+        <dt>Orientación</dt><dd>El frente (vértice 2 → a) tiene azimut de cuadrícula 54,06° (UTM 21S; el norte verdadero difiere unos 0,1° por la convergencia de meridianos). En la maqueta ese norte se muestra con la rosa de los vientos junto a la ruta y rige la posición del sol.</dd>
+      </dl>
+      <table>
+        <thead><tr><th>Vértice</th><th class="num">Este (m)</th><th class="num">Norte (m)</th><th>Origen</th></tr></thead>
+        <tbody>
+          <tr><td>2 (esquina frente / camino vecinal)</td><td class="num">474.161,7984</td><td class="num">7.198.081,1396</td><td>medido</td></tr>
+          <tr><td>a (esquina frente / fracción B)</td><td class="num">474.222,5228</td><td class="num">7.198.125,1572</td><td>medido</td></tr>
+          <tr><td>b (fondo / fracción B)</td><td class="num">474.143,3880</td><td class="num">7.198.186,2939</td><td>medido</td></tr>
+          <tr><td>c (fondo / lindero oeste)</td><td class="num">474.106,9534</td><td class="num">7.198.159,8833</td><td>medido</td></tr>
+          <tr><td>quiebre 1 (fin del lado de 40 m)</td><td class="num">474.130,144</td><td class="num">7.198.105,594</td><td>deducido</td></tr>
+          <tr><td>quiebre 2 (fin del lado de 30 m)</td><td class="num">474.154,434</td><td class="num">7.198.123,201</td><td>deducido</td></tr>
+        </tbody>
+      </table>
+      <div class="dos">
+        <figure><img src="../mensura-plano.jpg" alt="Plano de ubicación georreferenciado del título: dibujo del predio y tabla de coordenadas, 05-06-2026" /><figcaption>Plano de ubicación georreferenciado del título (fotografía del original, norte arriba: dibujo y tabla de coordenadas).</figcaption></figure>
+        <figure><img src="../mensura-satelite.jpg" alt="Recuadro satelital del plano con el polígono del predio" /><figcaption>Recuadro satelital del mismo plano: el polígono del predio sobre la ruta, con el quiebre hacia el oeste.</figcaption></figure>
+      </div>
+      <div class="nota">Linderos según la mensura: frente y lado oeste del tramo de 40 m sobre camino vecinal (el frente es la ruta San Bernardino – Pirayú en el plano de la arquitecta); el quiebre y el lado de 60 m lindan con las fracciones D, E, F y G; el fondo da a otro camino vecinal; el lindero de 100 m es la fracción B, “derechos del vendedor” en el plano de la arquitecta.</div>
+
+      <h2>2. Del plano de la arquitecta al modelo</h2>
+      <p>El plano de la arquitecta se leyó como dibujo vectorial, no como imagen. Cada línea se convirtió a metros con una única transformación uniforme (misma escala en los dos ejes), de modo que las proporciones del dibujo se conservan. Luego el contorno del predio se reemplazó por el polígono medido y la calle, las veredas y las líneas divisorias de lotes se mantuvieron en su posición exacta en metros. El dibujo original se conserva como capa base (visible en la vista Plano), ajustado al límite medido con una deformación suave que solo afecta al dibujo, no a la geometría. En esa capa se omiten los rótulos de texto exteriores del dibujo (el nombre de la ruta bajo el frente y la leyenda del lindero este), que quedaban encimados con los de la maqueta.</p>
+      <table>
+        <thead><tr><th>Lado</th><th class="num">Título y mensura</th><th class="num">Dibujo de la arquitecta</th><th class="num">Diferencia del dibujo</th></tr></thead>
+        <tbody>
+          <tr><td>Frente sobre la ruta (2 → a)</td><td class="num">75,00 m</td><td class="num">73,59 m</td><td class="num">−1,41 m</td></tr>
+          <tr><td>Camino vecinal, tramo sur (2 → quiebre 1)</td><td class="num">40,00 m</td><td class="num">43,85 m</td><td class="num">+3,85 m</td></tr>
+          <tr><td>Quiebre hacia el este</td><td class="num">30,00 m</td><td class="num">30,29 m</td><td class="num">+0,29 m</td></tr>
+          <tr><td>Lindero oeste, tramo norte (quiebre 2 → c)</td><td class="num">60,00 m</td><td class="num">55,72 m</td><td class="num">−4,28 m</td></tr>
+          <tr><td>Fondo (c → b)</td><td class="num">45,00 m</td><td class="num">43,44 m</td><td class="num">−1,56 m</td></tr>
+          <tr><td>Lindero este, fracción B (b → a)</td><td class="num">100,00 m</td><td class="num">99,88 m</td><td class="num">−0,12 m</td></tr>
+        </tbody>
+      </table>
+      <div class="nota">El dibujo de la arquitecta ubica el quiebre unos 3,7 m más al fondo que la mensura y acorta el frente 1,4 m. Los ángulos coinciden (73,6° en el vértice a, 106,4° en b). Con el límite medido, el polígono cierra exacto y las superficies de los lotes se acercan a la tabla de la arquitecta, como muestra el punto 3.</div>
+
+      <h2>3. Superficies de los lotes</h2>
+      <p>Por indicación de la arquitecta, la superficie de cada lote que muestra la maqueta es la calculada sobre la mensura georreferenciada: la que queda al recortar las líneas divisorias de su plano sobre el límite medido del predio. La columna “plano de fraccionamiento” recoge la tabla original de la arquitecta, dibujada antes de la mensura, como referencia.</p>
+      <table>
+        <thead><tr><th>Lote</th><th class="num">Plano de fraccionamiento</th><th class="num">Sobre la mensura (maqueta)</th><th class="num">Frente a la calle</th></tr></thead>
+        <tbody>
+          <tr><td>1 (casa modelo)</td><td class="num">723,03 m²</td><td class="num">726,28 m²</td><td class="num">≈ 21,8 m</td></tr>
+          <tr><td>2</td><td class="num">539,00 m²</td><td class="num">549,20 m²</td><td class="num">≈ 17,5 m</td></tr>
+          <tr><td>3</td><td class="num">618,44 m²</td><td class="num">633,90 m²</td><td class="num">≈ 19,9 m</td></tr>
+          <tr><td>4</td><td class="num">400,00 m²</td><td class="num">399,46 m²</td><td class="num">≈ 23,6 m</td></tr>
+          <tr><td>5</td><td class="num">380,41 m²</td><td class="num">419,90 m²</td><td class="num">≈ 23,7 m</td></tr>
+          <tr><td>6</td><td class="num">511,84 m²</td><td class="num">497,34 m²</td><td class="num">≈ 23,3 m</td></tr>
+          <tr><td>7</td><td class="num">500,00 m²</td><td class="num">491,55 m²</td><td class="num">≈ 15,8 m</td></tr>
+        </tbody>
+      </table>
+      <div class="nota">Las superficies calculadas sobre la mensura son las que muestran la ficha y los rótulos de la maqueta; el plano de fraccionamiento se ajustará a la mensura [a confirmar con la arquitecta].</div>
+      <p>La suma de los siete lotes sobre la mensura es 3.717,63 m² (3.672,72 m² en el plano de fraccionamiento); el resto del predio son la calle con sus veredas, el área verde del frente, la franja de tacuaras del fondo y el portón.</p>
+
+      <h2>4. Lo que la maqueta no inventa</h2>
+      <p>La calle empedrada, el ancho de veredas, el portón con casilla de portero, la franja de tacuaras del fondo, el área verde del frente, la casa modelo del lote 1 y su pileta están donde el plano de la arquitecta los dibuja. La casa modelo se muestra de una sola planta, con losa plana, cochera abierta y galería de acceso, como en el render de la arquitecta; sus fachadas, aberturas y materiales son una interpretación ilustrativa de ese render, no un proyecto ejecutivo. Los dos árboles existentes que el plano marca dentro de la calzada se conservan en su lugar, con una isleta con cordón alrededor, como dibuja la arquitecta. El volumen de la cochera de la casa modelo se recortó 1,1 m para no cruzar la divisoria con el lote 2, según la divisoria del plano de la arquitecta. Los demás árboles, cercos y luminarias son ambientación: se colocaron con criterio paisajístico (lapachos rosados sobre la calle, palmeras en el acceso, cercos vivos entre lotes) y no forman parte del plano.</p>
+      <p>La pendiente del terreno es ilustrativa (una subida suave hacia el fondo); no hay relevamiento altimétrico. La luz de la maqueta sigue el norte medido: al mediodía el sol está al norte y las sombras caen hacia la ruta, como en el lugar.</p>
+      <p>En las vistas Maqueta y Plano el predio se muestra como maqueta de mesa sobre una página marfil (medianoche de noche), con la ruta y el camino vecinal como borde de la losa; el entorno completo aparece en las vistas Ruta, Lote y Dron.</p>
+
+      <h2>5. Cómo se usa</h2>
+      <p>Pasa el mouse por un lote para resaltarlo y haz clic para abrir su ficha. Con el teclado: los números 1 a 7 seleccionan un lote, las flechas pasan al siguiente y Escape cierra. V cambia de vista (maqueta, plano, ruta, lote, dron), L cambia la luz (día, atardecer, noche), T cambia la vegetación (parque o bosque), C muestra las cotas, P alterna el modo plano, R vuelve al inicio y ? abre la ayuda. En el celular: arrastrar gira, dos dedos acercan y desplazan, tocar un lote lo selecciona.</p>
+
+      <div class="firma">Maqueta preparada por el equipo de Paraways sobre el plano de la arquitecta del proyecto y el plano de ubicación georreferenciado del título. Consultas por WhatsApp al <a href="https://wa.me/595993474309?text=Hola%2C%20le%C3%AD%20la%20nota%20t%C3%A9cnica%20de%20la%20maqueta%20de%20Le%20Petit%20Trianon%20(San%20Bernardino)%20y%20quiero%20saber%20m%C3%A1s." target="_blank" rel="noopener">+595 993 474 309</a>.</div>
+    </main>
+  </body>
+</html>

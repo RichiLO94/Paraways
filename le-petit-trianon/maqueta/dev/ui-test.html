@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="robots" content="noindex" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>ui-test · Le Petit Trianon</title>
+<link rel="stylesheet" href="../ui.css" />
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #F2EDE0; }
+  /* fondo que simula el canvas 3D: captura previa de la app (solo para la prueba) */
+  #escena { position: fixed; inset: 0; background: #8FAE62 center / cover no-repeat; }
+</style>
+</head>
+<body>
+<div id="escena" aria-hidden="true"></div>
+<script src="../data.js"></script>
+<script src="../ui.js"></script>
+<script>
+/* Prueba aislada de PW.ui: ui-test.html?sel=3&view=maqueta&light=atardecer&bg=../out/app-v5-dia.png&hover=2&help=1&loading=.6&nowebgl=1&toast=1
+   Los handlers solo hacen console.log; la interfaz corre en modo autónomo (teclado propio). */
+(function () {
+  const q = new URLSearchParams(location.search);
+  const bg = q.get('bg'); if (bg) document.getElementById('escena').style.backgroundImage = 'url(' + JSON.stringify(bg) + ')';
+  const log = n => function () { console.log('[ui] ' + n, Array.prototype.slice.call(arguments).map(a => JSON.stringify(a)).join(' ')); };
+  const ui = PW.ui.init({ data: window.PW_DATA, keys: true, fonts: q.get('fonts') === '1' }, {
+    onSelect: log('onSelect'), onHover: log('onHover'), onView: log('onView'), onLight: log('onLight'), onMode: log('onMode'), onCotas: log('onCotas'), onReset: log('onReset'), onHelp: log('onHelp'),
+  });
+  ui.setView(q.get('view') || 'maqueta'); ui.setLight(q.get('light') || 'atardecer'); ui.setMode(q.get('mode') || 'parque'); ui.setCotas(q.get('cotas') === '1');
+  const sel = q.has('sel') ? +q.get('sel') : 3; if (sel) ui.setSelected(sel);
+  if (q.get('hover')) ui.setHover(+q.get('hover'), { x: +(q.get('hx') || 760), y: +(q.get('hy') || 430) });
+  if (q.get('toast')) ui.toast('Lote ' + (sel || 3) + ' seleccionado');
+  if (q.get('help')) ui.showHelp();
+  if (q.has('loading')) ui.setLoading(+q.get('loading'));
+  if (q.get('nowebgl')) ui.showNoWebGL();
+  window.ui = ui;
+})();
+</script>
+</body>
+</html>

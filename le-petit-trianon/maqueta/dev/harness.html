@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="robots" content="noindex" />
+<title>Harness · módulo</title>
+<style>html,body{margin:0;height:100%;background:#F2EDE0;overflow:hidden}canvas{display:block}#hud{position:fixed;left:12px;top:10px;font:12px monospace;color:#6B1018;background:rgba(242,237,224,.8);padding:4px 8px}</style>
+</head>
+<body>
+<div id="hud"></div>
+<script src="../three.min.js"></script>
+<script src="../data.js"></script>
+<script src="../terrain.js"></script>
+<script>
+/* Harness: escena mínima (terreno plano con relieve, lotes planos, calle) para probar un módulo aislado.
+   Uso: harness.html?mods=textures,vegetation&view=maqueta|ruta|plano|lote&mode=parque|bosque&night=0|1&lot=1
+   Carga cada módulo listado desde ./<mod>.js y llama PW.<mod>.build(ctx). */
+(function(){
+  const q = new URLSearchParams(location.search);
+  const mods = (q.get('mods') || '').split(',').filter(Boolean);
+  const D = window.PW_DATA, T = PW.terrain, P = PW.palette;
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); renderer.setSize(innerWidth, innerHeight);
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  if ('outputColorSpace' in renderer) renderer.outputColorSpace = THREE.SRGBColorSpace; else renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
+  document.body.appendChild(renderer.domElement);
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(0xDCE6EC); scene.fog = new THREE.Fog(0xDCE6EC, 220, 520);
+  const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.5, 900);
+  const views = {
+    maqueta: { pos: [115, 95, 110], tgt: [30, 0, -45] },
+    ruta: { pos: [34, 1.7, 22], tgt: [32, 2, -30] },
+    plano: { pos: [32, 230, -47.9], tgt: [32, 0, -48] },
+    lote: { pos: [70, 30, 15], tgt: [52, 0, -18] },
+    fondo: { pos: [-40, 40, -120], tgt: [25, 0, -75] },
+  };
+  const v = views[q.get('view') || 'maqueta']; camera.position.set(...v.pos); camera.lookAt(...v.tgt);
+  const night = q.get('night') === '1';
+  const sun = new THREE.DirectionalLight(night ? 0x5a6a9a : 0xFFE8C8, night ? 0.25 : 2.2); sun.position.set(-60, 90, 50); sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048); const sc = sun.shadow.camera; sc.left = -120; sc.right = 120; sc.top = 120; sc.bottom = -120; sc.near = 10; sc.far = 400; scene.add(sun); scene.add(sun.target);
+  sun.target.position.set(30, 0, -45);
+  scene.add(new THREE.HemisphereLight(night ? 0x24304f : 0xCFE2F3, night ? 0x0b1738 : 0x6b7a4a, night ? 0.35 : 0.9));
+  /* terreno */
+  const E = T.extent, seg = 120;
+  const geo = new THREE.PlaneGeometry(E.x1 - E.x0, E.y1 - E.y0, seg, seg);
+  const pos = geo.attributes.position;
+  for (let i = 0; i < pos.count; i++) { const x = pos.getX(i) + (E.x0 + E.x1) / 2, y = pos.getY(i) + (E.y0 + E.y1) / 2; pos.setZ(i, T.elevation(x, y)); }
+  geo.computeVertexNormals();
+  const ground = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0x8FAE62, roughness: 1 }));
+  ground.rotation.x = -Math.PI / 2; ground.position.set((E.x0 + E.x1) / 2, 0, -(E.y0 + E.y1) / 2); ground.receiveShadow = true; scene.add(ground);
+  function flatPoly(coords, color, lift) {
+    const sh = new THREE.Shape(coords.map(c => new THREE.Vector2(c[0], c[1])));
+    const g = new THREE.ShapeGeometry(sh); const p = g.attributes.position;
+    for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i); p.setXYZ(i, x, T.elevation(x, y) + lift, -y); }
+    g.computeVertexNormals();
+    const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color, roughness: 1 })); m.receiveShadow = true; scene.add(m); return m;
+  }
+  D.lots.forEach((l, i) => flatPoly(l.polygon, i % 2 ? P.cesped : P.cespedClaro, 0.06));
+  flatPoly(D.road.corridor, P.vereda, 0.08); flatPoly(D.road.calle, P.empedrado, 0.1); flatPoly(D.tacuaral, P.cespedOscuro, 0.06); flatPoly(D.front.strip, P.cespedClaro, 0.06);
+  const ctx = { THREE, scene, camera, renderer, data: D, terrain: T, palette: P, toWorld: T.toWorld, elevation: T.elevation, rng: PW.rng, quality: 'high', shadows: true,
+    mode: q.get('mode') || 'parque', night, selectedLot: q.get('lot') ? +q.get('lot') : null };
+  const built = [];
+  window.PW_READY = (async () => {
+    for (const m of mods) {
+      await new Promise((res, rej) => { const s = document.createElement('script'); s.src = '../' + m + '.js'; s.onload = res; s.onerror = () => rej(new Error('no se pudo cargar ' + m + '.js')); document.head.appendChild(s); });
+      if (!PW[m] || typeof PW[m].build !== 'function') throw new Error('PW.' + m + '.build no existe');
+      const t0 = performance.now(); const h = PW[m].build(ctx) || {}; built.push({ m, h }); console.log('built', m, Math.round(performance.now() - t0) + ' ms');
+    }
+    document.getElementById('hud').textContent = 'mods: ' + mods.join(', ') + ' · view ' + (q.get('view') || 'maqueta') + ' · tri ' + renderer.info.render.triangles;
+    return built;
+  })();
+  let t = 0, last = performance.now();
+  function loop() { const now = performance.now(), dt = (now - last) / 1000; last = now; t += dt;
+    built.forEach(b => b.h.update && b.h.update(dt, t)); renderer.render(scene, camera);
+    document.getElementById('hud').textContent = 'mods: ' + mods.join(', ') + ' · tri ' + renderer.info.render.triangles + ' · calls ' + renderer.info.render.calls;
+    requestAnimationFrame(loop); }
+  loop();
+  addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+})();
+</script>
+</body>
+</html>
