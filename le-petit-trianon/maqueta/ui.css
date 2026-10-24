@@ -74,6 +74,8 @@
 }
 @media (prefers-reduced-motion: reduce) { .pw-music .pw-music-bars i { animation: none; height: 6px; } }
 .pw-head .pw-eyebrow { font-size: 11px; white-space: nowrap; }
+/* idiomas (<html lang> lo fija i18n.js): el antetítulo portugués es el más largo (45 caracteres) y se salía del ancho de la tarjeta; con menos tracking entra con margen */
+:root[lang="pt"] .pw-head .pw-eyebrow { letter-spacing: .11em; }
 .pw-brand { position: relative; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--pw-bordo); margin-bottom: 12px; border-radius: 6px; }
 .pw-brand::after { content: ""; position: absolute; inset: -11px -8px; } /* área táctil ≥ 44 px */
 .pw-brand .pw-mark { width: 22px; height: 22px; }

@@ -47,14 +47,14 @@
       <p class="lead">La maqueta une dos documentos: el <strong>plano de fraccionamiento de la arquitecta</strong> (calle, lotes, portón, casa modelo) y el <strong>plano de ubicación georreferenciado del título</strong>, medido con GNSS en tiempo real por un ingeniero en ciencias geográficas matriculado el 5 de junio de 2026. El límite del predio es el medido, al centímetro; el trazado interior es el de la arquitecta, sin redibujar nada a ojo.</p>
 
       <h2>1. El límite del predio: mensura georreferenciada</h2>
-      <p>El plano de mensura, firmado por un ingeniero en ciencias geográficas matriculado (plano 1/1, escala 1:1.000, para asignación de cuenta corriente catastral), fija cuatro vértices con coordenadas UTM y confirma las seis cotas del título. Los dos vértices del quiebre, que el plano no tabula, se deducen de la geometría: el lado de 40 m y el de 60 m son paralelos al lindero de 100 m, y el quiebre de 30 m es paralelo al frente. Con esa construcción el lado deducido mide exactamente 60,00 m y la superficie resultante es 5.468,82 m², contra 5.468,8157 m² del título: una diferencia total de 45 cm² sobre todo el predio.</p>
+      <p>El plano de mensura, firmado por un ingeniero en ciencias geográficas matriculado, fija cuatro vértices con coordenadas UTM y confirma las seis cotas del título. Los dos vértices del quiebre, que el plano no tabula, se deducen de la geometría: el lado de 40 m y el de 60 m son paralelos al lindero de 100 m, y el quiebre de 30 m es paralelo al frente. Con esa construcción el lado deducido mide exactamente 60,00 m y la superficie resultante es 5.468,82 m², contra 5.468,8157 m² del título: una diferencia total de 45 cm² sobre todo el predio.</p>
       <dl class="datos">
         <dt>Inmueble</dt><dd>Fracción C</dd>
         <dt>Ubicación</dt><dd>Pirayu'i · Distrito de San Bernardino · Departamento de Cordillera</dd>
         <dt>Superficie</dt><dd>5.468 m² 8.157 cm² (título)</dd>
         <dt>Sistema</dt><dd>Proyección UTM · Datum WGS84 · Zona 21 J Sur</dd>
-        <dt>Medición</dt><dd>Receptor GNSS (GPS) TOKNAV T10 PRO · precisión milimétrica según el rótulo del plano · tiempo real cinemática (RTK)</dd>
-        <dt>Profesional</dt><dd>Un ingeniero en ciencias geográficas matriculado (registro MOPC y CSJ)</dd>
+        <dt>Medición</dt><dd>Receptor GNSS · medición RTK (tiempo real cinemática)</dd>
+        <dt>Profesional</dt><dd>Un ingeniero en ciencias geográficas matriculado</dd>
         <dt>Fecha</dt><dd>05-06-2026</dd>
         <dt>Centro del predio</dt><dd class="mono">25°19′59,5″ S · 57°15′24,2″ O (UTM E 474.163,3 · N 7.198.134,0)</dd>
         <dt>Orientación</dt><dd>El frente (vértice 2 → a) tiene azimut de cuadrícula 54,06° (UTM 21S; el norte verdadero difiere unos 0,1° por la convergencia de meridianos). En la maqueta ese norte se muestra con la rosa de los vientos junto a la ruta y rige la posición del sol.</dd>
@@ -78,21 +78,10 @@
 
       <h2>2. Del plano de la arquitecta al modelo</h2>
       <p>El plano de la arquitecta se leyó como dibujo vectorial, no como imagen. Cada línea se convirtió a metros con una única transformación uniforme (misma escala en los dos ejes), de modo que las proporciones del dibujo se conservan. Luego el contorno del predio se reemplazó por el polígono medido y la calle, las veredas y las líneas divisorias de lotes se mantuvieron en su posición exacta en metros. El dibujo original se conserva como capa base (visible en la vista Plano), ajustado al límite medido con una deformación suave que solo afecta al dibujo, no a la geometría. En esa capa se omiten los rótulos de texto exteriores del dibujo (el nombre de la ruta bajo el frente y la leyenda del lindero este), que quedaban encimados con los de la maqueta.</p>
-      <table>
-        <thead><tr><th>Lado</th><th class="num">Título y mensura</th><th class="num">Dibujo de la arquitecta</th><th class="num">Diferencia del dibujo</th></tr></thead>
-        <tbody>
-          <tr><td>Frente sobre la ruta (2 → a)</td><td class="num">75,00 m</td><td class="num">73,59 m</td><td class="num">−1,41 m</td></tr>
-          <tr><td>Camino vecinal, tramo sur (2 → quiebre 1)</td><td class="num">40,00 m</td><td class="num">43,85 m</td><td class="num">+3,85 m</td></tr>
-          <tr><td>Quiebre hacia el este</td><td class="num">30,00 m</td><td class="num">30,29 m</td><td class="num">+0,29 m</td></tr>
-          <tr><td>Lindero oeste, tramo norte (quiebre 2 → c)</td><td class="num">60,00 m</td><td class="num">55,72 m</td><td class="num">−4,28 m</td></tr>
-          <tr><td>Fondo (c → b)</td><td class="num">45,00 m</td><td class="num">43,44 m</td><td class="num">−1,56 m</td></tr>
-          <tr><td>Lindero este, fracción B (b → a)</td><td class="num">100,00 m</td><td class="num">99,88 m</td><td class="num">−0,12 m</td></tr>
-        </tbody>
-      </table>
-      <div class="nota">El dibujo de la arquitecta ubica el quiebre unos 3,7 m más al fondo que la mensura y acorta el frente 1,4 m. Los ángulos coinciden (73,6° en el vértice a, 106,4° en b). Con el límite medido, el polígono cierra exacto y las superficies de los lotes se acercan a la tabla de la arquitecta, como muestra el punto 3.</div>
+      <div class="nota">El límite del predio es el medido: con él el polígono cierra exacto y los ángulos del dibujo coinciden con los de la mensura (73,6° en el vértice a, 106,4° en b). El plano de fraccionamiento se ajusta a esa mensura; las superficies resultantes están en el punto 3.</div>
 
       <h2>3. Superficies de los lotes</h2>
-      <p>Por indicación de la arquitecta, la superficie de cada lote que muestra la maqueta es la calculada sobre la mensura georreferenciada: la que queda al recortar las líneas divisorias de su plano sobre el límite medido del predio. La columna “plano de fraccionamiento” recoge la tabla original de la arquitecta, dibujada antes de la mensura, como referencia.</p>
+      <p>La superficie de cada lote que muestra la maqueta es la calculada sobre la mensura georreferenciada: la que queda al recortar las líneas divisorias del plano sobre el límite medido del predio. La columna “plano de fraccionamiento” recoge la tabla original de la arquitecta, dibujada antes de la mensura, como referencia.</p>
       <table>
         <thead><tr><th>Lote</th><th class="num">Plano de fraccionamiento</th><th class="num">Sobre la mensura (maqueta)</th><th class="num">Frente a la calle</th></tr></thead>
         <tbody>
@@ -116,7 +105,7 @@
       <h2>5. Cómo se usa</h2>
       <p>Pasa el mouse por un lote para resaltarlo y haz clic para abrir su ficha. Con el teclado: los números 1 a 7 seleccionan un lote, las flechas pasan al siguiente y Escape cierra. V cambia de vista (maqueta, plano, ruta, lote, dron), L cambia la luz (día, atardecer, noche), T cambia la vegetación (parque o bosque), C muestra las cotas, P alterna el modo plano, R vuelve al inicio y ? abre la ayuda. En el celular: arrastrar gira, dos dedos acercan y desplazan, tocar un lote lo selecciona.</p>
 
-      <div class="firma">Maqueta preparada por el equipo de Paraways sobre el plano de la arquitecta del proyecto y el plano de ubicación georreferenciado del título. Consultas por WhatsApp al <a href="https://wa.me/595993474309?text=Hola%2C%20le%C3%AD%20la%20nota%20t%C3%A9cnica%20de%20la%20maqueta%20de%20Le%20Petit%20Trianon%20(San%20Bernardino)%20y%20quiero%20saber%20m%C3%A1s." target="_blank" rel="noopener">+595 993 474 309</a>.</div>
+      <div class="firma">Maqueta preparada por el equipo de Paraways sobre el plano de la arquitecta del proyecto y el plano de ubicación georreferenciado del título. Consultas por WhatsApp al <a href="https://wa.me/595993474309?text=Hola%2C%20le%C3%AD%20la%20nota%20t%C3%A9cnica%20de%20la%20maqueta%20de%20Le%20Petit%20Trianon%20(San%20Bernardino)%20y%20quiero%20saber%20m%C3%A1s." target="_blank" rel="noopener" data-wa-from="nota-tecnica">+595 993 474 309</a>.</div>
     </main>
   </body>
 </html>

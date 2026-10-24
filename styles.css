@@ -1054,3 +1054,82 @@ svg.brand-mark circle { stroke-dasharray: 32; stroke-dashoffset: 32; animation: 
 .ed-archive { margin: 26px 0 0; font: 400 10.5px/1.8 var(--ff-mono); letter-spacing: 0.14em; text-transform: uppercase; color: rgba(242, 237, 224, 0.5); }
 .ed-archive a { color: var(--gold); border-bottom: 1px solid rgba(184, 147, 90, 0.45); }
 .ed-archive span + span::before { content: "·"; margin: 0 10px; color: var(--gold); }
+
+/* ═══ Capa v3 — Le Petit Trianon ═══════════════════════════════ */
+
+/* ── Banda del desarrollo en la home: medianoche; el póster a la izquierda con marco fino de oro, el texto a la derecha ── */
+.lpt-band {
+  background: linear-gradient(160deg, var(--ink) 45%, #070E22);
+  color: var(--paper);
+  position: relative; overflow: hidden;
+  box-shadow: inset 0 0 clamp(70px, 13vw, 170px) rgba(3, 7, 18, 0.55);
+}
+.lpt-band::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(85% 65% at 16% 6%, rgba(184, 147, 90, 0.11), transparent 55%),
+    radial-gradient(70% 55% at 84% 94%, rgba(168, 30, 43, 0.13), transparent 60%);
+  opacity: 0.55;
+  animation: night-breathe 19s ease-in-out infinite alternate;
+}
+.lpt-band .wrap {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  gap: clamp(40px, 5.5vw, 84px); align-items: center;
+}
+.lpt-band__figure { margin: 0; position: relative; padding: 12px; }
+.lpt-band__figure::before {
+  content: ""; position: absolute; inset: 0;
+  border: 1px solid rgba(184, 147, 90, 0.42);
+  pointer-events: none;
+}
+.lpt-band__figure a { display: block; }
+.lpt-band__figure img {
+  width: 100%; height: auto;
+  border: 1px solid var(--gold);
+  box-shadow: 0 54px 90px -48px rgba(0, 0, 0, 0.9), 0 22px 44px -26px rgba(184, 147, 90, 0.35);
+  transition: transform 0.6s var(--ease-out), box-shadow 0.6s;
+}
+.lpt-band__figure a:hover img {
+  transform: translateY(-3px);
+  box-shadow: 0 60px 96px -48px rgba(0, 0, 0, 0.9), 0 26px 48px -24px rgba(184, 147, 90, 0.5);
+}
+.lpt-band__figure figcaption {
+  margin: 18px 0 0;
+  font: 500 10px/1.6 var(--ff-mono); letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(242, 237, 224, 0.5);
+}
+.lpt-band .eyebrow { color: var(--gold); }
+.lpt-band h2 { color: var(--paper); font-size: clamp(31px, 3.3vw, 47px); }
+.lpt-band h2 em { color: var(--gold); }
+.lpt-band h2 em::after { background: linear-gradient(90deg, var(--gold), rgba(184, 147, 90, 0.35)); }
+.lpt-band__lead { color: rgba(242, 237, 224, 0.72); max-width: 520px; margin: 22px 0 0; font-size: 16.5px; }
+.lpt-band .ip-actions { margin-top: 34px; }
+.lpt-band :focus-visible { outline-color: var(--gold); }
+@media (max-width: 900px) {
+  .lpt-band .wrap { grid-template-columns: 1fr; gap: 44px; }
+  .lpt-band__figure { padding: 10px; }
+}
+
+/* ── Nav con ocho enlaces: en escritorios estrechos el gap cede para que siga en una línea ── */
+@media (min-width: 721px) and (max-width: 1279px) {
+  .top-nav .nav-links { gap: clamp(12px, 1.2vw, 24px); }
+}
+
+/* ── Enlace discreto en la tarjeta Inmobiliaria del Investor Pass ── */
+.lpt-ip-link {
+  display: block; margin-top: auto; padding: 12px 0 0;
+  border-bottom: 0; border-top: 1px solid var(--line);
+  font-size: 11px; line-height: 1.6;
+}
+
+/* ── Objetivos táctiles (WCAG 2.2, 2.5.8): en pantallas estrechas o con puntero grueso, la marca, los idiomas y los
+   enlaces del pie crecen en área de toque (≥ 24×24 px) con un relleno compensado por margen negativo, así el trazado
+   no se mueve; solo el gap de .langs pasa de 9 a 12 px para que las cajas de toque queden contiguas sin superponerse ── */
+@media (max-width: 720px), (pointer: coarse) {
+  .brand { padding: 4px 0; margin: -4px 0; }
+  .langs { gap: 12px; }
+  .langs a { padding: 8px 6px; margin: -8px -6px; }
+  .nav-links a { padding: 8px 0; margin: -8px 0; }
+  footer a { padding: 6px 0; margin: -6px 0; }
+}

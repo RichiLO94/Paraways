@@ -5,6 +5,7 @@
 <meta name="robots" content="noindex" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>ui-test · Le Petit Trianon</title>
+<link rel="icon" href="data:," />
 <link rel="stylesheet" href="../ui.css" />
 <style>
   html, body { margin: 0; height: 100%; overflow: hidden; background: #F2EDE0; }
@@ -14,16 +15,17 @@
 </head>
 <body>
 <div id="escena" aria-hidden="true"></div>
+<script src="../i18n.js"></script>
 <script src="../data.js"></script>
 <script src="../ui.js"></script>
 <script>
-/* Prueba aislada de PW.ui: ui-test.html?sel=3&view=maqueta&light=atardecer&bg=../out/app-v5-dia.png&hover=2&help=1&loading=.6&nowebgl=1&toast=1
+/* Prueba aislada de PW.ui: ui-test.html?sel=3&view=maqueta&light=atardecer&bg=../out/app-v5-dia.png&hover=2&help=1&loading=.6&nowebgl=1&toast=1&lang=pt&embed=1
    Los handlers solo hacen console.log; la interfaz corre en modo autónomo (teclado propio). */
 (function () {
   const q = new URLSearchParams(location.search);
   const bg = q.get('bg'); if (bg) document.getElementById('escena').style.backgroundImage = 'url(' + JSON.stringify(bg) + ')';
   const log = n => function () { console.log('[ui] ' + n, Array.prototype.slice.call(arguments).map(a => JSON.stringify(a)).join(' ')); };
-  const ui = PW.ui.init({ data: window.PW_DATA, keys: true, fonts: q.get('fonts') === '1' }, {
+  const ui = PW.ui.init({ data: window.PW_DATA, keys: true, fonts: q.get('fonts') === '1', embed: q.get('embed') === '1' }, {
     onSelect: log('onSelect'), onHover: log('onHover'), onView: log('onView'), onLight: log('onLight'), onMode: log('onMode'), onCotas: log('onCotas'), onReset: log('onReset'), onHelp: log('onHelp'),
   });
   ui.setView(q.get('view') || 'maqueta'); ui.setLight(q.get('light') || 'atardecer'); ui.setMode(q.get('mode') || 'parque'); ui.setCotas(q.get('cotas') === '1');

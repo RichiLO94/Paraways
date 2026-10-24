@@ -10675,7 +10675,7 @@
     "y1": 28.45,
     "h": 3.2,
     "floors": 1,
-    "nota": "recortado a la divisoria del lote 2 [a confirmar con la arquitecta]"
+    "nota": "recortado 1,1 m a la divisoria del lote 2 según el plano"
    },
    {
     "name": "acceso / pérgola oeste",
@@ -10872,8 +10872,8 @@
   ]
  ],
  "geo": {
-  "fuente": "Plano de ubicación del título de propiedad georreferenciado, p/ asignación de cuenta corriente catastral · ingeniero en ciencias geográficas matriculado (reg. MOPC y CSJ) · 05-06-2026 · Plano 1/1 · Escala 1:1.000",
-  "equipo": "Receptor GNSS (GPS) TOKNAV T10 PRO · precisión milimétrica · medición RTK (tiempo real cinemática)",
+  "fuente": "Plano de ubicación georreferenciado del título · ingeniero en ciencias geográficas matriculado · 05-06-2026",
+  "equipo": "Receptor GNSS · medición RTK (tiempo real cinemática)",
   "crs": "UTM zona 21 Sur · Datum WGS84 (EPSG:32721)",
   "fraccion": "C",
   "lugar": "Pirayu'i",

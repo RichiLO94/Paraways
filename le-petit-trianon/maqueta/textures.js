@@ -608,9 +608,9 @@
       m.rotation.x = -Math.PI / 2; m.position.set((x0 + x1) / 2, pe + 0.12, -(y0 + y1) / 2); m.receiveShadow = true; group.add(m);
     });
 
-    /* Etiquetas de lotes (número + superficie oficial de la tabla de la arquitecta). */
+    /* Etiquetas de lotes (número + superficie calculada sobre la mensura), con los textos y el formato numérico del idioma. */
     D.lots.forEach(l => {
-      const s = api.textSprite('Lote ' + l.id + '\n' + l.area_plan.toLocaleString('es-PY', { minimumFractionDigits: 2 }) + ' m²',
+      const s = api.textSprite(PW.i18n.t('lot.n', { n: l.id }) + '\n' + PW.i18n.fmt(l.area_drawn, 2) + PW.i18n.t('unit.m2'),
         { font: 'serif', size: 44, weight: 600, color: '#F2EDE0', bg: 'rgba(11,23,56,0.86)', border: '#B8935A', borderWidth: 2, padding: 18, radius: 14, height: 4.2, lineHeight: 1.15 });
       s.position.set(l.label[0], elevation(l.label[0], l.label[1]) + 3.4, -l.label[1]); group.add(s);
     });

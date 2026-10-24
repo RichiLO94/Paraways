@@ -1,19 +1,36 @@
 # Paraways
 
-Landing de paraways.com — residencia temporaria, cédula, RUC y cuenta bancaria en Paraguay.
+Landing de paraways.com — residencia temporaria, cédula, RUC y cuenta bancaria en Paraguay, e Investor Pass (residencia permanente por inversión). Sitio estático en Vercel: sin framework ni paso de build; lo que está en el repositorio es lo que se sirve.
 
 ## Estructura
 
-- `index.html` — landing en español (única página)
-- `styles.css` — sistema de diseño (paleta Design: bordó `#6B1018`, marfil `#F2EDE0`, oro `#B8935A`, midnight `#0B1738`; Newsreader + Inter + DM Mono)
-- `script.js` — reveals cinemáticos, parallax del hero, formulario y eventos de analytics
+- `index.html` — landing en español; `pt/`, `en/`, `fr/` — la misma landing en portugués, inglés y francés
+- `observatorio/` — sección editorial (`index.html`, `feed.xml`)
+- `le-petit-trianon/` — página del desarrollo Le Petit Trianon (ES) con su CSS y JS propios (`trianon.css`, `trianon.js`); `pt/le-petit-trianon/`, `en/le-petit-trianon/`, `fr/le-petit-trianon/` — la página en los otros tres idiomas
+- `le-petit-trianon/maqueta/` — la maqueta 3D interactiva (sub-app autónoma: three.js local, JS clásico, sin build), con su nota técnica, sus páginas de prueba (`dev/`) y su documentación (`README.md`, `CONTRACT.md`)
+- `styles.css` — sistema de diseño (paleta: bordó `#6B1018`, marfil `#F2EDE0`, oro `#B8935A`, medianoche `#0B1738`; Newsreader + Inter + JetBrains Mono)
+- `script.js` — barra de progreso, reveals, botón flotante de WhatsApp, nav de vidrio, formulario y eventos de analytics
 - `api/contact.js` — endpoint serverless (Resend + Slack): nombre, correo, WhatsApp e interés
-- `assets/` — marca compass + imagen OG
-- `sitemap.xml`, `robots.txt`, `vercel.json`
+- `assets/` — marca, imágenes Open Graph por página e idioma (`og-*.png`), pósters y loop de la maqueta (`trianon-*`)
+- `tools/maqueta/` — scripts Node/Playwright y Python de prueba y captura de la maqueta; sus salidas van a `tools/maqueta/out/` (ignorada por git). No se despliega
+- `docs/` — notas de operación. No se despliega
+- `.vercelignore` — excluye `tools` y `docs` del despliegue
+- `vercel.json` — `cleanUrls` y `trailingSlash` (las URLs terminan en `/`), cabeceras de seguridad (`X-Frame-Options: DENY`, salvo `SAMEORIGIN` bajo `/le-petit-trianon/maqueta/` para que la página pueda embeber la maqueta) y caché de `assets/` y de la maqueta
+- `sitemap.xml`, `robots.txt`, `404.html`
+
+## Le Petit Trianon
+
+Fraccionamiento de siete lotes en San Bernardino (departamento de Cordillera) presentado con una maqueta 3D construida sobre el plano de fraccionamiento de la arquitecta y la mensura georreferenciada del título. La página del desarrollo (`/le-petit-trianon/` y sus idiomas) muestra un póster y, tras un gesto del visitante, embebe el visor en un iframe (`/le-petit-trianon/maqueta/?lang=xx&embed=1`); en móvil abre el visor a pantalla completa.
+
+Todo lo necesario para correr, probar y editar el visor (estructura de módulos, parámetros de URL, datos, textos en cuatro idiomas, pruebas con Playwright, presupuesto de rendimiento, reglas de contenido, licencias e integración en el sitio) está en [`le-petit-trianon/maqueta/README.md`](le-petit-trianon/maqueta/README.md); el contrato técnico de módulos y datos, en [`le-petit-trianon/maqueta/CONTRACT.md`](le-petit-trianon/maqueta/CONTRACT.md).
+
+Para verlo en local: `python3 -m http.server 8765 --bind 127.0.0.1` desde la raíz del repositorio y abrir `http://127.0.0.1:8765/le-petit-trianon/`.
+
+Reglas que valen para todo el sitio y también aquí: sin precios ni plazos (los valores se comparten por WhatsApp), un solo canal de contacto (WhatsApp), ningún nombre de personas, sin emojis, sin librerías externas y sin datos que no estén verificados.
 
 ## Analytics
 
-El sitio carga `/_vercel/insights/script.js` y emite `whatsapp_click` y `form_submit`.
+El sitio carga `/_vercel/insights/script.js` y emite `whatsapp_click` (con el origen en `data-wa-from`; desde la maqueta, `maqueta-<idioma>`), `form_submit`, `maqueta_open` y `trianon_chip`.
 Pendiente: habilitar Web Analytics en el dashboard de Vercel (proyecto `paraways`).
 
 ## Variables de entorno (Vercel)

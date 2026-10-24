@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1200" />
+  <meta name="robots" content="noindex" />
+  <title>Tarjeta Open Graph · Le Petit Trianon</title>
+  <!-- Plantilla de la tarjeta Open Graph (1200×630) del desarrollo. Se renderiza con tools/maqueta/og-render.js
+       sobre el servidor local del repo: /tools/maqueta/og-trianon.html?lang=es|pt|en|fr → assets/og-trianon-<lang>.png.
+       Fondo: assets/trianon-maqueta.jpg con degradado medianoche desde abajo; tipografías del sitio. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
+  <style>
+    :root { --ink: #0B1738; --paper: #F2EDE0; --paper-2: #F8F4E8; --wine: #6B1018; --gold: #B8935A; --gold-on-wine: #CFAD74; }
+    html, body { margin: 0; padding: 0; width: 1200px; height: 630px; overflow: hidden; background: var(--ink); }
+    .card { position: relative; width: 1200px; height: 630px; overflow: hidden; background: var(--ink); color: var(--paper); font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    /* la maqueta: encuadre sobre la mitad superior derecha, donde la noche aún no llega */
+    .bg { position: absolute; inset: 0; background: var(--paper-2) url('/assets/trianon-maqueta.jpg') no-repeat; background-size: 1260px auto; background-position: 50% 3%; }
+    .veil { position: absolute; inset: 0; background: linear-gradient(to top, var(--ink) 0%, rgba(11, 23, 56, 0.97) 24%, rgba(11, 23, 56, 0.86) 38%, rgba(11, 23, 56, 0.55) 52%, rgba(11, 23, 56, 0.16) 68%, rgba(11, 23, 56, 0) 82%); }
+    /* la noche entra también por la esquina de la marca: así "paraways" y la rosa de los vientos leen en marfil y oro */
+    .veil-side { position: absolute; inset: 0; background: radial-gradient(ellipse 760px 520px at 0% 0%, rgba(11, 23, 56, 0.94) 0%, rgba(11, 23, 56, 0.78) 34%, rgba(11, 23, 56, 0.4) 62%, rgba(11, 23, 56, 0) 100%); }
+    .brand { position: absolute; left: 72px; top: 56px; display: inline-flex; align-items: center; gap: 13px; font: 500 32px/1 Newsreader, Georgia, serif; letter-spacing: -0.02em; color: var(--paper); }
+    .brand svg { width: 34px; height: 34px; display: block; overflow: visible; }
+    .copy { position: absolute; left: 72px; right: 72px; bottom: 100px; }
+    .eyebrow { font: 500 15px/1 'JetBrains Mono', ui-monospace, monospace; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-on-wine); margin: 0 0 22px; }
+    h1 { margin: 0 0 16px; font: 500 96px/1 Newsreader, Georgia, serif; font-variation-settings: 'opsz' 72; letter-spacing: -0.025em; color: var(--paper); }
+    h1 em { font-style: italic; font-weight: 400; color: var(--gold-on-wine); }
+    .sub { margin: 0; font: 400 29px/1.3 Inter, system-ui, sans-serif; color: rgba(242, 237, 224, 0.86); letter-spacing: -0.005em; max-width: 900px; }
+    .foot { position: absolute; left: 72px; right: 72px; bottom: 44px; display: flex; justify-content: space-between; align-items: baseline; padding-top: 18px; border-top: 1px solid rgba(207, 173, 116, 0.32); font: 400 15px/1 Inter, system-ui, sans-serif; color: rgba(242, 237, 224, 0.62); }
+    .foot .coord { font: 400 14px/1 'JetBrains Mono', ui-monospace, monospace; letter-spacing: 0.1em; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="bg"></div>
+    <div class="veil-side"></div>
+    <div class="veil"></div>
+    <div class="brand" id="brand"><svg viewBox="0 0 120 120" aria-hidden="true"><g stroke="#B8935A" stroke-width="3.2" stroke-linecap="round" fill="none"><line x1="60" y1="24" x2="60" y2="49"/><line x1="60" y1="71" x2="60" y2="96"/><line x1="24" y1="60" x2="49" y2="60"/><line x1="71" y1="60" x2="96" y2="60"/><line x1="34.5" y1="34.5" x2="52.2" y2="52.2"/><line x1="67.8" y1="67.8" x2="85.5" y2="85.5"/><line x1="85.5" y1="34.5" x2="67.8" y2="52.2"/><line x1="52.2" y1="67.8" x2="34.5" y2="85.5"/></g><circle cx="60" cy="60" r="5" fill="none" stroke="#B8935A" stroke-width="2"/></svg>paraways</div>
+    <div class="copy">
+      <p class="eyebrow" id="eyebrow">Desarrollos seleccionados · San Bernardino · Paraguay</p>
+      <h1 id="title">Le Petit <em>Trianon</em></h1>
+      <p class="sub" id="sub">Siete lotes en San Bernardino, en tres dimensiones</p>
+    </div>
+    <div class="foot">
+      <span id="site">paraways.com/le-petit-trianon</span>
+      <span class="coord" id="coord">25°19′59,5″ S · 57°15′24,2″ O</span>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var T = {
+        es: { eyebrow: 'Desarrollos seleccionados · San Bernardino · Paraguay', sub: 'Siete lotes en San Bernardino, en tres dimensiones', coord: '25°19′59,5″ S · 57°15′24,2″ O', site: 'paraways.com/le-petit-trianon' },
+        pt: { eyebrow: 'Empreendimentos selecionados · San Bernardino · Paraguai', sub: 'Sete lotes em San Bernardino, em três dimensões', coord: '25°19′59,5″ S · 57°15′24,2″ O', site: 'paraways.com/pt/le-petit-trianon' },
+        en: { eyebrow: 'Selected developments · San Bernardino · Paraguay', sub: 'Seven lots in San Bernardino, in three dimensions', coord: '25°19′59.5″ S · 57°15′24.2″ W', site: 'paraways.com/en/le-petit-trianon' },
+        fr: { eyebrow: 'Programmes sélectionnés · San Bernardino · Paraguay', sub: 'Sept lots à San Bernardino, en trois dimensions', coord: '25°19′59,5″ S · 57°15′24,2″ O', site: 'paraways.com/fr/le-petit-trianon' }
+      };
+      var lang = (new URLSearchParams(location.search).get('lang') || 'es').toLowerCase();
+      var t = T[lang] || T.es; document.documentElement.lang = lang;
+      document.getElementById('eyebrow').textContent = t.eyebrow;
+      document.getElementById('sub').textContent = t.sub;
+      document.getElementById('coord').textContent = t.coord;
+      document.getElementById('site').textContent = t.site;
+    })();
+  </script>
+</body>
+</html>

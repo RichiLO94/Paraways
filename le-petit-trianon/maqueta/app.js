@@ -1,16 +1,27 @@
 /* Paraways · Le Petit Trianon — núcleo del visor 3D (escena, cámara, lotes, selección, luz, vistas).
-   Depende de: three.min.js (r158 UMD), data.js (PW_DATA), terrain.js (PW.terrain/palette/rng) y, si existen,
-   textures.js, vegetation.js, architecture.js, ui.js (ver CONTRACT.md). Sin librerías externas. */
+   Depende de: three.min.js (r158 UMD), data.js (PW_DATA), terrain.js (PW.terrain/palette/rng), i18n.js (PW.i18n) y, si existen,
+   textures.js, vegetation.js, architecture.js, ui.js (ver CONTRACT.md). Sin librerías externas.
+   Parámetros de URL (ver CONTRACT.md): lang (los lee i18n.js), embed=1, lote=1..7, view=maqueta|plano|ruta|lote|dron, light=dia|atardecer|noche. */
 (function () {
   'use strict';
+  const Q = new URLSearchParams(location.search);
+  const EMBED = Q.get('embed') === '1';
   if (typeof THREE === 'undefined') {
     /* three.js no cargó (red, bloqueador): se muestra el plano con las fichas y el WhatsApp, sin maqueta */
-    const boot = () => { try { const u = window.PW && PW.ui && PW.ui.init({ data: window.PW_DATA, keys: true }, {}); u && u.showNoWebGL && u.showNoWebGL(); } catch (e) { console.warn('PW fallback', e); } };
+    const boot = () => { try { const u = window.PW && PW.ui && PW.ui.init({ data: window.PW_DATA, keys: true, embed: EMBED }, {}); u && u.showNoWebGL && u.showNoWebGL(); } catch (e) { console.warn('PW fallback', e); } };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
     return;
   }
-  const D = window.PW_DATA, T = PW.terrain, P = PW.palette;
+  const D = window.PW_DATA, T = PW.terrain, P = PW.palette, I = PW.i18n, t = I.t;
   const app = (PW.app = {});
+  /* estado inicial pedido por la URL; lo que no sea válido se ignora */
+  const VIEW_IDS = ['maqueta', 'plano', 'ruta', 'lote', 'dron'], LIGHT_IDS = ['dia', 'atardecer', 'noche'];
+  const PARAMS = {
+    embed: EMBED,
+    lote: D.lots.some(l => l.id === +Q.get('lote')) ? +Q.get('lote') : null,
+    view: VIEW_IDS.indexOf(Q.get('view')) >= 0 ? Q.get('view') : null,
+    light: LIGHT_IDS.indexOf(Q.get('light')) >= 0 ? Q.get('light') : null,
+  };
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isMobile = matchMedia('(max-width: 720px)').matches || ('ontouchstart' in window && innerWidth < 1024);
   const SITE_C = { x: 30, y: 48 };                 /* centro del predio (plano) */
@@ -21,14 +32,15 @@
     const a = THREE.MathUtils.degToRad(NORTH_DEG - az), e = THREE.MathUtils.degToRad(el);
     return [Math.cos(a) * Math.cos(e) * R, Math.sin(e) * R, -Math.sin(a) * Math.cos(e) * R];
   }
-  const state = { view: 'maqueta', light: 'atardecer', mode: 'parque', cotas: false, hover: null, selected: null, dron: false, ready: false };
+  const state = { view: 'maqueta', light: PARAMS.light || 'atardecer', mode: 'parque', cotas: false, hover: null, selected: null, dron: false, ready: false };
   let renderer, scene, camera, ui, tex, veg, arch, env, sky, sunSprite, stars, sun, hemi, amb, planBase, terrainMesh, terrainMat, post = null;
   const lots = {};                                  /* id → { mesh, ring, ringMat, label, lift, dims } */
   const pickables = [];
   let perimeter, lotDims = null, clock = 0, lastT = performance.now(), running = true;
 
   /* ───────────── utilidades geométricas ───────────── */
-  const fmt = (n, d = 2) => n.toLocaleString('es-PY', { minimumFractionDigits: d, maximumFractionDigits: d });
+  const fmt = (n, d = 2) => I.fmt(n, d);                    /* separadores del idioma del visitante (i18n.js) */
+  const M2 = t('unit.m2'), M = t('unit.m');
   function triangulate(coords) {
     const pts = coords.map(c => new THREE.Vector2(c[0], c[1]));
     if (pts.length > 1 && pts[0].distanceTo(pts[pts.length - 1]) < 1e-6) pts.pop();
@@ -76,8 +88,8 @@
     if (opt.disc) { x.fillStyle = opt.bg || '#F8F4E8'; x.beginPath(); x.arc(w / 2, h / 2, Math.min(w, h) / 2, 0, Math.PI * 2); x.fill(); x.lineWidth = 3; x.strokeStyle = opt.stroke || '#6B1018'; x.stroke(); }
     else if (opt.bg) { x.fillStyle = opt.bg; const r = 8; x.beginPath(); x.roundRect ? x.roundRect(0, 0, w, h, r) : x.rect(0, 0, w, h); x.fill(); }
     x.font = font; x.fillStyle = opt.color || '#6B1018'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(text, w / 2, h / 2 + size * 0.04);
-    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
-    return { texture: t, aspect: w / h };
+    const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
+    return { texture: tex, aspect: w / h };
   }
   function sprite(text, opt, scale) {
     const { texture, aspect } = canvasText(text, opt);
@@ -292,7 +304,7 @@
     const gm = new THREE.Mesh(prism(cam2, 0.04, 0.15, 1.5), new THREE.MeshStandardMaterial({ color: tex ? 0xffffff : 0xC9B994, roughness: 1, map: (tex && tex.get('gravel')) || null, bumpMap: (tex && tex.bump && tex.bump('gravel')) || null, bumpScale: 0.03 })); gm.receiveShadow = true; gm.name = 'camino-vecinal'; scene.add(gm);
     /* rótulos apoyados en el suelo (como pintura vial), no carteles flotantes */
     const cmid = [(cam2[0][0] + cam2[2][0]) / 2, (cam2[0][1] + cam2[2][1]) / 2];
-    const cl = groundText('Camino vecinal', { size: 30, font: '"JetBrains Mono", monospace', weight: 500, color: '#6B4F22' }, 2.0, cmid[0], cmid[1] + 14, Math.atan2(CAMD[1], CAMD[0]) - Math.PI / 2); scene.add(cl);
+    const cl = groundText(t('3d.camino'), { size: 30, font: '"JetBrains Mono", monospace', weight: 500, color: '#6B4F22' }, 2.0, cmid[0], cmid[1] + 14, Math.atan2(CAMD[1], CAMD[0]) - Math.PI / 2); scene.add(cl);
     const rl = groundText('Ruta San Bernardino – Pirayú · Ruta II', { size: 30, font: '"JetBrains Mono", monospace', weight: 500, color: '#F2EDE0' }, 1.9, SITE_C.x + 24, R.y1 - 2.6, 0); scene.add(rl);
   }
   function buildRoad() {
@@ -332,7 +344,7 @@
     const arrow = new THREE.Mesh(new THREE.ShapeGeometry(shape), new THREE.MeshBasicMaterial({ color: P.bordo, transparent: true, opacity: 0.95, depthWrite: false, side: THREE.DoubleSide }));
     arrow.rotation.set(-Math.PI / 2, 0, ang - Math.PI / 2); arrow.position.set(cx, T.elevation(cx, cy) + 0.15, -cy); arrow.renderOrder = 7; g.add(arrow);
     const n = groundText('N', { size: 56, font: 'Newsreader, Georgia, serif', weight: 500, color: '#6B1018' }, 1.6, cx + Math.cos(ang) * (r + 1.3), cy + Math.sin(ang) * (r + 1.3), ang - Math.PI / 2); g.add(n);
-    const t = groundText('norte · UTM 21S', { size: 26, font: '"JetBrains Mono", monospace', weight: 500, color: '#7A5C28' }, 0.9, cx, cy - r - 1.4, 0); g.add(t);
+    const tn = groundText(t('3d.norte'), { size: 26, font: '"JetBrains Mono", monospace', weight: 500, color: '#7A5C28' }, 0.9, cx, cy - r - 1.4, 0); g.add(tn);
     scene.add(g);
   }
   /* ───────────── lotes ───────────── */
@@ -403,8 +415,8 @@
       const wash = new THREE.Mesh(glowWash(pts, 3.6), new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, toneMapped: false })); wash.visible = false; wash.renderOrder = 13; scene.add(wash);
       const label = sprite(String(l.id), { size: 64, disc: true, weight: 500, color: '#6B1018', stroke: '#6B1018', bg: '#F8F4E8', pad: 16 }, 4.2);
       const lp = l.label; label.position.set(lp[0], T.elevation(lp[0], lp[1]) + 2.4, -lp[1]); label.userData.base = label.position.clone(); scene.add(label);
-      /* superficie calculada sobre la mensura (area_drawn), como pidió la arquitecta; su tabla queda como referencia en la nota técnica */
-      const area = sprite(fmt(l.area_drawn) + ' m²', { size: 28, font: '"JetBrains Mono", monospace', weight: 500, color: '#F2EDE0', bg: 'rgba(107,16,24,0.92)', pad: 10 }, 2.3);
+      /* superficie calculada sobre la mensura (area_drawn); la tabla del plano de fraccionamiento queda como referencia en la nota técnica */
+      const area = sprite(fmt(l.area_drawn) + M2, { size: 28, font: '"JetBrains Mono", monospace', weight: 500, color: '#F2EDE0', bg: 'rgba(107,16,24,0.92)', pad: 10 }, 2.3);
       area.position.set(lp[0], T.elevation(lp[0], lp[1]) + 0.9, -lp[1] + 2.2); area.visible = false; area.userData.base = area.scale.clone(); scene.add(area);
       scene.add(lineOn(l.polygon, 0x5E7D3B, 0.215, 0.5));
       lots[l.id] = { data: l, mesh, ring, ringMat, halo, wash, label, area, lift: 0, liftTarget: 0, baseY: mesh.position.y };
@@ -420,7 +432,7 @@
       const A = [a[0] + n[0] * off, a[1] + n[1] * off], B = [b[0] + n[0] * off, b[1] + n[1] * off];
       perimDims.add(lineOn([A, B], P.bordo, 0.8, 0.9));
       [[a, A], [b, B]].forEach(([p, q]) => perimDims.add(lineOn([[p[0] + n[0] * 0.4, p[1] + n[1] * 0.4], [q[0] + n[0] * 0.8, q[1] + n[1] * 0.8]], P.bordo, 0.8, 0.6)));
-      const sp = sprite(s.label.replace('.', ',') + (s.label.includes('.') ? ' m' : ',00 m'), { size: 30, font: '"JetBrains Mono", monospace', weight: 500, color: '#6B1018', bg: 'rgba(248,244,232,0.92)', pad: 8 }, 3.0);
+      const sp = sprite(fmt(parseFloat(s.label), 2) + M, { size: 30, font: '"JetBrains Mono", monospace', weight: 500, color: '#6B1018', bg: 'rgba(248,244,232,0.92)', pad: 8 }, 3.0);
       sp.position.set(s.mid[0] + n[0] * (off + 2.6), T.elevation(s.mid[0], s.mid[1]) + 1.2, -(s.mid[1] + n[1] * (off + 2.6))); sp.userData.base = sp.scale.clone(); sp.material.depthTest = false; sp.renderOrder = 21; perimDims.add(sp);
     });
   }
@@ -433,7 +445,7 @@
       const n = s.n, off = -2.3; const A = [s.a[0] + n[0] * off, s.a[1] + n[1] * off], B = [s.b[0] + n[0] * off, s.b[1] + n[1] * off];   /* hacia adentro, lejos del contorno luminoso */
       lotDims.add(lineOn([A, B], P.oroTinta, 0.7, 0.95));
       [[s.a, A], [s.b, B]].forEach(([p, q]) => lotDims.add(lineOn([[p[0] + n[0] * -0.2, p[1] + n[1] * -0.2], [q[0] + n[0] * -0.5, q[1] + n[1] * -0.5]], P.oroTinta, 0.7, 0.8)));
-      const sp = sprite('≈ ' + fmt(s.len, 1) + ' m', { size: 26, font: '"JetBrains Mono", monospace', weight: 500, color: '#F2EDE0', bg: s.calle ? 'rgba(107,16,24,0.9)' : 'rgba(122,92,40,0.9)', pad: 8 }, 2.1);
+      const sp = sprite('≈ ' + fmt(s.len, 1) + M, { size: 26, font: '"JetBrains Mono", monospace', weight: 500, color: '#F2EDE0', bg: s.calle ? 'rgba(107,16,24,0.9)' : 'rgba(122,92,40,0.9)', pad: 8 }, 2.1);
       sp.position.set(s.mid[0] + n[0] * (off - 1.4), T.elevation(s.mid[0], s.mid[1]) + 1.0, -(s.mid[1] + n[1] * (off - 1.4))); sp.userData.base = sp.scale.clone(); sp.material.depthTest = false; sp.renderOrder = 21; lotDims.add(sp);
     });
     /* estacas doradas en los vértices */
@@ -476,7 +488,7 @@
     });
     showLotDims(id); placeGlowLights(id); if (!id) glowLights.forEach(pl => { pl.intensity = 0; }); ui && ui.setSelected(id); frameForSheet();
     if (id && (state.view === 'lote' || fly)) { state.view = 'lote'; VIEWS.lote(); env && env.setView('lote'); ui && ui.setView('lote'); }
-    if (id && innerWidth > 720) ui && ui.toast && ui.toast('Lote ' + id + ' seleccionado');   /* en móvil la ficha ya lo anuncia y el aviso taparía el botón */
+    if (id && innerWidth > 720) ui && ui.toast && ui.toast(t('toast.selected', { n: id }));   /* en móvil la ficha ya lo anuncia y el aviso taparía el botón */
   }
   /* con la ficha abierta en escritorio, la escena se corre a la izquierda para que el panel no tape el predio */
   const viewOff = { x: 0, y: 0, tx: 0, ty: 0 };
@@ -634,24 +646,24 @@
     };
     if (!hasWebGL()) {
       /* sin WebGL la interfaz funciona sola (teclado propio, fichas y plano SVG), sin núcleo 3D */
-      ui = PW.ui && PW.ui.init ? PW.ui.init({ data: D, keys: true }, {}) : null; ui && ui.showNoWebGL && ui.showNoWebGL(); return;
+      ui = PW.ui && PW.ui.init ? PW.ui.init({ data: D, keys: true, embed: PARAMS.embed }, {}) : null; ui && ui.showNoWebGL && ui.showNoWebGL(); return;
     }
-    ui = PW.ui && PW.ui.init ? PW.ui.init({ data: D }, handlers) : null;
+    ui = PW.ui && PW.ui.init ? PW.ui.init({ data: D, embed: PARAMS.embed }, handlers) : null;
     ui && ui.setLoading && ui.setLoading(0.05);
     renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
     renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile ? 1.5 : 2)); renderer.setSize(innerWidth, innerHeight);
     renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     if ('outputColorSpace' in renderer) renderer.outputColorSpace = THREE.SRGBColorSpace; else renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
-    renderer.domElement.id = 'escena'; renderer.domElement.setAttribute('role', 'img'); renderer.domElement.setAttribute('aria-label', 'Maqueta 3D de Le Petit Trianon'); document.body.prepend(renderer.domElement);
+    renderer.domElement.id = 'escena'; renderer.domElement.setAttribute('role', 'img'); renderer.domElement.setAttribute('aria-label', t('3d.canvas')); document.body.prepend(renderer.domElement);
     scene = new THREE.Scene(); scene.fog = new THREE.Fog(0xEFD6B8, 220, 640);
     camera = new THREE.PerspectiveCamera(isMobile ? 50 : 42, innerWidth / innerHeight, 0.4, 1800);
     sun = new THREE.DirectionalLight(0xFFC78A, 2); sun.castShadow = true; sun.shadow.mapSize.set(isMobile ? 1024 : 2048, isMobile ? 1024 : 2048);
     const sc = sun.shadow.camera; sc.left = -125; sc.right = 125; sc.top = 125; sc.bottom = -125; sc.near = 20; sc.far = 520; sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.03;
     sun.target.position.set(SITE_C.x, 0, -SITE_C.y); scene.add(sun); scene.add(sun.target);
     hemi = new THREE.HemisphereLight(0xF1D6B4, 0x5C6A3E, 0.7); scene.add(hemi); amb = new THREE.AmbientLight(0xffffff, 0.1); scene.add(amb);
-    setupSky(); setLight('atardecer', true);
-    const ctx = { THREE, scene, camera, renderer, data: D, terrain: T, palette: P, toWorld: T.toWorld, elevation: T.elevation, rng: PW.rng, quality: isMobile ? 'low' : 'high', shadows: true, mode: state.mode, night: false, selectedLot: null, lights: { sun, hemi, amb, cur: lightCur } };
+    setupSky(); setLight(state.light, true);
+    const ctx = { THREE, scene, camera, renderer, data: D, terrain: T, palette: P, toWorld: T.toWorld, elevation: T.elevation, rng: PW.rng, quality: isMobile ? 'low' : 'high', shadows: true, mode: state.mode, night: state.light === 'noche', selectedLot: null, lights: { sun, hemi, amb, cur: lightCur } };
     try { tex = PW.textures && PW.textures.build ? PW.textures.build(ctx) : null; } catch (e) { console.warn('textures', e); tex = null; }
     ui && ui.setLoading && ui.setLoading(0.2); await step();
     buildTerrain(); ui && ui.setLoading && ui.setLoading(0.35); await step();
@@ -672,8 +684,12 @@
     setupPost();
     document.addEventListener('visibilitychange', () => { running = !document.hidden; if (running && !rafId) { lastT = performance.now(); loop(); } });
     ui && ui.setLoading && ui.setLoading(false); ui && ui.setView('maqueta'); ui && ui.setMode(state.mode); ui && ui.setLight(state.light);
-    state.ready = true; loop(); VIEWS.maqueta(); cam.tween.dur = reduced ? 0.01 : 2.6;
-    app.state = state; app.select = select; app.setView = setView; app.setLight = setLight; app.setMode = setMode; app.setCotas = setCotas; app.scene = scene; app.renderer = renderer; app.camera = camera; app.lots = lots; app.cam = cam;
+    state.ready = true; loop();
+    /* estado inicial: ?lote= abre el lote (vista lote salvo que la URL pida otra), ?view= fija la vista; si no, la entrada cinematográfica a la maqueta */
+    if (PARAMS.lote && (!PARAMS.view || PARAMS.view === 'lote')) select(PARAMS.lote, true);
+    else if (PARAMS.view) { if (PARAMS.lote) select(PARAMS.lote, false); setView(PARAMS.view); }
+    else { VIEWS.maqueta(); cam.tween.dur = reduced ? 0.01 : 2.6; }
+    app.state = state; app.params = PARAMS; app.select = select; app.setView = setView; app.setLight = setLight; app.setMode = setMode; app.setCotas = setCotas; app.scene = scene; app.renderer = renderer; app.camera = camera; app.lots = lots; app.cam = cam;
     /* posición en pantalla del disco de un lote (pruebas automáticas) */
     app.screenPos = function (id) { const v = lots[id].label.position.clone().project(camera); return { x: (v.x + 1) / 2 * innerWidth, y: (1 - v.y) / 2 * innerHeight }; };
     /* termina al instante todas las transiciones (pruebas automáticas y capturas) */
