@@ -44,68 +44,34 @@
       <a class="volver" href="../">Abrir la maqueta</a> <a class="volver" href="/le-petit-trianon/">Página del desarrollo</a>
       <div class="kicker">Nota técnica · Le Petit Trianon</div>
       <h1>Cómo se construyó esta maqueta</h1>
-      <p class="lead">La maqueta une dos documentos: el <strong>plano de fraccionamiento de la arquitecta</strong> (calle, lotes, portón, casa existente) y el <strong>plano de ubicación georreferenciado del título</strong>, medido con GNSS en tiempo real por un ingeniero en ciencias geográficas matriculado el 5 de junio de 2026. El límite del predio es el medido, al centímetro; el trazado interior es el de la arquitecta, sin redibujar nada a ojo.</p>
+      <p class="lead">La maqueta reproduce el <strong>plano de fraccionamiento de la Arquitecta Lolia Lima</strong> —la calle empedrada, las siete parcelas, el portón, el área verde del frente, la franja de tacuaras del fondo y la casa existente del lote 1— sobre el límite del predio según el título de propiedad.</p>
 
-      <h2>1. El límite del predio: mensura georreferenciada</h2>
-      <p>El plano de mensura, firmado por un ingeniero en ciencias geográficas matriculado, fija cuatro vértices con coordenadas UTM y confirma las seis cotas del título. Los dos vértices del quiebre, que el plano no tabula, se deducen de la geometría: el lado de 40 m y el de 60 m son paralelos al lindero de 100 m, y el quiebre de 30 m es paralelo al frente. Con esa construcción el lado deducido mide exactamente 60,00 m y la superficie resultante es 5.468,82 m², contra 5.468,8157 m² del título: una diferencia total de 45 cm² sobre todo el predio.</p>
-      <dl class="datos">
-        <dt>Inmueble</dt><dd>Fracción C</dd>
-        <dt>Ubicación</dt><dd>Pirayu'i · Distrito de San Bernardino · Departamento de Cordillera</dd>
-        <dt>Superficie</dt><dd>5.468 m² 8.157 cm² (título)</dd>
-        <dt>Sistema</dt><dd>Proyección UTM · Datum WGS84 · Zona 21 J Sur</dd>
-        <dt>Medición</dt><dd>Receptor GNSS · medición RTK (tiempo real cinemática)</dd>
-        <dt>Profesional</dt><dd>Un ingeniero en ciencias geográficas matriculado</dd>
-        <dt>Fecha</dt><dd>05-06-2026</dd>
-        <dt>Centro del predio</dt><dd class="mono">25°19′59,5″ S · 57°15′24,2″ O (UTM E 474.163,3 · N 7.198.134,0)</dd>
-        <dt>Orientación</dt><dd>El frente (vértice 2 → a) tiene azimut de cuadrícula 54,06° (UTM 21S; el norte verdadero difiere unos 0,1° por la convergencia de meridianos). En la maqueta ese norte se muestra con la rosa de los vientos junto a la ruta y rige la posición del sol.</dd>
-      </dl>
+      <h2>1. El plano</h2>
+      <p>Cada línea del plano de la Arquitecta Lolia Lima se llevó a metros con una sola escala uniforme, sin redibujar nada a ojo. El predio mide 5.468,82 m² según el título; su contorno es el que se ve en la maqueta y, en dorado, en la vista aérea de la página del desarrollo. En la vista Plano, el dibujo original se muestra como capa base.</p>
+
+      <h2>2. Las siete parcelas</h2>
       <table>
-        <thead><tr><th>Vértice</th><th class="num">Este (m)</th><th class="num">Norte (m)</th><th>Origen</th></tr></thead>
+        <thead><tr><th>Parcela</th><th class="num">Superficie</th><th class="num">Frente a la calle</th></tr></thead>
         <tbody>
-          <tr><td>2 (esquina frente / camino vecinal)</td><td class="num">474.161,7984</td><td class="num">7.198.081,1396</td><td>medido</td></tr>
-          <tr><td>a (esquina frente / fracción B)</td><td class="num">474.222,5228</td><td class="num">7.198.125,1572</td><td>medido</td></tr>
-          <tr><td>b (fondo / fracción B)</td><td class="num">474.143,3880</td><td class="num">7.198.186,2939</td><td>medido</td></tr>
-          <tr><td>c (fondo / lindero oeste)</td><td class="num">474.106,9534</td><td class="num">7.198.159,8833</td><td>medido</td></tr>
-          <tr><td>quiebre 1 (fin del lado de 40 m)</td><td class="num">474.130,144</td><td class="num">7.198.105,594</td><td>deducido</td></tr>
-          <tr><td>quiebre 2 (fin del lado de 30 m)</td><td class="num">474.154,434</td><td class="num">7.198.123,201</td><td>deducido</td></tr>
+          <tr><td>1 · con la casa existente</td><td class="num">726,28 m²</td><td class="num">≈ 21,8 m</td></tr>
+          <tr><td>2</td><td class="num">549,20 m²</td><td class="num">≈ 17,5 m</td></tr>
+          <tr><td>3</td><td class="num">633,90 m²</td><td class="num">≈ 19,9 m</td></tr>
+          <tr><td>4</td><td class="num">399,46 m²</td><td class="num">≈ 23,6 m</td></tr>
+          <tr><td>5</td><td class="num">419,90 m²</td><td class="num">≈ 23,7 m</td></tr>
+          <tr><td>6</td><td class="num">497,34 m²</td><td class="num">≈ 23,3 m</td></tr>
+          <tr><td>7</td><td class="num">491,55 m²</td><td class="num">≈ 15,8 m</td></tr>
         </tbody>
       </table>
-      <div class="dos">
-        <figure><img src="../mensura-plano.jpg" alt="Plano de ubicación georreferenciado del título: dibujo del predio y tabla de coordenadas, 05-06-2026" /><figcaption>Plano de ubicación georreferenciado del título (fotografía del original, norte arriba: dibujo y tabla de coordenadas).</figcaption></figure>
-        <figure><img src="../mensura-satelite.jpg" alt="Recuadro satelital del plano con el polígono del predio" /><figcaption>Recuadro satelital del mismo plano: el polígono del predio sobre la ruta, con el quiebre hacia el oeste.</figcaption></figure>
-      </div>
-      <div class="nota">Linderos según la mensura: frente y lado oeste del tramo de 40 m sobre camino vecinal (el frente es la ruta San Bernardino – Pirayú en el plano de la arquitecta); el quiebre y el lado de 60 m lindan con las fracciones D, E, F y G; el fondo da a otro camino vecinal; el lindero de 100 m es la fracción B, “derechos del vendedor” en el plano de la arquitecta.</div>
+      <p>Superficies calculadas sobre el límite del predio; las medidas definitivas son las del título. Las siete suman 3.717,63 m²; el resto es la calle con sus veredas, el área verde del frente, el tacuaral y el portón.</p>
 
-      <h2>2. Del plano de la arquitecta al modelo</h2>
-      <p>El plano de la arquitecta se leyó como dibujo vectorial, no como imagen. Cada línea se convirtió a metros con una única transformación uniforme (misma escala en los dos ejes), de modo que las proporciones del dibujo se conservan. Luego el contorno del predio se reemplazó por el polígono medido y la calle, las veredas y las líneas divisorias de lotes se mantuvieron en su posición exacta en metros. El dibujo original se conserva como capa base (visible en la vista Plano), ajustado al límite medido con una deformación suave que solo afecta al dibujo, no a la geometría. En esa capa se omiten los rótulos de texto exteriores del dibujo (el nombre de la ruta bajo el frente y la leyenda del lindero este), que quedaban encimados con los de la maqueta.</p>
-      <div class="nota">El límite del predio es el medido: con él el polígono cierra exacto y los ángulos del dibujo coinciden con los de la mensura (73,6° en el vértice a, 106,4° en b). El plano de fraccionamiento se ajusta a esa mensura; las superficies resultantes están en el punto 3.</div>
+      <h2>3. Lo que es real y lo que es ambientación</h2>
+      <p>La casa existente del lote 1 —una sola planta, losa plana, cochera abierta, galería de acceso y piscina con jacuzzi— se representa a partir del render de la Arquitecta Lolia Lima; en la maqueta, sus fachadas, aberturas y materiales son una interpretación ilustrativa. Los dos árboles existentes que el plano marca dentro de la calzada se conservan, cada uno en su isleta. Los demás árboles, cercos y luminarias son ambientación: lapachos rosados sobre la calle, palmeras en el acceso y cercos vivos entre lotes.</p>
+      <p>La pendiente del terreno es ilustrativa. La luz sigue la orientación real del predio: al mediodía el sol está al norte. En las vistas Maqueta y Plano el predio se presenta como maqueta de mesa sobre una página marfil; el entorno completo aparece en las vistas Ruta, Lote y Dron.</p>
 
-      <h2>3. Superficies de los lotes</h2>
-      <p>La superficie de cada lote que muestra la maqueta es la calculada sobre la mensura georreferenciada: la que queda al recortar las líneas divisorias del plano sobre el límite medido del predio. La columna “plano de fraccionamiento” recoge la tabla original de la arquitecta, dibujada antes de la mensura, como referencia.</p>
-      <table>
-        <thead><tr><th>Lote</th><th class="num">Plano de fraccionamiento</th><th class="num">Sobre la mensura (maqueta)</th><th class="num">Frente a la calle</th></tr></thead>
-        <tbody>
-          <tr><td>1 (casa existente)</td><td class="num">723,03 m²</td><td class="num">726,28 m²</td><td class="num">≈ 21,8 m</td></tr>
-          <tr><td>2</td><td class="num">539,00 m²</td><td class="num">549,20 m²</td><td class="num">≈ 17,5 m</td></tr>
-          <tr><td>3</td><td class="num">618,44 m²</td><td class="num">633,90 m²</td><td class="num">≈ 19,9 m</td></tr>
-          <tr><td>4</td><td class="num">400,00 m²</td><td class="num">399,46 m²</td><td class="num">≈ 23,6 m</td></tr>
-          <tr><td>5</td><td class="num">380,41 m²</td><td class="num">419,90 m²</td><td class="num">≈ 23,7 m</td></tr>
-          <tr><td>6</td><td class="num">511,84 m²</td><td class="num">497,34 m²</td><td class="num">≈ 23,3 m</td></tr>
-          <tr><td>7</td><td class="num">500,00 m²</td><td class="num">491,55 m²</td><td class="num">≈ 15,8 m</td></tr>
-        </tbody>
-      </table>
-      <div class="nota">Las superficies calculadas sobre la mensura son las que muestran la ficha y los rótulos de la maqueta; la tabla del plano de fraccionamiento, dibujada antes de la mensura, se mantiene como referencia.</div>
-      <p>La suma de los siete lotes sobre la mensura es 3.717,63 m² (3.672,72 m² en el plano de fraccionamiento); el resto del predio son la calle con sus veredas, el área verde del frente, la franja de tacuaras del fondo y el portón.</p>
-
-      <h2>4. Lo que la maqueta no inventa</h2>
-      <p>La calle empedrada, el ancho de veredas, el portón con casilla de portero, la franja de tacuaras del fondo, el área verde del frente, la casa del lote 1 y su piscina están donde el plano de la arquitecta los dibuja. La casa existente del lote 1 —una sola planta, losa plana, cochera abierta, galería de acceso y piscina con jacuzzi— se representa a partir del render de la arquitecta; en la maqueta, sus fachadas, aberturas y materiales son una interpretación ilustrativa. Los dos árboles existentes que el plano marca dentro de la calzada se conservan en su lugar, con una isleta con cordón alrededor, como dibuja la arquitecta. En la maqueta, el volumen de la cochera se recortó 1,1 m para no cruzar la divisoria con el lote 2, según el plano de la arquitecta. Los demás árboles, cercos y luminarias son ambientación: se colocaron con criterio paisajístico (lapachos rosados sobre la calle, palmeras en el acceso, cercos vivos entre lotes) y no forman parte del plano.</p>
-      <p>La pendiente del terreno es ilustrativa (una subida suave hacia el fondo); no hay relevamiento altimétrico. La luz de la maqueta sigue el norte medido: al mediodía el sol está al norte y las sombras caen hacia la ruta, como en el lugar.</p>
-      <p>En las vistas Maqueta y Plano el predio se muestra como maqueta de mesa sobre una página marfil (medianoche de noche), con la ruta y el camino vecinal como borde de la losa; el entorno completo aparece en las vistas Ruta, Lote y Dron.</p>
-
-      <h2>5. Cómo se usa</h2>
+      <h2>4. Cómo se usa</h2>
       <p>Pasa el mouse por un lote para resaltarlo y haz clic para abrir su ficha. Con el teclado: los números 1 a 7 seleccionan un lote, las flechas pasan al siguiente y Escape cierra. V cambia de vista (maqueta, plano, ruta, lote, dron), L cambia la luz (día, atardecer, noche), T cambia la vegetación (parque o bosque), C muestra las cotas, P alterna el modo plano, R vuelve al inicio y ? abre la ayuda. En el celular: arrastrar gira, dos dedos acercan y desplazan, tocar un lote lo selecciona.</p>
 
-      <div class="firma">Maqueta preparada por el equipo de Paraways sobre el plano de la arquitecta del proyecto y el plano de ubicación georreferenciado del título. Consultas por WhatsApp al <a href="https://wa.me/595993474309?text=Hola%2C%20le%C3%AD%20la%20nota%20t%C3%A9cnica%20de%20la%20maqueta%20de%20Le%20Petit%20Trianon%20(San%20Bernardino)%20y%20quiero%20saber%20m%C3%A1s." target="_blank" rel="noopener" data-wa-from="nota-tecnica">+595 993 474 309</a>.</div>
+      <div class="firma">Maqueta preparada por el equipo de Paraways sobre el plano de fraccionamiento de la Arquitecta Lolia Lima. Consultas por WhatsApp al <a href="https://wa.me/595993474309?text=Hola%2C%20le%C3%AD%20la%20nota%20t%C3%A9cnica%20de%20la%20maqueta%20de%20Le%20Petit%20Trianon%20(San%20Bernardino)%20y%20quiero%20saber%20m%C3%A1s." target="_blank" rel="noopener" data-wa-from="nota-tecnica">+595 993 474 309</a>.</div>
     </main>
   </body>
 </html>

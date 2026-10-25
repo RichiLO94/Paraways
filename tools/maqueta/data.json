@@ -2,7 +2,7 @@
  "meta": {
   "proyecto": "Le Petit Trianon",
   "lugar": "San Bernardino · Ruta San Bernardino – Pirayú (Ruta II)",
-  "fuente": "Plano de fraccionamiento (Fracción C) · archivo PDF original de la arquitecta",
+  "fuente": "Plano de fraccionamiento (Fracción C) · archivo PDF original de la Arquitecta Lolia Lima",
   "unidades": "metros",
   "frame": "origen en el vértice 2 (esquina camino vecinal / ruta); X hacia el este (lado Derechos del vendedor); Y hacia el fondo (norte del plano)",
   "escala": "uniforme, ajustada en el plano de la arquitecta; límite reemplazado por las coordenadas medidas",
@@ -10963,10 +10963,6 @@
    "quiebre y lindero oeste (n1–n2–c)": "fracciones D, E, F y G",
    "fondo (c–b)": "camino vecinal",
    "lindero este (b–a)": "fracción B (derechos del vendedor)"
-  },
-  "imagenes": {
-   "plano": "mensura-plano.jpg",
-   "satelite": "mensura-satelite.jpg"
   }
  },
  "islands": [

@@ -1,6 +1,6 @@
 # Le Petit Trianon · maqueta 3D
 
-Visor interactivo del fraccionamiento **Le Petit Trianon** (siete lotes en San Bernardino, departamento de Cordillera, Paraguay), construido sobre el plano de fraccionamiento de la arquitecta y la mensura georreferenciada del título. Es una sub-app autónoma de paraways.com: HTML, CSS y JavaScript clásico, una copia local de three.js y ningún paso de build. Se sirve en `/le-petit-trianon/maqueta/` y la página del desarrollo (`/le-petit-trianon/`) la embebe en un iframe.
+Visor interactivo del fraccionamiento **Le Petit Trianon** (siete lotes en San Bernardino, departamento de Cordillera, Paraguay), construido sobre el plano de fraccionamiento de la Arquitecta Lolia Lima y la mensura georreferenciada del título. Es una sub-app autónoma de paraways.com: HTML, CSS y JavaScript clásico, una copia local de three.js y ningún paso de build. Se sirve en `/le-petit-trianon/maqueta/` y la página del desarrollo (`/le-petit-trianon/`) la embebe en un iframe.
 
 Este archivo explica cómo correrla, probarla y editarla. El detalle técnico de cada módulo y de los datos está en [`CONTRACT.md`](CONTRACT.md); léelo antes de tocar un módulo.
 
@@ -18,12 +18,12 @@ le-petit-trianon/maqueta/
   terrain.js            PW.terrain (elevación, toWorld), PW.palette (colores), PW.rng (aleatorio determinista)
   textures.js           PW.textures: texturas procedurales (CanvasTexture), sprites y planos de texto
   vegetation.js         PW.vegetation: arbolado instanciado (parque/bosque), césped, cercos vivos
-  architecture.js       PW.architecture: casa modelo, portón y casilla, cerco, faroles, marcadores de lote
+  architecture.js       PW.architecture: casa existente, portón y casilla, cerco, faroles, marcadores de lote
   environment.js        PW.environment: cielo y PMREM, sombra del sol, modo diorama (maqueta de mesa)
   ui.js, ui.css         PW.ui: cabecera, chips, minimapa, barra, ficha de lote, ayuda, avisos
   app.js                núcleo: escena, cámara, vistas, luz, selección, parámetros de URL; expone PW.app
-  plano-base.png        dibujo de la arquitecta, capa base de la vista Plano
-  mensura-plano.jpg, mensura-satelite.jpg   fotos del plano de mensura (solo las usa la nota técnica)
+  plano-base.png        dibujo de la Arquitecta Lolia Lima, capa base de la vista Plano
+  (la nota técnica no usa imágenes externas)
   nota-tecnica/index.html   nota técnica (ES): método, coordenadas, tablas de superficies
   dev/                  páginas de prueba (noindex): harness.html, ui-test.html, architecture-test.html, textures-test.html
   CONTRACT.md           contrato de módulos y datos
@@ -65,8 +65,8 @@ Teclado: `1`–`7` elige lote, `←` `→` cambia de lote, `Esc` cierra, `V` vis
 
 `data.js` es una sola línea: `window.PW_DATA = { … };`. Todo está en **metros** en el marco del plano: origen en el vértice 2 (esquina camino vecinal / ruta), X hacia el este, Y hacia el fondo. `terrain.js` convierte a mundo 3D (`toWorld(x, y)` → `(x, elevación, −y)`). Claves de primer nivel: `meta`, `site` (polígono del predio medido, lados con sus cotas, anillo), `lots[]`, `road` (eje, calzada, veredas, anchos, curva), `tacuaral`, `front` (área verde, muro, portón con casilla y carriles), `house` (volúmenes, pileta, cochera, contorno), `trees_plan`, `islands`, `ruta`, `camino_vecinal`, `verde_extra`, `geo` (la mensura: CRS, vértices, centroide, azimut). El detalle campo por campo está en `CONTRACT.md`.
 
-- **Superficies.** Cada lote tiene `area_drawn` (calculada sobre la mensura georreferenciada: es la que muestran la ficha, los chips y los rótulos 3D) y `area_plan` (tabla del plano de fraccionamiento de la arquitecta, anterior a la mensura; referencia en la nota técnica). `frente_calle` es aproximado, con un decimal. Si cambias una superficie, actualiza también: `tools/maqueta/data.json`, la tabla de `nota-tecnica/index.html`, los chips de lotes de la página del desarrollo (`le-petit-trianon/index.html` y sus idiomas) y los valores esperados en `tools/maqueta/ui-interact-test.js` e `i18n-test.js` (lote 3: `633,90 m²`).
-- **Plano base.** `plano-base.png` es el dibujo de la arquitecta sin rótulos exteriores; `app.js` lo apoya sobre el predio y lo deforma al límite medido en la vista Plano. Es solo una imagen: la geometría viene de `data.js`.
+- **Superficies.** Cada lote tiene `area_drawn` (calculada sobre la mensura georreferenciada: es la que muestran la ficha, los chips y los rótulos 3D) y `area_plan` (tabla del plano de fraccionamiento de la Arquitecta Lolia Lima, anterior a la mensura; referencia en la nota técnica). `frente_calle` es aproximado, con un decimal. Si cambias una superficie, actualiza también: `tools/maqueta/data.json`, la tabla de `nota-tecnica/index.html`, los chips de lotes de la página del desarrollo (`le-petit-trianon/index.html` y sus idiomas) y los valores esperados en `tools/maqueta/ui-interact-test.js` e `i18n-test.js` (lote 3: `633,90 m²`).
+- **Plano base.** `plano-base.png` es el dibujo de la Arquitecta Lolia Lima sin rótulos exteriores; `app.js` lo apoya sobre el predio y lo deforma al límite medido en la vista Plano. Es solo una imagen: la geometría viene de `data.js`.
 - **Mensura.** `geo` y `site.polygon` llevan el límite medido (GNSS RTK, UTM 21S, WGS84). El norte y las coordenadas de la cabecera salen de `geo` (`azimut_eje_x`, `centroide`). No contiene nombres de personas y debe seguir así.
 - **Copia legible.** `tools/maqueta/data.json` es exactamente `JSON.stringify(PW_DATA, null, 1)`: sirve para leer y comparar. Tras editar `data.js`, regenérala desde `tools/maqueta/`:
 
@@ -177,7 +177,7 @@ Valen para el visor, la nota técnica y cualquier texto nuevo:
 - Un solo canal de contacto: WhatsApp `https://wa.me/595993474309` con `?text=` prellenado (URL-encoded) en el idioma del visitante, que nombre el lote o la sección desde donde se escribe; enlaces con `target="_blank" rel="noopener"` y `data-wa-from`.
 - Nada que no esté verificado: superficies, medidas, cotas y nombres vienen de `PW_DATA` y de la nota técnica. Lo que falta se muestra como «—» y se reporta como `[a confirmar]`; no se inventa.
 - Ningún nombre de personas en código, datos, imágenes ni documentación: se firma como «el equipo de Paraways». El repositorio es público: sin notas internas.
-- Disclaimers en positivo («Lo que ves es el plano de la arquitecta…», «Las medidas definitivas son las del título»).
+- Disclaimers en positivo («Lo que ves es el plano de la Arquitecta Lolia Lima…», «Las medidas definitivas son las del título»).
 - Sin emojis: íconos y flechas solo como SVG inline.
 - Sin librerías externas, sin CDNs, sin `fetch`, sin `Math.random` (usa `PW.rng(seed)`). Lo único remoto: Google Fonts (las inyecta `ui.js`) y `/_vercel/insights/script.js`.
 - Español rioplatense neutro con «tú»; PT-BR con «você»; EN sobrio; FR con «vous» y espacios finos en las cifras. El nombre es siempre **Le Petit Trianon**.
