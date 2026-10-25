@@ -4,8 +4,10 @@ y exportación web. También expone la gradación para la película del hero (ve
 Uso:
   python photo-clean.py <parte1.mov> <carpeta raw> <carpeta de trabajo> <carpeta assets> <data.js> [escena ...]
                         [--mensura hoja-satelital.jpg]   (opcional: control independiente del ajuste de la aérea)
+                        [--parte2b parte2b.mov]          (por defecto, parte2b.mov junto a parte1.mov; sin ella, la
+                                                          piscina sale de raw/piscina.png recortada)
     <parte1.mov>         video de la publicación anterior (960×544, 30 fps)
-    <carpeta raw>        capturas de respaldo: piscina.png (921×522); la piscina no está en la parte 1 del video
+    <carpeta raw>        capturas de respaldo: piscina.png (921×522), solo si falta parte2b.mov
     <carpeta de trabajo> cuadros extraídos, máscaras, maestros PNG e intermedios (no van al repo)
     <carpeta assets>     destino de los JPG del sitio (assets/ del repo)
     <data.js>            le-petit-trianon/maqueta/data.js (polígono medido, para alinear la aérea)
@@ -30,9 +32,11 @@ Método por escena (cuadros del video, numerados desde 0 a 30 fps)
            (dilatación 7 px), relleno Shift-Map (xphoto) y corrección de baja frecuencia con el entorno. Se compararon
            Criminisi, FSR rápido/óptimo, cv2.inpaint y un plato temporal sobre el plano del suelo (pocas coincidencias
            en la tierra movida): Shift-Map es el único sin bordes ni manchas a 100 %.
-  piscina  captura raw/piscina.png (la parte 2 del video no se pudo descargar). El subtítulo cruza la losa clara, el
-           borde de la piscina y dos juntas: ningún relleno quedó limpio, así que se recorta por encima del subtítulo
-           (921×396, 2,33:1); la piscina y el jacuzzi quedan completos.
+  piscina  parte 2b del video, cuadro 214 (7,13 s): piscina con jacuzzi, césped y la casa detrás, cámara casi quieta;
+           promedio robusto de los cuadros 186–224 registrados sobre el 214, y «Hermosa piscina con jacuzzi.» (sobre
+           el césped) se quita con la misma máscara + Shift-Map que el parque. Respaldo sin la parte 2: la captura
+           raw/piscina.png recortada por encima del subtítulo (921×396, 2,33:1), porque allí el subtítulo cruza la
+           losa clara, el borde de la piscina y dos juntas y ningún relleno quedó limpio.
   aerea    plato limpio por fusión temporal de los cuadros 490–671 de la vista de Google Earth, registrados con
            homografías SIFT sobre la referencia (cuadro 520: norte-arriba, antes de que la cámara empiece a girar).
            El contorno blanco y las etiquetas de Google Maps están pegados al mapa; los rótulos y la flecha, a la
@@ -74,6 +78,7 @@ FRAMES = {
     'porton': list(range(104, 123)),
     'parque': [332],
     'aerea': list(range(488, 676)),
+    'piscina2b': list(range(186, 225)),         # de parte2b.mov
 }
 
 
@@ -288,28 +293,58 @@ def scene_porton(fr, raw, work):
     return robust_merge(ref, frames, valids, 5.0), None
 
 
-def scene_parque(fr, raw, work):
-    img = deflare_streak(fr(332), 548, 612, 300)
-    Hh, W = img.shape[:2]
+def subtitle_mask(img, box, dil=7):
+    """Subtítulo blanco con borde y sombra oscuros: letras claras y poco saturadas dentro de la caja, dilatadas para
+    cubrir borde, sombra abajo-derecha y el sangrado de croma del 4:2:0."""
+    Hh, W = img.shape[:2]; x0, y0, x1, y1 = box
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    core = np.zeros((Hh, W), np.uint8); y0, y1, x0, x1 = 420, 475, 285, 675
+    core = np.zeros((Hh, W), np.uint8)
     core[y0:y1, x0:x1] = ((hsv[y0:y1, x0:x1, 2] >= 190) & (hsv[y0:y1, x0:x1, 1] <= 70)) * 255
     core = drop_small(core, 4)
-    m = cv2.dilate(core, E(7)); m |= np.roll(np.roll(m, 2, 0), 2, 1)
-    m = fill_holes(cv2.morphologyEx(m, cv2.MORPH_CLOSE, E(4)))
-    bx0, by0, bx1, by1 = 150, 300, 800, Hh
+    m = cv2.dilate(core, E(dil)); m |= np.roll(np.roll(m, 2, 0), 2, 1)
+    return fill_holes(cv2.morphologyEx(m, cv2.MORPH_CLOSE, E(4)))
+
+
+def shiftmap_fill(img, m, window):
+    """Relleno Shift-Map (xphoto, en Lab) dentro de una ventana + corrección de baja frecuencia con el entorno."""
+    bx0, by0, bx1, by1 = window
     sub = img[by0:by1, bx0:bx1]; ms = m[by0:by1, bx0:bx1]
     dst = np.zeros_like(sub)
     cv2.xphoto.inpaint(cv2.cvtColor(sub, cv2.COLOR_BGR2Lab), 255 - ms, dst, cv2.xphoto.INPAINT_SHIFTMAP)
     dst = cv2.cvtColor(dst, cv2.COLOR_Lab2BGR)
     out = img.copy(); out[by0:by1, bx0:bx1] = np.where((ms > 0)[..., None], dst, sub)
-    return lf_fix(img, out, m, 6, 1.0), m
+    return lf_fix(img, out, m, 6, 1.0)
+
+
+def scene_parque(fr, raw, work):
+    img = deflare_streak(fr(332), 548, 612, 300)
+    m = subtitle_mask(img, (285, 420, 675, 475))
+    return shiftmap_fill(img, m, (150, 300, 800, img.shape[0])), m
+
+
+FR2B = None               # cuadros de parte2b.mov (piscina), lo fija main()
 
 
 def scene_piscina(fr, raw, work):
+    if FR2B is not None:
+        # parte 2b, 5,5–7,5 s: piscina con jacuzzi, césped y la casa detrás; cámara casi quieta. Cuadro 214 (el más
+        # nítido) + promedio robusto de 186–224; el subtítulo «Hermosa piscina con jacuzzi.» cae sobre el césped.
+        ref = FR2B(214); Hh, W = ref.shape[:2]
+        box = (290, 410, 675, 460)
+        amask = np.full((Hh, W), 255, np.uint8); amask[box[1] - 10:box[3] + 10, box[0] - 10:box[2] + 10] = 0
+        frames, valids = [], []
+        for i in FRAMES['piscina2b']:
+            if i == 214:
+                continue
+            w, inside = align_to(ref, FR2B(i), amask)
+            frames.append(w); valids.append((inside > 0).astype(np.float32))
+        merged = robust_merge(ref, frames, valids, 5.0)
+        m = subtitle_mask(ref, box)
+        return shiftmap_fill(merged, m, (120, 300, 840, Hh)), m
+    # respaldo: la captura raw/piscina.png, recortada por encima del subtítulo (empieza en y = 401)
     img = cv2.imread(os.path.join(raw, 'piscina.png'))
     assert img is not None and img.shape[:2] == (522, 921), 'piscina.png: se espera 921×522'
-    return img[:396].copy(), None                               # el subtítulo empieza en y = 401
+    return img[:396].copy(), None
 
 
 # ---------------------------------------------------------------- aérea: plato limpio por fusión temporal
@@ -489,7 +524,7 @@ PRESETS = {
     'piscina': dict(exposure=0.985, gamma=1.0, warm=1.0, green=1.10, lift=0.035, contrast=0.12),
     'aerea':   dict(exposure=1.08, gamma=0.86, warm=1.0, green=1.06, lift=0.03, contrast=0.14),
 }
-DENOISE = {'casa': 2, 'porton': 2, 'parque': 2, 'piscina': 1, 'aerea': 2}
+DENOISE = {'casa': 2, 'porton': 2, 'parque': 2, 'piscina': 2, 'aerea': 2}
 
 
 def denoise(bgr, h=2):
@@ -593,16 +628,23 @@ LIMITS = {1280: (230, 1.4), 800: (110, 1.0)}     # KB máximos y grano por ancho
 def main():
     if len(sys.argv) < 6:
         print(__doc__); sys.exit(1)
+    global FR2B
     args = sys.argv[1:]
-    mensura = None
-    if '--mensura' in args:
-        k = args.index('--mensura'); mensura = args[k + 1]; del args[k:k + 2]
+    opt = {}
+    for key in ('--mensura', '--parte2b'):
+        if key in args:
+            k = args.index(key); opt[key] = args[k + 1]; del args[k:k + 2]
+    mensura = opt.get('--mensura')
     video, raw, work, assets, data_js = args[:5]
     names = args[5:] or list(SCENES)
     os.makedirs(work, exist_ok=True); os.makedirs(assets, exist_ok=True)
     fdir = os.path.join(work, 'cuadros')
     extract_frames(video, sorted({i for n in names for i in FRAMES.get(n, [])}), fdir)
     fr = Frames(fdir)
+    p2b = opt.get('--parte2b') or os.path.join(os.path.dirname(os.path.abspath(video)), 'parte2b.mov')
+    if 'piscina' in names and os.path.exists(p2b):
+        extract_frames(p2b, FRAMES['piscina2b'], os.path.join(work, 'cuadros-2b'))
+        FR2B = Frames(os.path.join(work, 'cuadros-2b'))
     here = os.path.dirname(os.path.abspath(__file__))
     rp = os.path.join(work, 'photo-clean-report.json')
     report = json.load(open(rp, encoding='utf-8')) if os.path.exists(rp) else {}

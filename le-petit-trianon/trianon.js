@@ -37,7 +37,6 @@
   (function film() {
     var video = document.querySelector('[data-lpt2-film]');
     if (!video) return;
-    var host = video.closest ? video.closest('[data-lpt2-film-host]') : null;
     var toggle = document.querySelector('[data-lpt2-film-toggle]');
     var F = I18N.film || {};
     var LABEL = { pause: F.pause || 'Pausar el video', play: F.play || 'Reproducir el video' };
@@ -76,11 +75,9 @@
     };
     chosen[chosen.length - 1].addEventListener('error', function () {
       failed = true;
-      if (host) host.classList.add('is-poster');
       if (toggle) toggle.hidden = true;
     });
     video.addEventListener('playing', function () {
-      if (host) host.classList.add('is-playing');
       if (toggle) toggle.hidden = false;
       if (!played) { played = true; track('trianon_film', mobile ? 'movil' : 'escritorio'); }
     });

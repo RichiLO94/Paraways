@@ -22,6 +22,7 @@ const { chromium } = require('playwright');
 const path = require('path');
 const fs = require('fs');
 const [, , route = '/le-petit-trianon/', tag = 'es'] = process.argv;
+const LANG = (/^\/(pt|en|fr)\//.exec(route) || [null, 'es'])[1];
 const BASE = process.env.PW_BASE || 'http://127.0.0.1:8765';
 const STANDINS = process.env.PW_STANDINS || '';
 const OUT = path.join(__dirname, 'out');
@@ -38,8 +39,9 @@ const VIEWS = [[1440, 900, 'desktop'], [390, 844, 'mobile']];
   const check = (name, got, want) => results.push({ name, ok: got === want, got, want });
   const note = (name, got) => results.push({ name, ok: true, got });
   const urls = new Set();
-  const pending = new Set();
-  const standinsUsed = new Set();
+  const pending = new Set();      /* assets del contrato que el servidor todavía no tiene (404) */
+  const standinsUsed = new Set(); /* de esos, los que se sirvieron con un provisional (PW_STANDINS) */
+  const served404 = new Set();    /* los que le llegaron a la página como 404 */
   const errorsByView = {};
 
   const newPage = async (w, h, label, extra = {}) => {
@@ -77,7 +79,7 @@ const VIEWS = [[1440, 900, 'desktop'], [390, 844, 'mobile']];
     p.on('response', (r) => {
       const u = r.url();
       if (r.status() < 400 || IGNORE.test(u)) return;
-      if (PENDING.test(u)) { pending.add(new URL(u).pathname); return; }
+      if (PENDING.test(u)) { pending.add(new URL(u).pathname); served404.add(new URL(u).pathname); return; }
       errs.push('http ' + r.status() + ': ' + u);
     });
     await p.goto(BASE + route, { waitUntil: 'load' });
@@ -157,7 +159,9 @@ const VIEWS = [[1440, 900, 'desktop'], [390, 844, 'mobile']];
     if (label === 'desktop') check('desktop: fuentes de escritorio (webm + mp4), sin la móvil', JSON.stringify(film.srcs), JSON.stringify(['/assets/trianon-film.webm', '/assets/trianon-film.mp4']));
     else check('mobile: solo la fuente móvil', JSON.stringify(film.srcs), JSON.stringify(['/assets/trianon-film-movil.mp4']));
     const h264 = await p.evaluate(() => document.createElement('video').canPlayType('video/mp4; codecs="avc1.42E01E"'));
-    let filmAvailable = !!film.currentSrc && !film.paused && !(label === 'mobile' && !h264);
+    const filmMissing = film.srcs.some((u) => served404.has(u));
+    let filmAvailable = !!film.currentSrc && !film.paused && !filmMissing && !(label === 'mobile' && !h264);
+    if (filmMissing) note(`${label}: la película todavía no está en /assets (queda el póster)`, film.srcs.filter((u) => served404.has(u)));
     if (label === 'mobile' && !h264) note('mobile: este Chromium de prueba no decodifica H.264: la reproducción del mp4 móvil se comprueba en un navegador real', film.currentSrc || '(sin archivo)');
     if (filmAvailable) {
       try {
@@ -179,7 +183,7 @@ const VIEWS = [[1440, 900, 'desktop'], [390, 844, 'mobile']];
       await p.click('[data-lpt2-film-toggle]');
       await p.waitForTimeout(300);
       check(`${label}: el botón la reanuda`, await p.evaluate(() => !document.querySelector('[data-lpt2-film]').paused), true);
-    } else {
+    } else if (!filmMissing && !(label === 'mobile' && !h264)) {
       note(`${label}: película no disponible todavía (queda el póster)`, film.currentSrc || '(sin archivo)');
     }
 
@@ -206,7 +210,7 @@ const VIEWS = [[1440, 900, 'desktop'], [390, 844, 'mobile']];
     }
 
     /* Fotos: tamaño mostrado ≤ 1280 px; tamaño natural cuando el archivo existe */
-    const photos = await p.evaluate(() => Array.from(document.querySelectorAll('.lpt2-ph img, .lpt2-cierre__bg')).map((im) => ({ src: im.getAttribute('src'), shown: Math.round(im.getBoundingClientRect().width), natural: im.naturalWidth ? im.naturalWidth + '×' + im.naturalHeight : '—', attrs: im.getAttribute('width') + '×' + im.getAttribute('height') })));
+    const photos = await p.evaluate(() => Array.from(document.querySelectorAll('.lpt2-ph img, .lpt2-cierre__bg')).map((im) => ({ shown: Math.round(im.getBoundingClientRect().width), file: (im.currentSrc || '').split('/').pop() || '—', attrs: im.getAttribute('width') + '×' + im.getAttribute('height') })));
     check(`${label}: ninguna foto real se muestra a más de 1280 px`, photos.every((x) => x.shown <= 1280), true);
     note(`${label}: fotos`, photos);
 
@@ -284,7 +288,7 @@ const VIEWS = [[1440, 900, 'desktop'], [390, 844, 'mobile']];
 
     /* La maqueta: «Explorar la maqueta 3D» de la sección III */
     const open = await p.evaluate(() => { const a = document.querySelector('#maqueta .lpt-stage__open'); return { href: a.getAttribute('href'), role: a.getAttribute('role'), text: a.textContent.trim() }; });
-    check(`${label}: «Explorar la maqueta 3D» es un enlace al visor`, open.href === '/le-petit-trianon/maqueta/?lang=' + tag && /Explorar|3D/.test(open.text), true);
+    check(`${label}: «Explorar la maqueta 3D» es un enlace al visor`, open.href === '/le-petit-trianon/maqueta/?lang=' + LANG && /Explorar|3D/.test(open.text), true);
     if (label === 'desktop') {
       check('desktop: actúa como botón (role)', open.role, 'button');
       check('desktop: sin iframe antes del gesto', await p.evaluate(() => !!document.querySelector('.lpt-stage iframe')), false);
@@ -295,14 +299,14 @@ const VIEWS = [[1440, 900, 'desktop'], [390, 844, 'mobile']];
       const fr = await p.evaluate(() => { const f = document.querySelector('.lpt-stage iframe'); return f ? { src: f.getAttribute('src'), title: f.title, loading: f.getAttribute('loading'), allow: f.getAttribute('allow'), h: Math.round(f.getBoundingClientRect().height) } : null; });
       check('desktop: el clic inserta el iframe', !!fr, true);
       if (fr) {
-        check('desktop: iframe src embed', fr.src, `/le-petit-trianon/maqueta/?lang=${tag}&embed=1`);
+        check('desktop: iframe src embed', fr.src, `/le-petit-trianon/maqueta/?lang=${LANG}&embed=1`);
         check('desktop: iframe con title, loading=lazy y allow=fullscreen', !!fr.title && fr.loading === 'lazy' && fr.allow === 'fullscreen', true);
         check('desktop: altura del marco ≥ 540', fr.h >= 540, true);
       }
       await p.evaluate(() => document.querySelector('.lpt2-lotes [data-maqueta="lote=3&view=lote"]').click());
       await p.waitForTimeout(500);
-      check('desktop: «Ver en la maqueta» de la parcela 3 recarga el iframe', await p.evaluate(() => document.querySelector('.lpt-stage iframe').getAttribute('src')), `/le-petit-trianon/maqueta/?lang=${tag}&embed=1&lote=3&view=lote`);
-      check('desktop: «Pantalla completa» sigue los parámetros', await p.evaluate(() => document.querySelector('[data-lpt-full]').getAttribute('href')), `/le-petit-trianon/maqueta/?lang=${tag}&lote=3&view=lote`);
+      check('desktop: «Ver en la maqueta» de la parcela 3 recarga el iframe', await p.evaluate(() => document.querySelector('.lpt-stage iframe').getAttribute('src')), `/le-petit-trianon/maqueta/?lang=${LANG}&embed=1&lote=3&view=lote`);
+      check('desktop: «Pantalla completa» sigue los parámetros', await p.evaluate(() => document.querySelector('[data-lpt-full]').getAttribute('href')), `/le-petit-trianon/maqueta/?lang=${LANG}&lote=3&view=lote`);
       check('desktop: la fila 3 queda marcada', await p.evaluate(() => document.querySelector('.lpt2-lotes tr.is-current [data-maqueta]')?.getAttribute('data-maqueta')), 'lote=3&view=lote');
       try { await p.waitForFunction(() => document.querySelector('.lpt-stage').classList.contains('is-ready'), null, { timeout: 60000 }); } catch (e) { results.push({ name: 'desktop: el visor cargó en el iframe', ok: false, got: e.message.split('\n')[0] }); }
       await p.waitForTimeout(2000);
