@@ -1,15 +1,16 @@
-/* Le Petit Trianon — comportamientos propios de la página del desarrollo.
+/* Le Petit Trianon — comportamientos propios de la página del desarrollo (v2).
    DOM puro: sin dependencias, sin fetch, sin Math.random. /script.js del sitio
-   (barra de progreso, reveals, FAB, analytics) ya corre antes que este archivo.
+   (barra de progreso, reveals, nav de vidrio, FAB, analytics) corre antes que este archivo.
 
-   1. Loop de la maqueta en el marco: solo en escritorio (≥ 721 px) y sin
-      prefers-reduced-motion; si los archivos no existen, queda el póster.
-   2. «Explorar la maqueta 3D» y los enlaces con data-maqueta: en escritorio
-      insertan el visor (iframe) dentro del marco — nunca sin un gesto del
-      visitante —; en móvil (≤ 720 px) y sin JS, el enlace abre el visor a
-      pantalla completa en la misma pestaña.
-   3. Chips del cierre: reescriben el mensaje prellenado del único enlace de
-      WhatsApp y lo muestran en claro antes de enviarlo. */
+   1. La película del hero: la fuente se elige por el ancho ANTES de cargar (escritorio:
+      webm/mp4 1280×720; ≤ 720 px: mp4 854×480). Sin JS, con prefers-reduced-motion o con
+      ahorro de datos queda el póster. Se pausa fuera de pantalla y con la pestaña oculta.
+   2. Galería: cada foto abre un <dialog> con flechas, Esc y foco devuelto; sin JS (o sin
+      <dialog>) el enlace abre la imagen. Etiquetas en el idioma de la página (#pw-i18n → gallery).
+   3. La maqueta: «Explorar la maqueta 3D» y los enlaces con data-maqueta insertan el visor
+      (iframe) en el marco en escritorio — nunca sin un gesto —; en móvil y sin JS el enlace
+      abre el visor a pantalla completa. Loop del marco solo en escritorio y sin reduced-motion.
+   4. Chips del cierre: reescriben el mensaje prellenado del WhatsApp y lo muestran en claro. */
 (function () {
   'use strict';
 
@@ -17,35 +18,204 @@
   var LANG = (document.documentElement.lang || 'es').slice(0, 2);
   var desktop = window.matchMedia('(min-width: 721px)');
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var I18N = (function () {
+    try {
+      var el = document.getElementById('pw-i18n');
+      return el ? JSON.parse(el.textContent) : {};
+    } catch (e) { return {}; }
+  })();
+  var track = function (name, data) {
+    if (window.va) window.va('event', { name: name, data: data });
+  };
+  var onChange = function (mq, fn) {
+    if (mq.addEventListener) mq.addEventListener('change', fn);
+    else if (mq.addListener) mq.addListener(fn);
+  };
+
+  /* ── 1. La película del hero ─────────────────────────────── */
+  (function film() {
+    var video = document.querySelector('[data-lpt2-film]');
+    if (!video) return;
+    var host = video.closest ? video.closest('.lpt2-film') : video.parentNode;
+    var saveData = navigator.connection && navigator.connection.saveData;
+    if (reduced.matches || saveData) return; /* queda el póster */
+
+    var mobile = !desktop.matches;
+    var sources = video.querySelectorAll('source[data-src]');
+    var chosen = [];
+    for (var i = 0; i < sources.length; i++) {
+      var s = sources[i];
+      if ((s.getAttribute('data-film') === 'movil') === mobile) {
+        s.setAttribute('src', s.getAttribute('data-src'));
+        chosen.push(s);
+      } else {
+        s.parentNode.removeChild(s);
+      }
+    }
+    if (!chosen.length) return;
+
+    var failed = false, inView = true, played = false;
+    var sync = function () {
+      if (failed) return;
+      if (inView && !document.hidden && !reduced.matches) {
+        var p = video.play();
+        if (p && p.catch) p.catch(function () { /* autoplay bloqueado: queda el póster */ });
+      } else if (!video.paused) {
+        video.pause();
+      }
+    };
+    chosen[chosen.length - 1].addEventListener('error', function () {
+      failed = true;
+      if (host) host.classList.add('is-poster');
+    });
+    video.addEventListener('playing', function () {
+      if (host) host.classList.add('is-playing');
+      if (!played) { played = true; track('trianon_film', mobile ? 'movil' : 'escritorio'); }
+    });
+    video.muted = true;
+    video.defaultMuted = true;
+    video.setAttribute('preload', 'auto');
+    video.load();
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        inView = entries[0].isIntersecting;
+        sync();
+      }, { threshold: 0.1 }).observe(video.parentNode);
+    }
+    document.addEventListener('visibilitychange', sync);
+    onChange(reduced, sync);
+    sync();
+  })();
+
+  /* ── 2. Galería: <dialog> con flechas, Esc y foco devuelto ── */
+  (function gallery() {
+    var links = document.querySelectorAll('[data-lpt2-photo]');
+    if (!links.length || typeof window.HTMLDialogElement !== 'function') return;
+    var G = I18N.gallery || {};
+    var T = {
+      label: G.label || 'Fotos de la propiedad',
+      close: G.close || 'Cerrar',
+      prev: G.prev || 'Foto anterior',
+      next: G.next || 'Foto siguiente',
+      count: G.count || '{i} de {n}'
+    };
+    var items = Array.prototype.map.call(links, function (a) {
+      var img = a.querySelector('img');
+      var cap = a.parentNode.querySelector('figcaption');
+      return {
+        href: a.getAttribute('href'),
+        srcset: img ? img.getAttribute('srcset') : '',
+        alt: img ? img.getAttribute('alt') : '',
+        cap: cap ? cap.innerHTML : ''
+      };
+    });
+    var arrow = function (d) {
+      return '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="' + d + '" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    };
+
+    var dlg = document.createElement('dialog');
+    dlg.className = 'lpt2-lb';
+    dlg.setAttribute('aria-label', T.label);
+    dlg.innerHTML =
+      '<div class="lpt2-lb__stage"><img class="lpt2-lb__img" alt="" decoding="async" /></div>' +
+      '<div class="lpt2-lb__bar">' +
+        '<p class="lpt2-lb__cap"></p>' +
+        '<p class="lpt2-lb__count" aria-live="polite"></p>' +
+        '<div class="lpt2-lb__nav">' +
+          '<button type="button" class="lpt2-lb__btn" data-go="-1">' + arrow('M10 3.5 5.5 8l4.5 4.5') + '</button>' +
+          '<button type="button" class="lpt2-lb__btn" data-go="1">' + arrow('M6 3.5 10.5 8 6 12.5') + '</button>' +
+        '</div>' +
+      '</div>' +
+      '<button type="button" class="lpt2-lb__btn lpt2-lb__close">' + arrow('M4 4l8 8M12 4l-8 8') + '</button>';
+    document.body.appendChild(dlg);
+
+    var img = dlg.querySelector('.lpt2-lb__img');
+    var capEl = dlg.querySelector('.lpt2-lb__cap');
+    var countEl = dlg.querySelector('.lpt2-lb__count');
+    var closeBtn = dlg.querySelector('.lpt2-lb__close');
+    var prevBtn = dlg.querySelector('[data-go="-1"]');
+    var nextBtn = dlg.querySelector('[data-go="1"]');
+    closeBtn.setAttribute('aria-label', T.close);
+    prevBtn.setAttribute('aria-label', T.prev);
+    nextBtn.setAttribute('aria-label', T.next);
+
+    var index = 0, opener = null;
+    var show = function (i) {
+      index = (i + items.length) % items.length;
+      var it = items[index];
+      img.classList.add('is-loading');
+      img.onload = function () { img.classList.remove('is-loading'); };
+      if (it.srcset) img.setAttribute('srcset', it.srcset); else img.removeAttribute('srcset');
+      img.setAttribute('sizes', '100vw');
+      img.setAttribute('src', it.href);
+      img.setAttribute('alt', it.alt);
+      capEl.innerHTML = it.cap;
+      countEl.textContent = T.count.replace('{i}', index + 1).replace('{n}', items.length);
+    };
+    var open = function (i, from) {
+      opener = from || null;
+      show(i);
+      document.documentElement.classList.add('lpt2-lock');
+      dlg.showModal();
+      closeBtn.focus();
+      track('trianon_foto', String(index + 1));
+    };
+    dlg.addEventListener('close', function () {
+      document.documentElement.classList.remove('lpt2-lock');
+      if (opener && opener.focus) opener.focus();
+    });
+    closeBtn.addEventListener('click', function () { dlg.close(); });
+    prevBtn.addEventListener('click', function () { show(index - 1); });
+    nextBtn.addEventListener('click', function () { show(index + 1); });
+    dlg.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); show(index + 1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); show(index - 1); }
+      else if (e.key === 'Home') { e.preventDefault(); show(0); }
+      else if (e.key === 'End') { e.preventDefault(); show(items.length - 1); }
+    });
+    /* Un toque fuera de la foto cierra; un deslizamiento horizontal cambia de foto. */
+    var stageEl = dlg.querySelector('.lpt2-lb__stage');
+    var x0 = null, y0 = 0, swiped = false;
+    stageEl.addEventListener('pointerdown', function (e) { x0 = e.clientX; y0 = e.clientY; swiped = false; });
+    stageEl.addEventListener('pointerup', function (e) {
+      if (x0 === null) return;
+      var dx = e.clientX - x0, dy = e.clientY - y0;
+      x0 = null;
+      if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.4) { swiped = true; show(index + (dx < 0 ? 1 : -1)); }
+    });
+    dlg.addEventListener('click', function (e) {
+      if (swiped) { swiped = false; return; }
+      if (e.target === dlg || e.target === stageEl) dlg.close();
+    });
+
+    Array.prototype.forEach.call(links, function (a, i) {
+      a.setAttribute('aria-haspopup', 'dialog');
+      a.addEventListener('click', function (e) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;
+        e.preventDefault();
+        open(i, a);
+      });
+    });
+  })();
+
+  /* ── 3. La maqueta: el visor dentro del marco, tras un gesto ── */
   var stage = document.querySelector('[data-lpt-stage]');
   var media = stage ? stage.querySelector('.lpt-stage__media') : null;
   var status = stage ? stage.querySelector('.lpt-stage__status') : null;
   var fullLink = stage ? stage.querySelector('[data-lpt-full]') : null;
   var frame = null;
-  /* Textos del marco en el idioma de la página: #pw-i18n → "stage" {title, loading, ready, switching}.
-     Sin bloque (o sin JSON válido) quedan los literales en español. */
-  var STAGE = (function () {
-    var d = {};
-    try {
-      var el = document.getElementById('pw-i18n');
-      d = el ? (JSON.parse(el.textContent).stage || {}) : {};
-    } catch (e) { d = {}; }
-    return {
-      title: d.title || 'Maqueta 3D interactiva de Le Petit Trianon',
-      loading: d.loading || 'Cargando la maqueta 3D…',
-      ready: d.ready || 'La maqueta está abierta: arrastra para girar, toca un lote para ver su ficha.',
-      switching: d.switching || 'Cambiando la vista…'
-    };
-  })();
-
-  var track = function (name, data) {
-    if (window.va) window.va('event', { name: name, data: data });
+  var S = I18N.stage || {};
+  var STAGE = {
+    title: S.title || 'Maqueta 3D interactiva de Le Petit Trianon',
+    loading: S.loading || 'Cargando la maqueta 3D…',
+    ready: S.ready || 'La maqueta está abierta: arrastra para girar, toca una parcela para ver su ficha.',
+    switching: S.switching || 'Cambiando la vista…'
   };
   var viewerUrl = function (params, embed) {
     return VIEWER + '?lang=' + LANG + (embed ? '&embed=1' : '') + (params ? '&' + params : '');
   };
 
-  /* ── 1. Loop del marco (póster como fallback) ─────────────── */
   function mountLoop() {
     var tpl = document.getElementById('lpt-loop');
     if (!tpl || !media || !desktop.matches || reduced.matches || !('content' in tpl)) return;
@@ -61,16 +231,27 @@
     video.addEventListener('error', drop);
     video.addEventListener('playing', function () { stage.classList.add('has-video'); });
     media.insertBefore(video, media.querySelector('.lpt-stage__overlay'));
+    /* el loop también descansa fuera de pantalla */
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        if (!video.parentNode) return;
+        if (entries[0].isIntersecting && !document.hidden) { var p = video.play(); if (p && p.catch) p.catch(function () {}); }
+        else video.pause();
+      }, { threshold: 0 }).observe(media);
+    }
   }
 
-  /* ── 2. El visor dentro del marco, tras un gesto ──────────── */
   function markLot(params) {
     var m = /(?:^|&)lote=(\d)/.exec(params || '');
-    var picks = document.querySelectorAll('.lpt-pick');
-    for (var i = 0; i < picks.length; i++) {
-      var hit = m && picks[i].getAttribute('data-maqueta') === 'lote=' + m[1];
-      if (hit) picks[i].setAttribute('aria-current', 'true');
-      else picks[i].removeAttribute('aria-current');
+    var rows = document.querySelectorAll('.lpt2-lotes tbody tr');
+    for (var i = 0; i < rows.length; i++) {
+      var link = rows[i].querySelector('[data-maqueta]');
+      var hit = !!(m && link && /(?:^|&)lote=(\d)/.exec(link.getAttribute('data-maqueta'))[1] === m[1]);
+      rows[i].classList.toggle('is-current', hit);
+      if (link) {
+        if (hit) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
+      }
     }
   }
 
@@ -113,7 +294,6 @@
   var wantsOtherTab = function (e) {
     return e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1;
   };
-
   document.addEventListener('click', function (e) {
     var a = opener(e.target);
     if (!a || !desktop.matches || wantsOtherTab(e)) return; /* móvil: el enlace navega al visor */
@@ -141,10 +321,9 @@
     }
   }
   syncRoles();
-  if (desktop.addEventListener) desktop.addEventListener('change', syncRoles);
-  else if (desktop.addListener) desktop.addListener(syncRoles);
+  onChange(desktop, syncRoles);
 
-  /* ── 3. Chips del cierre: el mensaje, en claro, antes de enviarlo ── */
+  /* ── 4. Chips del cierre: el mensaje, en claro, antes de enviarlo ── */
   (function chips() {
     var link = document.querySelector('[data-lpt-wa]');
     var buttons = document.querySelectorAll('.lpt-chips [data-wa-text]');
