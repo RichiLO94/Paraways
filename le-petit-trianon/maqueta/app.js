@@ -455,7 +455,7 @@
   }
 
   /* ───────────── selección e interacción ───────────── */
-  /* elevación del lote al pasar el mouse / seleccionar; el lote 1 no se eleva porque sostiene la casa modelo y la pileta */
+  /* elevación del lote al pasar el mouse / seleccionar; el lote 1 no se eleva porque sostiene la casa existente y la pileta */
   function liftFor(l, hoverId) {
     if (l.data.id === 1) return 0;
     if (l.data.id === state.selected) return 0.32;

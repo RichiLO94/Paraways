@@ -136,7 +136,7 @@
       g.addEventListener('click', () => on.select(l.id));
       g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); on.select(l.id); } });
     });
-    /* casa modelo: los volúmenes rectangulares del plano (más limpios que el contorno de 73 puntos a esta escala) */
+    /* casa existente: los volúmenes rectangulares del plano (más limpios que el contorno de 73 puntos a esta escala) */
     if (D.house && D.house.volumes && D.house.volumes.length) D.house.volumes.forEach(v => svg.appendChild(s('rect', { x: v.x0, y: -v.y1, width: v.x1 - v.x0, height: v.y1 - v.y0, class: 'pw-map-house' + (v.pergola ? ' pw-map-pergola' : '') })));
     else if (D.house && D.house.outline) svg.appendChild(s('polygon', { points: pts(D.house.outline), class: 'pw-map-house' }));
     if (D.house && D.house.pool) { const q = D.house.pool; svg.appendChild(s('rect', { x: q.x0, y: -q.y1, width: q.x1 - q.x0, height: q.y1 - q.y0, rx: .4, class: 'pw-map-pool' })); }

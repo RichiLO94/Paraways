@@ -15,7 +15,7 @@
 
   const ES = {
     'meta.title': 'Le Petit Trianon · Maqueta 3D',
-    'meta.description': 'Maqueta 3D interactiva del fraccionamiento Le Petit Trianon en San Bernardino: siete lotes sobre el plano de la arquitecta, calle empedrada, portón y casa modelo. Una maqueta de Paraways.',
+    'meta.description': 'Maqueta 3D interactiva del fraccionamiento Le Petit Trianon en San Bernardino: siete lotes sobre el plano de la arquitecta, calle empedrada, portón y la casa existente. Una maqueta de Paraways.',
     'brand.home': 'Paraways · inicio',
     'brand.page': 'Paraways · página del desarrollo',
     'head.eyebrow': 'Desarrollos seleccionados · San Bernardino',
@@ -36,7 +36,7 @@
     'sheet.placeholder': '—',
     'sheet.where': 'Dentro del fraccionamiento <em>Le Petit Trianon</em> · San Bernardino',
     'sheet.use_title': 'Para qué sirve',
-    'sheet.use': 'Para construir tu casa principal o de fin de semana en un fraccionamiento con calle empedrada, portón y portero, sobre la Ruta San Bernardino – Pirayú, en San Bernardino, la ciudad del lago. Si tu plan incluye radicarte en Paraguay, lo conversamos caso a caso por WhatsApp.',
+    'sheet.use': 'Para tu casa o como inversión: desde USD 200.000, tu parcela puede integrarse al Investor Pass, con la residencia permanente y todas las gestiones a cargo de nuestro equipo. Te enviamos la oferta completa por WhatsApp.',
     'sheet.cta': 'Consultar por el lote {n}',
     'sheet.wa_lot': 'Hola, vi el lote {n} de Le Petit Trianon (San Bernardino) en la maqueta 3D y quiero saber más.',
     'sheet.zoom': 'Acercarme al lote',
@@ -106,7 +106,7 @@
 
   const PT = {
     'meta.title': 'Le Petit Trianon · Maquete 3D',
-    'meta.description': 'Maquete 3D interativa do loteamento Le Petit Trianon em San Bernardino: sete lotes sobre a planta da arquiteta, rua de pedra, portão e casa modelo. Uma maquete da Paraways.',
+    'meta.description': 'Maquete 3D interativa do loteamento Le Petit Trianon em San Bernardino: sete lotes sobre a planta da arquiteta, rua de pedra, portão e a casa existente. Uma maquete da Paraways.',
     'brand.home': 'Paraways · início',
     'brand.page': 'Paraways · página do empreendimento',
     'head.eyebrow': 'Empreendimentos selecionados · San Bernardino',
@@ -127,7 +127,7 @@
     'sheet.placeholder': '—',
     'sheet.where': 'Dentro do loteamento <em>Le Petit Trianon</em> · San Bernardino',
     'sheet.use_title': 'Para que serve',
-    'sheet.use': 'Para construir a sua casa principal ou de fim de semana em um loteamento com rua de pedra, portão e porteiro, na Ruta San Bernardino – Pirayú, em San Bernardino, a cidade do lago. Se o seu plano inclui morar no Paraguai, conversamos caso a caso pelo WhatsApp.',
+    'sheet.use': 'Para a sua casa ou como investimento: a partir de USD 200.000, o seu lote pode integrar o Investor Pass, com a residência permanente e todos os trâmites a cargo da nossa equipe. Enviamos a oferta completa para você pelo WhatsApp.',
     'sheet.cta': 'Perguntar sobre o lote {n}',
     'sheet.wa_lot': 'Olá, vi o lote {n} do loteamento Le Petit Trianon (San Bernardino) na maquete 3D e quero saber mais.',
     'sheet.zoom': 'Ver o lote de perto',
@@ -197,7 +197,7 @@
 
   const EN = {
     'meta.title': 'Le Petit Trianon · 3D model',
-    'meta.description': 'Interactive 3D model of the Le Petit Trianon subdivision in San Bernardino: seven lots on the architect’s plan, cobbled street, gate and show home. A Paraways model.',
+    'meta.description': 'Interactive 3D model of the Le Petit Trianon subdivision in San Bernardino: seven lots on the architect’s plan, cobbled street, gate and the existing house. A Paraways model.',
     'brand.home': 'Paraways · home',
     'brand.page': 'Paraways · development page',
     'head.eyebrow': 'Selected developments · San Bernardino',
@@ -218,7 +218,7 @@
     'sheet.placeholder': '—',
     'sheet.where': 'Within the <em>Le Petit Trianon</em> subdivision · San Bernardino',
     'sheet.use_title': 'What it is for',
-    'sheet.use': 'To build your main or weekend home in a subdivision with a cobbled street, gate and gatekeeper, on the Ruta San Bernardino – Pirayú, in San Bernardino, the lakeside town. If your plans include settling in Paraguay, we discuss it case by case on WhatsApp.',
+    'sheet.use': 'For your home or as an investment: from USD 200,000, your lot can be included in the Investor Pass, with permanent residence and all the paperwork handled by our team. We will send you the full offer on WhatsApp.',
     'sheet.cta': 'Ask about lot {n}',
     'sheet.wa_lot': 'Hello, I saw lot {n} of the Le Petit Trianon subdivision (San Bernardino) in the 3D model and I would like to know more.',
     'sheet.zoom': 'Zoom in on the lot',
@@ -288,7 +288,7 @@
 
   const FR = {
     'meta.title': 'Le Petit Trianon · Maquette 3D',
-    'meta.description': 'Maquette 3D interactive du lotissement Le Petit Trianon à San Bernardino' + NN + ': sept lots sur le plan de l’architecte, rue pavée, portail et maison témoin. Une maquette de Paraways.',
+    'meta.description': 'Maquette 3D interactive du lotissement Le Petit Trianon à San Bernardino' + NN + ': sept lots sur le plan de l’architecte, rue pavée, portail et la maison existante. Une maquette de Paraways.',
     'brand.home': 'Paraways · accueil',
     'brand.page': 'Paraways · page du lotissement',
     'head.eyebrow': 'Programmes sélectionnés · San Bernardino',
@@ -309,7 +309,7 @@
     'sheet.placeholder': '—',
     'sheet.where': 'Au sein du lotissement <em>Le Petit Trianon</em> · San Bernardino',
     'sheet.use_title': 'Pour quel usage',
-    'sheet.use': 'Pour construire votre résidence principale ou secondaire dans un lotissement avec rue pavée, portail et gardien, sur la Ruta San Bernardino – Pirayú, à San Bernardino, la ville du lac. Si votre projet inclut de vous installer au Paraguay, nous en parlons au cas par cas sur WhatsApp.',
+    'sheet.use': 'Pour votre maison ou pour investir' + NN + ': dès 200' + NN + '000' + NN + 'USD, votre lot peut entrer dans le cadre de l’Investor Pass, avec la résidence permanente et toutes les démarches prises en charge par notre équipe. Nous vous envoyons l’offre complète sur WhatsApp.',
     'sheet.cta': 'Se renseigner sur le lot {n}',
     'sheet.wa_lot': 'Bonjour, j’ai vu le lot {n} du lotissement Le Petit Trianon (San Bernardino) sur la maquette 3D et je souhaite en savoir plus.',
     'sheet.zoom': 'Me rapprocher du lot',
