@@ -1,8 +1,10 @@
 /* Prueba de la capa v3 en las cuatro homes (banda Le Petit Trianon, nav, tarjeta Inmobiliaria, formulario, FAB).
+   Banda v2: foto real de la casa (trianon-foto-casa.jpg 1920×1088 con srcset de la -800), pie «foto de la propiedad»,
+   mensaje «parcela con casa, dentro del Investor Pass» y sin las frases retiradas («ya existe», «ya construida», …).
    Uso: NODE_PATH=/opt/node22/lib/node_modules flock /tmp/pw-render.lock node home-banda-test.js [es,pt,en,fr]
    A 1440×900 y 390×844 por idioma: cero errores de consola (ignora el 404 de /_vercel/insights/script.js; las
    fallas de red de Google Fonts se listan aparte como avisos de entorno), nav en una sola línea a 1440 px,
-   #trianon presente con su póster cargado, reveals visibles, FAB nombrando la sección, enlace en la tarjeta
+   #trianon presente con su foto cargada, reveals visibles, FAB nombrando la sección, enlace en la tarjeta
    Inmobiliaria, formulario sin opción «trianon» (el desarrollo entra solo por WhatsApp), JSON #pw-i18n con la
    sección. Captura la banda en
    out/home-<lang>-banda.png (escritorio) y out/home-<lang>-banda-movil.png (móvil). Imprime un JSON. */
@@ -16,6 +18,15 @@ const OUT = path.join(__dirname, 'out');
 fs.mkdirSync(OUT, { recursive: true });
 const IGNORE = /_vercel\/insights\/script\.js/;
 const ENV_NET = /fonts\.googleapis\.com|fonts\.gstatic\.com/;
+/* Copy v2 por idioma: pie de la foto, «con casa» en el h2 y en el enlace de la tarjeta, CTA. */
+const V2 = {
+  es: { cap: 'FOTO DE LA PROPIEDAD · LA CASA', conCasa: /parcela con casa/i, cta: 'Ver Le Petit Trianon' },
+  pt: { cap: 'FOTO DA PROPRIEDADE · A CASA', conCasa: /lote com casa/i, cta: 'Ver o Le Petit Trianon' },
+  en: { cap: 'PHOTO OF THE PROPERTY · THE HOUSE', conCasa: /plot and house/i, cta: 'View Le Petit Trianon' },
+  fr: { cap: 'PHOTO DE LA PROPRIÉTÉ · LA MAISON', conCasa: /parcelle avec maison/i, cta: 'Voir Le Petit Trianon' },
+};
+/* Frases retiradas en la v2 (en la banda y en el enlace de la tarjeta, incluidos alt y pies). */
+const BANNED = /ya existe|ya construida|proyecto en papel|já existe|já construída|already exists|already built|on paper|existe déjà|déjà construite|sur plan|mensura|medição|survey|relevé|casa modelo|show home|maison témoin|en regla|barrio cerrado|frente al lago|vista al lago/i;
 
 (async () => {
   const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium', args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
@@ -76,7 +87,10 @@ const ENV_NET = /fonts\.googleapis\.com|fonts\.gstatic\.com/;
         const prevId = band && band.previousElementSibling && band.previousElementSibling.id;
         return {
           band: !!band, bandClass: band && band.className, prevId,
-          img: band && (() => { const i = band.querySelector('img'); return i && { src: i.getAttribute('src'), w: i.getAttribute('width'), h: i.getAttribute('height'), loading: i.getAttribute('loading'), alt: (i.getAttribute('alt') || '').length }; })(),
+          img: band && (() => { const i = band.querySelector('img'); return i && { src: i.getAttribute('src'), srcset: i.getAttribute('srcset') || '', sizes: i.getAttribute('sizes') || '', w: i.getAttribute('width'), h: i.getAttribute('height'), loading: i.getAttribute('loading'), alt: (i.getAttribute('alt') || '').length, altText: i.getAttribute('alt') || '' }; })(),
+          cap: band && band.querySelector('figcaption') && band.querySelector('figcaption').textContent.trim(),
+          h2: band && band.querySelector('h2') && band.querySelector('h2').textContent.replace(/\s+/g, ' ').trim(),
+          bandText: band && (band.textContent + ' ' + Array.from(band.querySelectorAll('[alt],[aria-label],[title]')).map((e) => [e.getAttribute('alt'), e.getAttribute('aria-label'), e.getAttribute('title')].join(' ')).join(' ')).replace(/\s+/g, ' '),
           h2em: !!(band && band.querySelector('h2 em')), eyebrow: !!(band && band.querySelector('.eyebrow')),
           cta: band && (() => { const a = band.querySelector('a.cta'); return a && { href: a.getAttribute('href'), text: a.textContent.trim() }; })(),
           ipLink: (() => { const a = document.querySelector('.ip-card .lpt-ip-link'); return a && { href: a.getAttribute('href'), text: a.textContent.trim(), card: a.closest('.ip-card').querySelector('h3').textContent.trim() }; })(),
@@ -87,10 +101,15 @@ const ENV_NET = /fonts\.googleapis\.com|fonts\.gstatic\.com/;
       }, route);
       check(`${label}: #trianon existe (lpt-band section)`, dom.band && /\blpt-band\b/.test(dom.bandClass) && /\bsection\b/.test(dom.bandClass), true);
       check(`${label}: #trianon va justo después del Investor Pass`, ['inversion', 'investimento', 'investment', 'investissement'].includes(dom.prevId), true);
-      check(`${label}: póster 1600×1000 lazy con alt`, !!dom.img && dom.img.src === '/assets/trianon-maqueta.jpg' && dom.img.w === '1600' && dom.img.h === '1000' && dom.img.loading === 'lazy' && dom.img.alt > 40, true);
+      check(`${label}: foto real de la casa 1920×1088 lazy, srcset con la -800 y alt`, !!dom.img && dom.img.src === '/assets/trianon-foto-casa.jpg' && dom.img.w === '1920' && dom.img.h === '1088' && dom.img.loading === 'lazy' && /\/assets\/trianon-foto-casa-800\.jpg 800w/.test(dom.img.srcset) && /\/assets\/trianon-foto-casa\.jpg 1920w/.test(dom.img.srcset) && !!dom.img.sizes && dom.img.alt > 40, true);
+      check(`${label}: pie de la foto (v2)`, dom.cap, V2[lang].cap);
+      check(`${label}: h2 con «con casa» (v2)`, V2[lang].conCasa.test(dom.h2 || ''), true);
+      check(`${label}: sin frases retiradas en la banda (texto, alt, aria-label)`, (dom.bandText.match(BANNED) || [null])[0], null);
       check(`${label}: eyebrow + h2 con em`, dom.eyebrow && dom.h2em, true);
       check(`${label}: CTA .cta hacia la página del idioma`, dom.cta && dom.cta.href, route + 'le-petit-trianon/');
+      check(`${label}: texto del CTA (v2)`, dom.cta && dom.cta.text, V2[lang].cta);
       check(`${label}: enlace en la tarjeta Inmobiliaria`, !!dom.ipLink && dom.ipLink.href === route + 'le-petit-trianon/' && /^(Inmobiliaria|Imobiliária|Real estate|Immobilière)$/.test(dom.ipLink.card), true);
+      check(`${label}: enlace de la tarjeta con «con casa» y sin frases retiradas (v2)`, !!dom.ipLink && /^Le Petit Trianon/.test(dom.ipLink.text) && V2[lang].conCasa.test(dom.ipLink.text) && !BANNED.test(dom.ipLink.text), true);
       check(`${label}: formulario sin option trianon (canal único: WhatsApp)`, dom.optTrianonIdx, -1);
       check(`${label}: «otro» sigue cerrando la lista de intereses`, dom.optOtroIdx, dom.opts.length - 1);
       check(`${label}: #pw-i18n sections.trianon`, dom.i18nTrianon, 'Le Petit Trianon');
@@ -121,7 +140,7 @@ const ENV_NET = /fonts\.googleapis\.com|fonts\.gstatic\.com/;
             fab: fab && { visible: fab.classList.contains('is-visible'), yield: fab.classList.contains('is-yield'), from: fab.dataset.waFrom, href: fab.getAttribute('href') },
           };
         });
-        check(`${label}: póster cargado`, live.imgLoaded, true);
+        check(`${label}: foto cargada`, live.imgLoaded, true);
         check(`${label}: reveals de la banda visibles`, live.revealed === live.reveals && live.reveals > 0, true);
         check(`${label}: sin textos desbordados en la banda`, live.overflow.length, 0);
         check(`${label}: FAB nombra la sección (data-wa-from)`, live.fab && live.fab.from, 'fab-trianon');

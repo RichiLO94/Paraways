@@ -1,5 +1,5 @@
 """Fotos del sitio con escalado por IA: toma los maestros limpios y graduados de photo-clean.py, arma la piscina y el
-parque desde el video y exporta las JPG del contrato a 1920 px (y -800) con Real-ESRGAN x4plus.
+parque desde el video y exporta las JPG del contrato a 1920 px (y -800) con Real-ESRGAN x4plus (el parque, con Lanczos).
 
 Uso:
   PW_SR_MODELS=<carpeta de pesos> python sr-photos.py <carpeta de trabajo> <carpeta de video> <carpeta assets> [escena ...]
@@ -12,8 +12,11 @@ Método: maestro a resolución de origen (960×544) → Real-ESRGAN x4plus (3840
 enfoque muy suave y grano finísimo (el modelo ya devuelve bordes nítidos). La piscina: promedio robusto de los cuadros
 185–215 registrados sobre el 203 (cámara casi quieta) y relleno Shift-Map del subtítulo «Hermosa piscina con jacuzzi.»
 sobre el césped. El parque: cuadro 240 de la parte 1 (el más nítido del video: árboles altos, césped y el sendero),
-promedio robusto de 236–244 y encuadre 16:9 por encima del subtítulo y sin el vehículo estacionado a la izquierda, sin
-relleno (el cuadro 332 que usa photo-clean.py está movido y el escalado le marca manchas en el follaje). La aérea
+promedio robusto con sus vecinos 239 y 241 (más cuadros dejan plantas fantasma: la cámara panea rápido) y encuadre
+16:9 por encima del subtítulo y sin el vehículo estacionado a la izquierda, sin relleno. El parque NO pasa por
+Real-ESRGAN: el cuadro está movido y el modelo le pinta un efecto de acuarela (manchas en el follaje y el sendero,
+motas brillantes) que a tamaño grande se nota; sale con Lanczos desde el maestro (NL-means suave, gradación de pleno
+sol, enfoque y grano finísimos). La aérea
 recibe el límite del predio en dorado después del escalado, a la resolución final.
 Requiere el venv con PyTorch, OpenCV contrib, numpy y Pillow (ver BRIEF y upscale.py).
 """
@@ -81,7 +84,7 @@ def parque_master(video, work):
     box = (175, 420, 790, 476)                                   # «Amplia propiedad con casa y parque…»
     mask = np.full((Hh, W), 255, np.uint8); mask[box[1] - 10:box[3] + 10, box[0] - 10:box[2] + 10] = 0
     frames, valids = [], []
-    for i in (236, 238, 239, 241, 242, 244):                    # los más nítidos del tramo
+    for i in (239, 241):                                        # vecinos inmediatos: sin fantasmas del paneo
         w, inside = pc.align_to(ref, fr(i), mask)
         v = (inside > 0).astype(np.float32); v[box[1]:box[3], box[0]:box[2]] = 0
         frames.append(w); valids.append(v)
@@ -90,8 +93,7 @@ def parque_master(video, work):
     out = img[:y1, x0:x1].copy()
     cv2.imwrite(os.path.join(work, 'parque-video-limpia.png'), out)
     # cuadro de pleno sol, no el 332 con bruma: sombras menos levantadas y algo más de contraste que el preset 'parque'
-    return pc.grade(pc.denoise(out, pc.DENOISE['parque']), exposure=1.0, gamma=1.0, warm=0.9, green=1.08,
-                    lift=0.015, contrast=0.15)
+    return pc.grade(pc.denoise(out, 3), exposure=1.02, gamma=1.0, warm=0.9, green=1.08, lift=0.015, contrast=0.17)
 
 
 def finish_from_sr(sr_bgr, width, grain, seed=7):
@@ -117,23 +119,32 @@ def main():
     scenes = sys.argv[4:] or ['casa', 'porton', 'parque', 'piscina', 'aerea']
     built = {'piscina': lambda: piscina_master(os.path.join(videos, 'parte2b.mov'), work),
              'parque': lambda: parque_master(os.path.join(videos, 'parte1.mov'), work)}
-    models = os.environ.get('PW_SR_MODELS', os.path.join(HERE, 'models'))
-    import torch
-    torch.set_num_threads(os.cpu_count() or 4)
-    net, scale = up.load_model('x4plus', 0, models)
+    lanczos = {'parque'}                                         # sin Real-ESRGAN (ver arriba)
+    net = scale = None
+    if any(s not in lanczos for s in scenes):
+        models = os.environ.get('PW_SR_MODELS', os.path.join(HERE, 'models'))
+        import torch
+        torch.set_num_threads(os.cpu_count() or 4)
+        net, scale = up.load_model('x4plus', 0, models)
     names = {'casa': 'trianon-foto-casa', 'porton': 'trianon-foto-porton', 'parque': 'trianon-foto-parque',
              'piscina': 'trianon-foto-piscina', 'aerea': 'trianon-aerea'}
-    report = {}
+    path = os.path.join(work, 'sr-photos-report.json')
+    report = json.load(open(path)) if os.path.exists(path) else {}
     for s in scenes:
         master = built[s]() if s in built else cv2.imread(os.path.join(work, f'{s}-limpia-graduada.png'))
         assert master is not None, s
-        sr_path = os.path.join(work, f'{s}-sr-x4.png')
-        if os.path.exists(sr_path) and s not in built:
-            sr = cv2.imread(sr_path)
-        else:
-            sr = up.upscale(net, scale, master, tile=256); cv2.imwrite(sr_path, sr)
+        sr = None
+        if s not in lanczos:
+            sr_path = os.path.join(work, f'{s}-sr-x4.png')
+            if os.path.exists(sr_path) and s not in built:
+                sr = cv2.imread(sr_path)
+            else:
+                sr = up.upscale(net, scale, master, tile=256); cv2.imwrite(sr_path, sr)
         for width, kb, grain in ((1920, 340, 1.2), (800, 110, 0.9)):
-            rgb = finish_from_sr(sr, width, grain)
+            if sr is None:
+                rgb = pc.finish(master, width, grain=grain * 0.8, seed=7, sharpen=(1.0, 30, 2))
+            else:
+                rgb = finish_from_sr(sr, width, grain)
             if s == 'aerea':
                 J = json.load(open(os.path.join(work, 'aerial-align.json')))
                 v = np.array(J['vertices_px']['960x544'], float) * (width / 960.0)
@@ -141,7 +152,7 @@ def main():
             out = os.path.join(assets, names[s] + ('' if width == 1920 else '-800') + '.jpg')
             report[os.path.basename(out)] = save(rgb, out, kb) + (rgb.shape[1], rgb.shape[0])
             print(os.path.basename(out), report[os.path.basename(out)], flush=True)
-    json.dump(report, open(os.path.join(work, 'sr-photos-report.json'), 'w'), indent=1)
+    json.dump(report, open(path, 'w'), indent=1)
     return 0
 
 

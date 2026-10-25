@@ -15,6 +15,11 @@
      · «Explorar la maqueta 3D» (sección III) inserta el iframe en escritorio y es un enlace en móvil;
      · los chips del cierre reescriben el WhatsApp; sin scroll horizontal; objetivos táctiles ≥ 44 px en móvil;
      · ≤ 1.100 palabras visibles (texto del body sin scripts, estilos ni plantillas; incluye las respuestas plegadas);
+     · Actualización 4 (cumplimiento): ninguna frase retirada (la misma BANNED de home-banda-test.js, más «privado»,
+       «lista para alquilar» y equivalentes) en el texto visible, alt, title, aria-label, figcaption, metas, JSON-LD,
+       #pw-i18n y textos de WhatsApp; «con casa» en la línea 01 de la oferta; fotos con srcset «-800 800w, … 1920w» y
+       width/height 1920×1088; crédito satelital en el pie de la aérea; description/og:title/og:description sin el
+       umbral pegado al Investor Pass («dentro del Investor Pass desde» y equivalentes) y con «con casa»;
      · todos los href/src internos responden 200.
    Capturas: out/v2-<sufijo>-<vista>.png (primer pantallazo) y out/v2-<sufijo>-<vista>-tNN.png (página completa por
    tramos; tools/maqueta/stitch.py las cose a partir de out/raw-v2-<sufijo>-<vista>/). Imprime un JSON con los resultados. */
@@ -30,6 +35,17 @@ fs.mkdirSync(OUT, { recursive: true });
 const IGNORE = /_vercel\/insights\/script\.js/;
 const PENDING = /\/assets\/(trianon-film|trianon-foto|trianon-aerea)[^/]*$/;
 const MAX_WORDS = 1100;
+/* Frases retiradas en la v2: la misma lista que home-banda-test.js (banda de las homes) … */
+const BANNED = /ya existe|ya construida|proyecto en papel|já existe|já construída|already exists|already built|on paper|existe déjà|déjà construite|sur plan|mensura|medição|survey|relevé|casa modelo|show home|maison témoin|en regla|barrio cerrado|frente al lago|vista al lago/i;
+/* … y lo que la Actualización 4 prohíbe además en esta página (sin \b final tras letras acentuadas: en JS \b es ASCII). */
+const BANNED_A4 = /\bprivad[oa]s?\b|\bprivately\b|en privé|\bem dia\b|en règle|lista para alquilar|pronta para alugar|ready to (?:let|rent)|prête à louer/i;
+/* Copy por idioma de la Actualización 4: «con casa», crédito satelital y el umbral que no va pegado al Investor Pass. */
+const A4 = {
+  es: { conCasa: /parcela con casa/i, sat: /Imagen satelital: Google/, umbral: /dentro del Investor Pass,?\s+desde/i },
+  pt: { conCasa: /lote com casa/i, sat: /Imagem de satélite: Google/, umbral: /dentro do Investor Pass,?\s+a partir de/i },
+  en: { conCasa: /plot and house/i, sat: /Satellite image: Google/, umbral: /with(?:in)? the Investor Pass,?\s+from/i },
+  fr: { conCasa: /parcelle avec maison/i, sat: /Image satellite : Google/, umbral: /Investor Pass,?\s+dès/i },
+}[LANG];
 const LAUNCH = { executablePath: '/opt/pw-browsers/chromium', args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--autoplay-policy=no-user-gesture-required'] };
 const VIEWS = [[1440, 900, 'desktop'], [390, 844, 'mobile']];
 
@@ -141,6 +157,48 @@ const VIEWS = [[1440, 900, 'desktop'], [390, 844, 'mobile']];
     note(`${label}: enlaces de WhatsApp revisados`, await p.evaluate((html) => new DOMParser().parseFromString(html, 'text/html').querySelectorAll('a[href*="wa.me"]').length, rawHtml));
     check(`${label}: enlaces de WhatsApp con texto codificado, _blank, noopener y data-wa-from`, waBad.length, 0);
     if (waBad.length) note(`${label}: WhatsApp a revisar`, waBad);
+
+    /* Actualización 4 (cumplimiento), una vez: textos, oferta 01, fotos, crédito satelital y metas */
+    if (label === 'desktop') {
+      const a4 = await p.evaluate((html) => {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const meta = (sel) => (doc.querySelector(sel) || {}).content || '';
+        const body = document.body.cloneNode(true);
+        body.querySelectorAll('script, style, noscript').forEach((n) => n.remove());
+        const texts = [['texto visible', body.textContent], ['<title>', doc.title], ['description', meta('meta[name="description"]')], ['og:title', meta('meta[property="og:title"]')], ['og:description', meta('meta[property="og:description"]')]];
+        document.querySelectorAll('[alt], [title], [aria-label]').forEach((el) => ['alt', 'title', 'aria-label'].forEach((k) => { if (el.hasAttribute(k)) texts.push([k, el.getAttribute(k)]); }));
+        document.querySelectorAll('figcaption').forEach((el) => texts.push(['figcaption', el.textContent]));
+        doc.querySelectorAll('script[type="application/ld+json"], script#pw-i18n').forEach((s) => texts.push([s.id || 'JSON-LD', s.textContent]));
+        doc.querySelectorAll('[data-wa-text]').forEach((el) => texts.push(['data-wa-text', el.getAttribute('data-wa-text')]));
+        doc.querySelectorAll('a[href*="wa.me"]').forEach((a) => { try { texts.push(['WhatsApp', decodeURIComponent((a.getAttribute('href').split('?text=')[1] || ''))]); } catch (e) { texts.push(['WhatsApp (sin decodificar)', a.getAttribute('href')]); } });
+        const imgs = Array.from(doc.querySelectorAll('.lpt2-ph img, .lpt2-cierre__bg')).map((im) => ({ src: im.getAttribute('src'), srcset: im.getAttribute('srcset') || '', w: im.getAttribute('width'), h: im.getAttribute('height') }));
+        const o1 = doc.querySelector('.lpt2-oferta > li:first-child');
+        const aerea = doc.querySelector('.lpt2-ph--aerea figcaption');
+        const filmLabel = doc.querySelector('.lpt2-film__label');
+        return { texts, imgs, oferta1: o1 ? o1.textContent.replace(/\s+/g, ' ').trim() : '', aerea: aerea ? aerea.textContent.replace(/[ \t\r\n]+/g, ' ').trim() : '', /* solo espacios ASCII: el FR lleva U+202F antes de «:», que \s también borraría */ filmLabel: filmLabel ? filmLabel.textContent : '', og: [meta('meta[name="description"]'), meta('meta[property="og:title"]'), meta('meta[property="og:description"]')] };
+      }, rawHtml);
+      const hits = [];
+      a4.texts.forEach(([where, t]) => { [BANNED, BANNED_A4].forEach((re) => { const m = re.exec(t || ''); if (m) hits.push(`${where}: «${m[0]}» en «${(t || '').slice(Math.max(0, m.index - 40), m.index + 40).replace(/\s+/g, ' ')}»`); }); });
+      check('sin frases retiradas (texto visible, alt, title, aria-label, figcaption, metas, JSON-LD, #pw-i18n, WhatsApp)', hits.length, 0);
+      if (hits.length) note('frases retiradas encontradas', hits.slice(0, 12));
+      check('la línea 01 de la oferta dice «con casa»', A4.conCasa.test(a4.oferta1), true);
+      note('línea 01 de la oferta', a4.oferta1);
+      const imgBad = a4.imgs.filter((im) => {
+        const base = im.src.replace(/\.jpg$/, '');
+        return !(im.w === '1920' && im.h === '1088' && im.srcset.includes(base + '-800.jpg 800w') && im.srcset.includes(im.src + ' 1920w'));
+      });
+      check(`fotos reales con srcset «-800 800w, … 1920w» y width/height 1920×1088 (${a4.imgs.length})`, a4.imgs.length >= 6 && imgBad.length === 0, true);
+      if (imgBad.length) note('fotos a revisar', imgBad);
+      check('el pie de la vista aérea lleva el crédito satelital', A4.sat.test(a4.aerea), true);
+      note('pie de la vista aérea', a4.aerea);
+      /* La película también muestra la imagen de Google: su rótulo lleva el mismo crédito (en minúscula y con espacios
+         duros para que en móvil corte solo en los «·»; se comparan sin mayúsculas y con todo espacio como uno). */
+      const flat = (s) => s.replace(/\s+/g, ' ').trim().toLowerCase();
+      check('el rótulo de la película lleva el crédito satelital', flat(a4.filmLabel).includes(flat(A4.sat.source)), true);
+      note('rótulo de la película', flat(a4.filmLabel));
+      check('description / og:title / og:description sin el umbral pegado al Investor Pass', a4.og.filter((t) => A4.umbral.test(t)).length, 0);
+      check('description y og:description dicen «con casa»', A4.conCasa.test(a4.og[0]) && A4.conCasa.test(a4.og[2]), true);
+    }
 
     /* La película */
     const film = await p.evaluate(() => {

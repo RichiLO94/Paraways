@@ -7,10 +7,12 @@
       ahorro de datos queda el póster. Se pausa fuera de pantalla, con la pestaña oculta y
       a pedido (botón bajo el marco, etiquetas desde #pw-i18n → film).
    2. Galería: cada foto abre un <dialog> con flechas, Esc y foco devuelto; sin JS (o sin
-      <dialog>) el enlace abre la imagen. Etiquetas en el idioma de la página (#pw-i18n → gallery).
+      <dialog>) el enlace abre la imagen. Se ve al instante la versión que la galería ya cargó y la
+      grande la reemplaza cuando llega (sin velo). Etiquetas en el idioma de la página (#pw-i18n → gallery).
    3. La maqueta: «Explorar la maqueta 3D» y los enlaces con data-maqueta insertan el visor
       (iframe) en el marco en escritorio — nunca sin un gesto —; en móvil y sin JS el enlace
-      abre el visor a pantalla completa. Loop del marco solo en escritorio y sin reduced-motion.
+      abre el visor a pantalla completa. Loop del marco solo en escritorio y sin reduced-motion, y
+      recién cuando el marco se acerca: no compite con la película del hero.
    4. Chips del cierre: reescriben el mensaje prellenado del WhatsApp. */
 (function () {
   'use strict';
@@ -127,7 +129,8 @@
         href: a.getAttribute('href'),
         srcset: img ? img.getAttribute('srcset') : '',
         alt: img ? img.getAttribute('alt') : '',
-        cap: cap ? cap.innerHTML : ''
+        cap: cap ? cap.innerHTML : '',
+        thumb: img
       };
     });
     var arrow = function (d) {
@@ -160,15 +163,36 @@
     prevBtn.setAttribute('aria-label', T.prev);
     nextBtn.setAttribute('aria-label', T.next);
 
-    var index = 0, opener = null;
+    var SIZES = 'min(1280px, 100vw)';
+    var index = 0, opener = null, turn = 0;
     var show = function (i) {
       index = (i + items.length) % items.length;
       var it = items[index];
-      img.classList.add('is-loading');
-      img.onload = function () { img.classList.remove('is-loading'); };
-      if (it.srcset) img.setAttribute('srcset', it.srcset); else img.removeAttribute('srcset');
-      img.setAttribute('sizes', 'min(1280px, 100vw)');
-      img.setAttribute('src', it.href);
+      var mine = ++turn; /* una carga de una foto anterior no pisa a la vigente */
+      var big = function () {
+        if (it.srcset) img.setAttribute('srcset', it.srcset); else img.removeAttribute('srcset');
+        img.setAttribute('sizes', SIZES);
+        img.setAttribute('src', it.href);
+      };
+      img.onload = img.onerror = function () { if (mine === turn) img.classList.remove('is-loading'); };
+      /* La versión que la galería ya muestra (en caché) entra al instante y sin velo; la grande se
+         descarga aparte y la reemplaza cuando está lista. Si no hay ninguna cargada, velo hasta que llegue. */
+      var t = it.thumb;
+      var low = t && t.complete && t.naturalWidth ? t.currentSrc : '';
+      if (low) {
+        img.classList.remove('is-loading');
+        img.removeAttribute('srcset');
+        img.removeAttribute('sizes');
+        img.setAttribute('src', low);
+        var pre = new Image();
+        pre.onload = function () { if (mine === turn) big(); };
+        if (it.srcset) { pre.sizes = SIZES; pre.srcset = it.srcset; }
+        pre.src = it.href;
+      } else {
+        img.classList.add('is-loading');
+        big();
+        if (img.complete && img.naturalWidth) img.classList.remove('is-loading');
+      }
       img.setAttribute('alt', it.alt);
       capEl.innerHTML = it.cap;
       countEl.textContent = T.count.replace('{i}', index + 1).replace('{n}', items.length);
@@ -242,6 +266,8 @@
     var source = tpl.content.firstElementChild;
     if (!source) return;
     var video = document.importNode(source, true);
+    video.autoplay = false; /* lo arranca el observador de abajo, solo con el marco a la vista */
+    video.removeAttribute('autoplay');
     var drop = function () {
       if (video.parentNode) video.parentNode.removeChild(video);
       stage.classList.remove('has-video');
@@ -365,5 +391,15 @@
     });
   })();
 
-  mountLoop();
+  /* El loop se monta recién cuando el marco está a ≈ 800 px de entrar en pantalla. */
+  (function lazyLoop() {
+    if (!stage || !media) return;
+    if (!('IntersectionObserver' in window)) { mountLoop(); return; }
+    var io = new IntersectionObserver(function (entries) {
+      if (!entries[entries.length - 1].isIntersecting) return;
+      io.disconnect();
+      if (!stage.classList.contains('is-live')) mountLoop();
+    }, { rootMargin: '800px 0px' });
+    io.observe(media);
+  })();
 })();

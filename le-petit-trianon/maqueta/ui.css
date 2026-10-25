@@ -133,6 +133,11 @@
 }
 .pw-cta:hover { background: var(--pw-bordo-vivo); transform: translateY(-1px); }
 .pw-cta:focus-visible { outline-color: var(--pw-oro-claro); }
+/* en la ficha el CTA va antes de «Para qué sirve» (ui.js); si el marco es tan bajo que ni así entra (visor embebido en
+   pantallas de 768 px, teléfono apaisado), queda fijo al pie visible de la ficha, por encima del degradado, hasta que su
+   sitio natural entra en la vista */
+.pw-sheet .pw-cta { position: sticky; bottom: 0; z-index: 3; }
+.pw-sheet .pw-cta + .pw-use { margin-top: 16px; }
 .pw-quiet { display: flex; align-items: center; justify-content: center; min-height: 44px; text-align: center; padding: 8px 8px 2px; font-size: 12.5px; color: var(--pw-oro-claro); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(207, 173, 116, .5); border-radius: 6px; }
 .pw-quiet:hover { color: #fff; }
 .pw-zoom { width: 100%; } /* el <button> se encogía a su contenido y quedaba a la izquierda; el <a> de al lado va centrado */
@@ -385,6 +390,17 @@
   .pw-help-legend { display: block; margin-top: 14px; }
   /* aquí la leyenda no ocupa la esquina inferior derecha: la ficha solo debe respetar la barra (≈ 55 px) y un margen */
   .pw-sheet { max-height: calc(100% - var(--pw-gap) - 76px); }
+}
+/* ── escritorio ancho pero bajo (visor embebido en pantallas de 768 px de alto: marco de ≈ 540 px): ficha compacta, con los
+   valores del teléfono apaisado, para que el CTA entre en su sitio sin desplazarse ni montarse sobre el texto ── */
+@media (min-width: 1201px) and (max-height: 600px) {
+  .pw-sheet { padding-top: 18px; }
+  .pw-sheet-title { font-size: 26px; margin: 4px 0 10px; }
+  .pw-area { margin-bottom: 10px; }
+  .pw-area-num { font-size: 34px; }
+  .pw-data { padding: 11px 0; gap: 5px 14px; }
+  .pw-where { margin-top: 10px; }
+  .pw-cta { margin-top: 14px; }
 }
 /* ── tablets verticales (721–960 px): ficha más angosta y a 20 px de la cabecera; chips sin rótulos para que quepan
    junto a la ficha; barra compacta (sin separadores) que entra en una sola fila (≈ 690 px) y no sube sobre el minimapa ── */

@@ -105,8 +105,8 @@ html.lpt2-lock { overflow: hidden; }
 }
 .lpt2-film__bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 30px; margin-top: 12px; }
 .lpt2-film__label {
-  font: 500 10px/1.4 var(--ff-mono); letter-spacing: 0.18em; text-transform: uppercase;
-  color: rgba(242, 237, 224, 0.62);
+  font: 500 11px/1.45 var(--ff-mono); letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(242, 237, 224, 0.75);
 }
 .lpt2-film__toggle { /* 44 × 44 de toque; el círculo visible (26 px) queda alineado con el borde del marco */
   appearance: none; flex: none; cursor: pointer;
@@ -139,13 +139,50 @@ html.lpt2-lock { overflow: hidden; }
 .lpt2-oferta li { display: flex; flex-direction: column; gap: 6px; padding-left: 16px; border-left: 1px solid rgba(184, 147, 90, 0.4); }
 .lpt2-oferta__n { font: 500 10.5px/1.3 var(--ff-mono); letter-spacing: 0.16em; color: var(--lpt2-gold-lt); margin-bottom: 3px; }
 .lpt2-oferta b { font: 500 clamp(17px, 1.36vw, 20px)/1.22 var(--ff-display); letter-spacing: -0.005em; color: var(--paper); }
-.lpt2-oferta li > span:last-child { font-size: 13.5px; line-height: 1.5; color: rgba(242, 237, 224, 0.8); }
+.lpt2-oferta li > span:last-child { font-size: 15px; line-height: 1.5; color: rgba(242, 237, 224, 0.9); }
+.lpt2-oferta li > span:last-child strong { font-weight: 600; color: var(--paper); white-space: nowrap; }
+
+/* Portátiles con la barra del navegador (alto útil ≤ 800 px: 1366×650, 1280×650, 1536×730…): la oferta tiene
+   que entrar entera en el primer pantallazo. La película toma el ancho que le deja el alto disponible (lo que
+   ocupan la nav, su barra y la franja de la oferta ≈ 340 px), el texto gana ese ancho y el aire se recorta. */
+@media (min-width: 1024px) and (max-height: 800px) {
+  .lpt2-hero { min-height: 100vh; min-height: 100svh; }
+  .lpt2-hero .top-nav:not(.is-glass) { padding-top: 16px; }
+  .lpt2-hero__main {
+    padding-top: 14px;
+    grid-template-columns: minmax(0, 1fr) min(780px, calc((100% - clamp(36px, 4vw, 64px)) * 0.57), calc((100vh - 340px) * 16 / 9));
+    grid-template-columns: minmax(0, 1fr) min(780px, calc((100% - clamp(36px, 4vw, 64px)) * 0.57), calc((100svh - 340px) * 16 / 9));
+  }
+  .lpt2-film { max-width: none; }
+  .lpt2-hero .eyebrow.gold { margin-bottom: 14px; }
+  .lpt2-hero__lead { margin-top: 16px; }
+  .lpt2-hero .hero-actions { margin-top: 22px; }
+  .lpt2-hero__offer { margin-top: 22px; padding-bottom: 16px; }
+  .lpt2-oferta { padding: 18px 24px 20px; }
+}
+/* Entre 1024 y 1279 px manda la columna de texto (el titular y la oferta en francés son los más largos):
+   el texto pasa a ≈ 54 %, la película a ≈ 46 % y la oferta se compacta un punto. */
+@media (min-width: 1024px) and (max-width: 1279px) and (max-height: 900px) {
+  .lpt2-hero__main {
+    column-gap: 32px;
+    grid-template-columns: minmax(0, 1fr) min(780px, calc((100% - 32px) * 0.46), calc((100vh - 340px) * 16 / 9));
+    grid-template-columns: minmax(0, 1fr) min(780px, calc((100% - 32px) * 0.46), calc((100svh - 340px) * 16 / 9));
+  }
+  .lpt2-film { max-width: none; }
+  .lpt2-hero h1 { font-size: clamp(31px, min(3.3vw, 5.6vh), 52px); }
+  .lpt2-hero__lead { font-size: 16px; line-height: 1.5; }
+  .lpt2-oferta { gap: 0 20px; padding: 16px 20px 18px; }
+  .lpt2-oferta li { padding-left: 14px; }
+  .lpt2-oferta b { font-size: 16.5px; }
+  .lpt2-oferta li > span:last-child { font-size: 14px; line-height: 1.45; }
+}
 
 /* ── I · La propiedad, hoy: galería real ─────────────────────── */
 .lpt2-propiedad .section-lead { margin-bottom: 40px; }
 /* Seis columnas: la casa grande (4) con el portón y la piscina al lado (2 + 2); debajo, el parque y la vista
    aérea a medias (3 + 3). Cada foto conserva casi su proporción de origen y ninguna pasa de ~850 px de ancho. */
 .lpt2-gal { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; }
+.lpt2-gal.reveal { filter: none; } /* las fotos reales entran con fundido y subida, nunca desenfocadas */
 .lpt2-ph { position: relative; margin: 0; overflow: hidden; border-radius: 3px; background: #DCD3C2; }
 .lpt2-ph--casa { grid-column: 1 / 5; grid-row: 1 / 3; }
 .lpt2-ph--porton { grid-column: 5 / 7; grid-row: 1; aspect-ratio: 16 / 9; }
@@ -181,6 +218,18 @@ html.lpt2-lock { overflow: hidden; }
 .lpt2-ph--aerea figcaption { top: 12px; bottom: auto; } /* arriba: el límite dorado queda libre */
 .lpt2-ph figcaption b { font: 500 16px/1.2 var(--ff-display); }
 .lpt2-ph figcaption i { font: italic 400 16px/1.2 var(--ff-display); color: var(--wine); }
+/* Tarjetas chicas (≈ 290–340 px de ancho: portón y piscina entre 1024 y 1199 px; las cuatro de abajo en la
+   galería de dos columnas, 721–1023 px): el pie, más compacto y en una sola línea, tapa poco la foto. */
+@media (min-width: 721px) and (max-width: 1199px) {
+  .lpt2-ph--porton figcaption, .lpt2-ph--piscina figcaption { left: 10px; bottom: 10px; max-width: calc(100% - 20px); padding: 6px 10px 7px; }
+  .lpt2-ph--porton figcaption b, .lpt2-ph--piscina figcaption b, .lpt2-ph--piscina figcaption i { font-size: 13.5px; }
+}
+@media (min-width: 721px) and (max-width: 1023px) {
+  .lpt2-ph--parque figcaption, .lpt2-ph--aerea figcaption { left: 10px; max-width: calc(100% - 20px); padding: 6px 10px 7px; }
+  .lpt2-ph--parque figcaption { bottom: 10px; }
+  .lpt2-ph--aerea figcaption { top: 10px; }
+  .lpt2-ph--parque figcaption b, .lpt2-ph--aerea figcaption b { font-size: 13.5px; }
+}
 .lpt2-propiedad .ip-actions { margin-top: 26px; }
 
 /* ── II · La oferta ──────────────────────────────────────────── */
@@ -193,8 +242,8 @@ html.lpt2-lock { overflow: hidden; }
 .lpt2-dash { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
 .lpt2-dash li { position: relative; padding-left: 24px; font-size: 15px; line-height: 1.55; color: var(--muted); }
 .lpt2-dash li::before { content: "—"; position: absolute; left: 0; color: var(--gold-ink); }
-.lpt2-oferta-sec .ip-common { margin-top: 44px; }
-.lpt2-nota { max-width: 720px; margin: 14px 0 0; font-size: 13.5px; line-height: 1.6; color: var(--mute-2); }
+.lpt2-oferta-sec .ip-common { margin-top: 44px; font-size: 12px; }
+.lpt2-nota { max-width: 760px; margin: 14px 0 0; font-size: 15px; line-height: 1.6; color: var(--muted); }
 .lpt2-oferta-sec .ip-actions { margin-top: 30px; }
 
 /* ── III · La maqueta 3D: el marco (póster → loop → iframe) ───── */
@@ -303,6 +352,7 @@ html.lpt2-lock { overflow: hidden; }
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 48%);
   mask-image: linear-gradient(90deg, transparent 0%, #000 48%);
 }
+.lpt2-cierre .constellation svg > g { display: none; } /* el octógono del sitio caería sobre la foto del portón */
 .lpt2-cierre .contact-lead { max-width: 540px; }
 .lpt2-cierre .lpt-chips { margin-top: 30px; }
 .lpt2-cierre .diag-opt { min-height: 44px; border-color: rgba(242, 237, 224, 0.42); color: var(--paper); }
@@ -336,6 +386,7 @@ html.lpt2-lock { overflow: hidden; }
   object-fit: contain; user-select: none; -webkit-user-drag: none;
   transition: opacity 0.25s;
 }
+.lpt2-lb__img[src*="trianon-foto-parque"], .lpt2-lb__img[src*="trianon-foto-porton"] { width: min(960px, 100%); }
 .lpt2-lb__img.is-loading { opacity: 0.35; }
 .lpt2-lb__bar {
   display: flex; align-items: center; gap: 12px 28px;
@@ -384,6 +435,11 @@ html.lpt2-lock { overflow: hidden; }
   .lpt2-film { justify-self: start; }
   .lpt2-hero h1 { font-size: clamp(34px, 5.6vw, 52px); max-width: 15em; }
   .lpt2-oferta { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 26px; }
+  /* Galería en dos columnas: la casa a todo el ancho; debajo, portón y piscina, parque y vista aérea (16:9).
+     Así los sizes del HTML (88vw y 44vw) son ciertos y los pies entran sin tapar la foto. */
+  .lpt2-gal { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lpt2-ph--casa { grid-column: 1 / -1; grid-row: auto; aspect-ratio: 16 / 9; }
+  .lpt2-ph--porton, .lpt2-ph--piscina, .lpt2-ph--parque, .lpt2-ph--aerea { grid-column: auto; grid-row: auto; aspect-ratio: 16 / 9; }
 }
 @media (max-width: 960px) {
   .lpt2 .nav-links { display: none; } /* cinco enlaces no caben en una línea: quedan la marca y los idiomas */
@@ -396,26 +452,28 @@ html.lpt2-lock { overflow: hidden; }
   .lpt2-cierre__bg { width: 100%; opacity: 0.14; -webkit-mask-image: linear-gradient(180deg, transparent 30%, #000 85%); mask-image: linear-gradient(180deg, transparent 30%, #000 85%); }
 }
 @media (max-width: 720px) {
-  /* Celular: el texto, la película a todo el ancho y la oferta en lista */
+  /* Celular: el texto, la película a todo el ancho y la oferta en lista. Todo compacto para que la película
+     entre entera en el alto visible de Safari (≈ 660 px) y la oferta empiece dentro de los 844 px. */
   .lpt2-hero { display: block; box-shadow: none; }
-  .lpt2-hero__main { display: block; padding: 26px 0 0; }
-  .lpt2-hero .eyebrow.gold { margin-bottom: 14px; font-size: 10px; letter-spacing: 0.12em; }
-  .lpt2-hero h1 { font-size: clamp(31px, 8.6vw, 40px); max-width: none; }
-  .lpt2-hero__lead { margin-top: 16px; font-size: 16px; line-height: 1.58; }
-  .lpt2-hero .hero-actions { margin-top: 22px; gap: 6px 26px; }
+  .lpt2-hero .top-nav:not(.is-glass) { padding-top: 16px; }
+  .lpt2-hero__main { display: block; padding: 14px 0 0; }
+  .lpt2-hero .eyebrow.gold { margin-bottom: 12px; font-size: 10px; letter-spacing: 0.12em; }
+  .lpt2-hero h1 { font-size: clamp(29px, 7.6vw, 36px); max-width: none; }
+  .lpt2-hero__lead { margin-top: 14px; font-size: 16px; line-height: 1.5; }
+  .lpt2-hero .hero-actions { margin-top: 20px; gap: 6px 26px; }
+  .lpt2-hero .hero-actions .quiet-link { display: none; } /* la película y la oferta están justo debajo */
   .lpt2-hero .cta { min-height: 50px; }
-  .lpt2-film { max-width: none; margin: 30px calc(50% - 50vw) 0; width: 100vw; }
+  .lpt2-film { max-width: none; margin: 22px calc(50% - 50vw) 0; width: 100vw; }
   .lpt2-film__frame { border-radius: 0; box-shadow: 0 1px 0 rgba(184, 147, 90, 0.55), 0 -1px 0 rgba(184, 147, 90, 0.55), 0 40px 70px -40px rgba(0, 0, 0, 0.9); }
   .lpt2-film__frame::after { box-shadow: inset 0 0 60px rgba(3, 7, 18, 0.22); }
   .lpt2-film__bar { padding: 0 6vw; margin-top: 8px; }
-  .lpt2-film__label { font-size: 9.5px; letter-spacing: 0.14em; }
+  .lpt2-film__label { font-size: 10px; letter-spacing: 0.1em; }
   .lpt2-hero__offer { margin-top: 0; padding-bottom: 44px; }
-  .lpt2-oferta { grid-template-columns: 1fr; gap: 0; padding: 14px 0 0; border: 0; border-radius: 0; background: none; }
-  .lpt2-oferta li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 3px 10px; padding: 15px 0 16px; border-left: 0; border-top: 1px solid rgba(242, 237, 224, 0.16); }
+  .lpt2-oferta { grid-template-columns: 1fr; gap: 0; padding: 6px 0 0; border: 0; border-radius: 0; background: none; }
+  .lpt2-oferta li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 3px 10px; padding: 13px 0 14px; border-left: 0; border-top: 1px solid rgba(242, 237, 224, 0.16); }
   .lpt2-oferta li:last-child { border-bottom: 1px solid rgba(242, 237, 224, 0.16); }
   .lpt2-oferta__n { grid-row: span 2; padding-top: 5px; margin: 0; }
-  .lpt2-oferta b { font-size: 19px; }
-  .lpt2-oferta li > span:last-child { font-size: 14px; }
+  .lpt2-oferta b { font-size: 18.5px; }
 
   .lpt2-gal { grid-template-columns: 1fr; gap: 10px; }
   .lpt2-gal .lpt2-ph { grid-column: auto; grid-row: auto; aspect-ratio: 3 / 2; }
@@ -434,20 +492,21 @@ html.lpt2-lock { overflow: hidden; }
   .lpt-stage__open-text b { font-size: 14px; }
   .lpt-stage__full { display: none !important; }
 
-  /* Tabla de parcelas: cada fila, una tarjeta de dos líneas */
+  /* Tabla de parcelas: cada fila, una tarjeta de dos líneas (número, superficie y frente; debajo, las acciones
+     a todo el ancho). La columna del número es ancha para que «con la casa» se lea a 10,5 px. */
   .lpt2-lotes, .lpt2-lotes tbody { display: block; }
   .lpt2-lotes thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .lpt2-lotes tr {
-    display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; align-items: center;
-    grid-template-areas: "n sup fr" "n acc acc";
-    gap: 2px 12px; padding: 16px 0 10px; border-bottom: 1px solid rgba(242, 237, 224, 0.14);
+    display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; align-items: center;
+    grid-template-areas: "n sup fr" "acc acc acc";
+    gap: 6px 12px; padding: 16px 0 10px; border-bottom: 1px solid rgba(242, 237, 224, 0.14);
   }
   .lpt2-lotes tbody th, .lpt2-lotes tbody td { display: block; padding: 0; border: 0; width: auto; }
   .lpt2-lotes tbody th { grid-area: n; align-self: start; white-space: normal; }
-  .lpt2-lotes tbody th small { display: block; margin: 8px 0 0; font-size: 9px; letter-spacing: 0.08em; line-height: 1.35; }
+  .lpt2-lotes tbody th small { display: block; margin: 8px 0 0; font-size: 10.5px; letter-spacing: 0.06em; line-height: 1.3; text-wrap: balance; } /* «con la casa» cabe en una línea; «avec la maison», en dos cortas */
   .lpt2-sup { grid-area: sup; font-size: 20px; }
   .lpt2-fr { grid-area: fr; text-align: right; }
-  .lpt2-acc { grid-area: acc; display: flex !important; justify-content: flex-start; gap: 0 26px; text-align: left !important; }
+  .lpt2-acc { grid-area: acc; display: flex !important; flex-wrap: wrap; justify-content: flex-start; gap: 0 26px; text-align: left !important; }
   .lpt2-acc .quiet-link + .quiet-link { margin-left: 0; }
   .lpt2-acc .quiet-link { font-size: 12px; }
 
@@ -456,7 +515,6 @@ html.lpt2-lock { overflow: hidden; }
   .lpt2-lb__cap { flex-basis: 100%; }
   .lpt2-lb__nav { margin-left: auto; }
   .lpt2-cierre__cta { align-items: flex-start; flex-direction: column; gap: 10px; }
-  .lpt2-cierre .constellation svg > g { display: none; } /* el octógono del sitio pisaría el titular en una columna */
   .lpt2-cierre .whatsapp-link { min-height: 50px; }
 }
 @media (prefers-reduced-motion: reduce) {

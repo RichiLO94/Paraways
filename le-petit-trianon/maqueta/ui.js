@@ -276,13 +276,16 @@
     const sheetHead = el('div', { class: 'pw-sheet-head' }, [sEyebrow, sTitle]);
     /* degradado inferior (sticky) que sugiere desplazamiento mientras quede contenido por debajo */
     const sheetFade = el('div', { class: 'pw-sheet-fade', 'aria-hidden': 'true' });
+    /* el CTA va justo después de los datos y antes de «Para qué sirve»: en el visor embebido (marco de 540–630 px de alto)
+       la ficha no entra entera y el botón debe verse sin desplazarse; en marcos aún más bajos lo sostiene el sticky de ui.css */
     const sheet = el('aside', { class: 'pw-sheet', role: 'dialog', 'aria-modal': 'false', 'aria-labelledby': sheetTitleId, tabindex: '-1', 'aria-hidden': 'true' }, [
       handle, closeBtn, headNav, sheetHead,
       el('div', { class: 'pw-area' }, [sAreaNum, el('span', { class: 'pw-mono', text: t('sheet.area_note') })]),
       el('dl', { class: 'pw-data' }, [el('dt', { text: t('sheet.front') }), sFrente, el('dt', { text: t('sheet.sides') }), sLados]),
       el('p', { class: 'pw-where', html: t('sheet.where') }),
+      cta,
       el('div', { class: 'pw-use' }, [el('div', { class: 'pw-eyebrow', text: t('sheet.use_title') }), el('p', { text: USE_COPY })]),
-      cta, zoomBtn, quiet,
+      zoomBtn, quiet,
       el('nav', { class: 'pw-sheet-nav', 'aria-label': t('sheet.other') }, [prevBtn, nextBtn]),
       sheetFade,
     ]);

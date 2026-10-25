@@ -11,8 +11,8 @@ Landing de paraways.com — residencia temporaria, cédula, RUC y cuenta bancari
 - `styles.css` — sistema de diseño (paleta: bordó `#6B1018`, marfil `#F2EDE0`, oro `#B8935A`, medianoche `#0B1738`; Newsreader + Inter + JetBrains Mono)
 - `script.js` — barra de progreso, reveals, botón flotante de WhatsApp, nav de vidrio, formulario y eventos de analytics
 - `api/contact.js` — endpoint serverless (Resend + Slack): nombre, correo, WhatsApp e interés
-- `assets/` — marca, imágenes Open Graph por página e idioma (`og-*.png`), pósters y loop de la maqueta (`trianon-*`)
-- `tools/maqueta/` — scripts Node/Playwright y Python de prueba y captura de la maqueta; sus salidas van a `tools/maqueta/out/` (ignorada por git). No se despliega
+- `assets/` — marca, imágenes Open Graph por página e idioma (`og-*.png`) y lo de Le Petit Trianon (`trianon-*`): fotos reales de la propiedad (`trianon-foto-{casa,porton,piscina,parque}.jpg`, 1920 px, y sus `-800.jpg`), vista aérea con el límite del predio en oro (`trianon-aerea.jpg` y `-800.jpg`), película del hero sin audio (`trianon-film.mp4`/`.webm`, `trianon-film-movil.mp4`, `trianon-film-poster.jpg`), y pósters y loop de la maqueta
+- `tools/maqueta/` — scripts Node/Playwright y Python de prueba y captura de la maqueta; de las fotos reales (`photo-clean.py`: cuadros del video original, limpieza de subtítulos y rótulos, gradación; `aerial-align.py`: el límite del predio sobre la aérea; `upscale.py` y `sr-photos.py`: escalado con Real-ESRGAN y exportación web); y de la película del hero (`film-build.py` con `film-frames.js` para los cuadros de la maqueta). Sus salidas van a `tools/maqueta/out/` (ignorada por git). No se despliega
 - `docs/` — notas de operación. No se despliega
 - `.vercelignore` — excluye `tools` y `docs` del despliegue
 - `vercel.json` — `cleanUrls` y `trailingSlash` (las URLs terminan en `/`), cabeceras de seguridad (`X-Frame-Options: DENY`, salvo `SAMEORIGIN` bajo `/le-petit-trianon/maqueta/` para que la página pueda embeber la maqueta) y caché de `assets/` y de la maqueta
@@ -20,13 +20,13 @@ Landing de paraways.com — residencia temporaria, cédula, RUC y cuenta bancari
 
 ## Le Petit Trianon
 
-Fraccionamiento de siete lotes en San Bernardino (departamento de Cordillera) presentado con una maqueta 3D construida sobre el plano de fraccionamiento de la arquitecta y la mensura georreferenciada del título. La página del desarrollo (`/le-petit-trianon/` y sus idiomas) muestra un póster y, tras un gesto del visitante, embebe el visor en un iframe (`/le-petit-trianon/maqueta/?lang=xx&embed=1`); en móvil abre el visor a pantalla completa.
+Fraccionamiento de siete lotes en San Bernardino (departamento de Cordillera) presentado con fotos y video reales de la propiedad, combinados con una maqueta 3D sobre el plano de fraccionamiento. La página del desarrollo (`/le-petit-trianon/` y sus idiomas) muestra un póster y, tras un gesto del visitante, embebe el visor en un iframe (`/le-petit-trianon/maqueta/?lang=xx&embed=1`); en móvil abre el visor a pantalla completa.
 
 Todo lo necesario para correr, probar y editar el visor (estructura de módulos, parámetros de URL, datos, textos en cuatro idiomas, pruebas con Playwright, presupuesto de rendimiento, reglas de contenido, licencias e integración en el sitio) está en [`le-petit-trianon/maqueta/README.md`](le-petit-trianon/maqueta/README.md); el contrato técnico de módulos y datos, en [`le-petit-trianon/maqueta/CONTRACT.md`](le-petit-trianon/maqueta/CONTRACT.md).
 
 Para verlo en local: `python3 -m http.server 8765 --bind 127.0.0.1` desde la raíz del repositorio y abrir `http://127.0.0.1:8765/le-petit-trianon/`.
 
-Reglas que valen para todo el sitio y también aquí: sin precios ni plazos (los valores se comparten por WhatsApp), un solo canal de contacto (WhatsApp), ningún nombre de personas, sin emojis, sin librerías externas y sin datos que no estén verificados.
+Reglas que valen para todo el sitio y también aquí: sin cifras de precio ni honorarios (los valores se comparten por WhatsApp; solo se publica el umbral legal del Investor Pass), plazos solo como estimación calificada, un solo canal de contacto (WhatsApp), ningún nombre de personas salvo el crédito de la arquitecta, sin emojis, sin librerías externas y sin datos que no estén verificados.
 
 ## Analytics
 

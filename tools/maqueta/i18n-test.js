@@ -11,10 +11,16 @@ const BASE = process.env.PW_URL || 'http://127.0.0.1:8765/le-petit-trianon/maque
 const NN = ' ';   /* espacio fino insecable (FR) */
 const EXPECT = {
   pt: { title: 'Lote 3', area: '633,90 m²', front: '≈ 19,9 m', sup: '5.468,82 m²', cta: 'Perguntar sobre o lote 3', wa: 'Olá, vi o lote 3 do loteamento Le Petit Trianon', doc: 'Le Petit Trianon · Maquete 3D', page: '/pt/le-petit-trianon/', home: '/pt/', toolbar: 'Maquete', close: 'Fechar a ficha (Esc)' },
-  en: { title: 'Lot 3', area: '633.90 m²', front: '≈ 19.9 m', sup: '5,468.82 m²', cta: 'Ask about lot 3', wa: 'Hello, I saw lot 3 of the Le Petit Trianon subdivision', doc: 'Le Petit Trianon · 3D model', page: '/en/le-petit-trianon/', home: '/en/', toolbar: 'Model', close: 'Close the lot details (Esc)' },
+  en: { title: 'Plot 3', area: '633.90 m²', front: '≈ 19.9 m', sup: '5,468.82 m²', cta: 'Ask about plot 3', wa: 'Hello, I saw plot 3 of the Le Petit Trianon subdivision', doc: 'Le Petit Trianon · 3D model', page: '/en/le-petit-trianon/', home: '/en/', toolbar: 'Model', close: 'Close the plot details (Esc)' },
   fr: { title: 'Lot 3', area: '633,90' + NN + 'm²', front: '≈ 19,9' + NN + 'm', sup: '5' + NN + '468,82' + NN + 'm²', cta: 'Se renseigner sur le lot 3', wa: 'Bonjour, j’ai vu le lot 3 du lotissement Le Petit Trianon', doc: 'Le Petit Trianon · Maquette 3D', page: '/fr/le-petit-trianon/', home: '/fr/', toolbar: 'Maquette', close: 'Fermer la fiche (Échap)' },
 };
 /* palabras españolas que no deben quedar a la vista en EN (los nombres propios Ruta San Bernardino – Pirayú y UTM 21S no cuentan) */
+/* ficha «Para qué sirve»: el umbral es la inversión (parcela + construcción de la casa), nunca el precio del lote solo */
+const USE = {
+  pt: /construção da sua casa, o investimento a partir de US\$\u00A0200\.000, destinado a renda ou valorização/,
+  en: /construction of your house, an investment from USD\u00A0200,000, held for rental or appreciation/,
+  fr: /construction de votre maison, un investissement d’au moins 200\u202F000\u202FUSD, destiné à la location ou à la valorisation/,
+};
 const SPANISH = /(^|[^\p{L}])(Lote|lotes|Superficie|superficie|calle|Cerrar|Ayuda|Vista|Luz|Vegetación|Cotas|Leyenda|Maqueta|maqueta|Plano|plano|Atardecer|Noche|Día|Parque|Bosque|portón|portero|seleccionado|mensura|Frente|Lados|Consultar|Acercarme|Pedir|Dentro|teclas|elegir|cerrar|veredas|tacuaral|césped|empedrada|norte|según)(?![\p{L}])/u;
 const results = [];
 const check = (name, ok, detail) => { results.push({ name, ok: !!ok }); console.log((ok ? 'ok   ' : 'FALLO ') + name + (ok ? '' : ' → ' + JSON.stringify(detail))); };
@@ -44,7 +50,7 @@ const check = (name, ok, detail) => { results.push({ name, ok: !!ok }); console.
       cta: document.querySelector('.pw-cta span').textContent, ctaHref: document.querySelector('.pw-cta').href, waFrom: document.querySelector('.pw-cta').getAttribute('data-wa-from'),
       brandHref: document.querySelector('.pw-brand').getAttribute('href'), brandTarget: document.querySelector('.pw-brand').getAttribute('target'),
       firstTb: document.querySelector('.pw-toolbar .pw-tb span').textContent, closeAria: document.querySelector('.pw-sheet .pw-close').getAttribute('aria-label'),
-      canvasAria: document.getElementById('escena').getAttribute('aria-label'),
+      canvasAria: document.getElementById('escena').getAttribute('aria-label'), use: document.querySelector('.pw-use p').textContent,
       bodyText: document.body.innerText,
     }));
     check(lang + ': <html lang>', got.lang === lang, got.lang);
@@ -57,13 +63,16 @@ const check = (name, ok, detail) => { results.push({ name, ok: !!ok }); console.
     check(lang + ': CTA de WhatsApp en el idioma', got.cta === E.cta && got.ctaHref.includes('wa.me/595993474309?text=' + encodeURIComponent(E.wa)) && got.waFrom === 'maqueta-lote-3', { cta: got.cta, href: decodeURIComponent(got.ctaHref), waFrom: got.waFrom });
     check(lang + ': marca → página del desarrollo del idioma, misma pestaña', got.brandHref === E.page && got.brandTarget === null, { href: got.brandHref, target: got.brandTarget });
     check(lang + ': barra y aria-labels en el idioma', got.firstTb === E.toolbar && got.closeAria === E.close && !/Maqueta 3D de/.test(got.canvasAria), { tb: got.firstTb, close: got.closeAria, canvas: got.canvasAria });
+    check(lang + ': ficha «para qué sirve» con el umbral de la inversión (lote + casa), no del lote solo', USE[lang].test(got.use) && !/(lote|lot|plot|parcelle)\s+(pode integrar|can be included|peut entrer)/i.test(got.use), got.use);
     if (lang === 'en') {
+      const lw = got.bodyText.match(/\blots?\b/i);
+      check('en: «plot» como en la página, ningún «lot» a la vista', !lw, lw && got.bodyText.slice(Math.max(0, lw.index - 40), lw.index + 40).replace(/\s+/g, ' '));
       const m = got.bodyText.match(SPANISH);
       check('en: ninguna palabra española a la vista', !m, m && m[0] + ' … ' + got.bodyText.slice(Math.max(0, m.index - 40), m.index + 60).replace(/\s+/g, ' '));
       await p.keyboard.press('?'); await p.waitForTimeout(300);
       const help = await p.evaluate(() => document.querySelector('.pw-help-card').innerText + '\n' + document.querySelector('.pw-help-link').getAttribute('href'));
-      const mh = help.match(SPANISH);
-      check('en: ayuda sin palabras españolas y con la nota «in Spanish»', !mh && /in Spanish/.test(help) && /nota-tecnica\/$/.test(help), mh && mh[0]);
+      const mh = help.match(SPANISH) || help.match(/\blots?\b/i);
+      check('en: ayuda sin palabras españolas ni «lot», y con la nota «in Spanish»', !mh && /in Spanish/.test(help) && /nota-tecnica\/$/.test(help), mh && mh[0]);
       await p.keyboard.press('Escape'); await p.waitForTimeout(300);
     }
     await p.evaluate(() => PW.app.settle());

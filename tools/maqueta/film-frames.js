@@ -7,8 +7,8 @@
      centro (objetivo, por rayo al suelo) sobre una copia de la cámara, sin renderizar (residuo ≈ 0,6 px por el relieve).
    - Cuadros «tilt»: interpolación (u ya suavizado por film-build.py) desde la última cenital hasta la pose de la vista
      Maqueta del visor con el encuadre del póster (setView('maqueta') + el ajuste «fit» de poster.js con márgenes 0,12/0,15:
-     theta 0,62, phi 0,87, losa centrada), theta por el giro corto,
-     distancia en escala logarítmica. Discos numerados de las parcelas con la opacidad pedida (0 → 1).
+     theta 0,62, phi 0,87, losa centrada), theta por el giro corto, distancia en escala logarítmica y el objetivo
+     resuelto para que el centro del predio recorra la pantalla en línea recta (sin vaivén). Discos numerados de las parcelas con la opacidad pedida (0 → 1).
    Luz Atardecer (?light=atardecer), modo diorama (página marfil), sin textos apoyados en el suelo (rótulos de ruta y del
    norte), bucle del visor detenido (PW.app.pause) y PW.app.settle() antes de cada captura, como poster.js y loop-frames.js.
    Requiere el servidor local del repo (python3 -m http.server 8765 desde la raíz) y Playwright con Chromium. */
@@ -20,7 +20,8 @@ const dir = process.argv[2];
 if (!dir) { console.error('uso: node film-frames.js <carpeta>'); process.exit(1); }
 const req = JSON.parse(fs.readFileSync(path.join(dir, 'cams-request.json'), 'utf8'));
 const out = path.join(dir, '3d'); fs.mkdirSync(out, { recursive: true });
-const only = process.env.FILM_ONLY ? new Set(process.env.FILM_ONLY.split(',').map(Number)) : null;   /* pruebas: solo esos cuadros */
+/* pruebas: FILM_ONLY=300,340 o 324-391 → solo se capturan esos cuadros (las cámaras y proj.json se calculan todos) */
+const only = process.env.FILM_ONLY ? new Set(process.env.FILM_ONLY.split(',').flatMap(x => { const [a, b] = x.split('-').map(Number); return b ? Array.from({ length: b - a + 1 }, (_, i) => a + i) : [a]; })) : null;
 
 (async () => {
   const t0 = Date.now();
@@ -97,14 +98,27 @@ const only = process.env.FILM_ONLY ? new Set(process.env.FILM_ONLY.split(',').ma
       place(vcam, s);
       return { s, err, it };
     }
-    window.FILM = { app, cam, maq, solve, place, project, vcam, ground, c0 };
+    /* centro del predio (promedio de vértices) en pantalla y objetivo que lo lleva a un punto dado, con la orientación fija */
+    const C = poly.reduce((acc, v) => acc.add(v.clone().multiplyScalar(1 / poly.length)), new THREE.Vector3());
+    const screenC = s => { place(vcam, s); const q = C.clone().project(vcam); return [(q.x + 1) / 2 * W, (1 - q.y) / 2 * H]; };
+    const gHit = (px, py) => { const rc = new THREE.Raycaster(); rc.setFromCamera(new THREE.Vector2(px / W * 2 - 1, 1 - py / H * 2), vcam); const o = new THREE.Vector3(); return rc.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), -C.y), o) ? o : null; };
+    function aimAt(s, want) {
+      for (let i = 0; i < 8; i++) {
+        const q = screenC(s); if (Math.hypot(q[0] - want[0], q[1] - want[1]) < 0.05) break;
+        const a = gHit(q[0], q[1]), b = gHit(want[0], want[1]); if (!a || !b) break;
+        s.t = [s.t[0] + a.x - b.x, s.t[1], s.t[2] + a.z - b.z];
+      }
+      return s;
+    }
+    window.FILM = { app, cam, maq, solve, place, project, vcam, ground, c0, screenC, aimAt };
     return { maq, hidden, kappa, ground: +ground.toFixed(3), lots: Object.keys(app.lots).length };
   });
   console.log('preparado', JSON.stringify(setup));
   const proj = {};
   let pose = null, last = null;
   for (const f of req.frames) {
-    const r = await p.evaluate(([f, pose, last]) => {
+    const shoot = !only || only.has(f.k);
+    const r = await p.evaluate(([f, pose, last, shoot]) => {
       const F = window.FILM, app = F.app, cam = F.cam;
       let s, info = {};
       if (f.mode === 'cenital') {
@@ -114,18 +128,21 @@ const only = process.env.FILM_ONLY ? new Set(process.env.FILM_ONLY.split(',').ma
         const a = last, m = F.maq, u = f.u;
         let dth = m.th - a.th; while (dth > Math.PI) dth -= 2 * Math.PI; while (dth < -Math.PI) dth += 2 * Math.PI;
         s = { t: a.t.map((v, i) => v + (m.t[i] - v) * u), d: Math.exp(Math.log(a.d) + (Math.log(m.d) - Math.log(a.d)) * u), phi: a.phi + (m.phi - a.phi) * u, th: a.th + dth * u };
+        /* el centro del predio recorre la pantalla en línea recta entre la cenital y el encuadre final (sin vaivén) */
+        const p0 = F.screenC(a), p1 = F.screenC(m);
+        F.aimAt(s, [p0[0] + (p1[0] - p0[0]) * u, p0[1] + (p1[1] - p0[1]) * u]);
       }
       const disc = f.mode === 'cenital' ? 0 : f.disc;
       /* lotFrame (dentro de settle) fija la visibilidad por distancia pero no toca la opacidad del disco */
       Object.values(app.lots).forEach(l => { l.label.material.transparent = true; l.label.material.opacity = disc; });
       cam.tTarget.set(s.t[0], s.t[1], s.t[2]); cam.tDist = s.d; cam.tPhi = s.phi; cam.tTheta = s.th; cam.tween = null;
-      app.settle();
+      if (shoot) app.settle();
       F.place(F.vcam, s);
       return { s, info, verts: F.project(F.vcam).map(q => [+q[0].toFixed(3), +q[1].toFixed(3)]), cam: [app.camera.position.x, app.camera.position.y, app.camera.position.z].map(v => +v.toFixed(3)) };
-    }, [f, pose, last]);
+    }, [f, pose, last, shoot]);
     if (f.mode === 'cenital') { pose = r.s; last = r.s; }
     proj[f.k] = { verts: r.verts, mode: f.mode, pose: r.s, info: r.info };
-    if (!only || only.has(f.k)) {
+    if (shoot) {
       await p.waitForTimeout(120);
       await p.screenshot({ path: path.join(out, `k${String(f.k).padStart(4, '0')}.png`) });
     }

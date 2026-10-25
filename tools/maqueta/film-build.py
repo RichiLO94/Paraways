@@ -1,17 +1,24 @@
 """Película del hero de Le Petit Trianon: assets/trianon-film.mp4 / .webm, trianon-film-movil.mp4 y trianon-film-poster.jpg.
 
 Guion (1280×720, 24 fps, 17,0 s = 408 cuadros, bucle sin corte, SIN pista de audio, sin textos horneados):
-  0,00–3,00   la casa de frente — parte 1, cuadros 3–89 (0,76×). El subtítulo se borra con una placa limpia (cuadros 3–5,
-              promediados) alineada cuadro a cuadro por ECC (homografía sobre el fondo) y fundida con máscara de bordes
-              suaves + corrección de baja frecuencia del entorno (sin costura ni parpadeo).
-  3,00–4,20   el portón — parte 1, cuadros 93–122 (sin subtítulo), 0,57×, retemporizado por movimiento medido (el
-              original tiene una cadencia irregular de 3 cuadros) e interpolado por flujo óptico.
-  4,20–6,50   piscina con jacuzzi y la casa detrás — parte 2b, cuadros 165–225 (cámara quieta), 0,71×. Subtítulo: un mismo
+  0,00–3,00   la casa de frente — parte 1, cuadros 3–89 (0,76×; 0–2 son de la toma anterior, con otro rótulo). El
+              subtítulo (entra en el cuadro 6) se borra con una placa limpia (cuadros 3–5 promediados) alineada cuadro a
+              cuadro por ECC (homografía sobre el fondo) y fundida con máscara de bordes suaves + corrección de baja
+              frecuencia del entorno (sin costura ni parpadeo).
+  2,75–5,00   el portón — parte 1, cuadros 93–122 (90–92 arrastran el rótulo; desde el 123 el original acelera), 0,44×:
+              unos 2 s en pantalla, para que se registre.
+  Casa, portón y jardín se retemporizan por movimiento medido: el original tiene una cadencia irregular de 3 cuadros que
+  la cámara lenta volvería tirones. Cámara lenta = interpolación por flujo óptico suavizado (movimiento de cámara, no de
+  hojas).
+  4,50–7,00   piscina con jacuzzi y la casa detrás — parte 2b, cuadros 165–225 (cámara quieta), 0,81×. Subtítulo: un mismo
               parche limpio (promedio robusto + relleno Shift-Map, como photo-clean.py) para todos los cuadros, seguido
               por ECC y con corrección de baja frecuencia.
-  6,50–9,50   el parque con los rayos de sol — parte 1, cuadros 357–462 (1×). La cámara panea: se recorta por encima del
-              subtítulo manteniendo 16:9 (761×428 → 1280×720).
-  9,50–12,50  la aérea limpia (aerea-clean.png) con un empuje lento; el límite del predio en oro #C9A66B (halo suave) se
+  6,50–9,75   el jardín visto desde la galería: césped, seto, árboles altos y la piscina con los chorros del jacuzzi —
+              parte 2b, cuadros 60–111 (paneo lentísimo, nítido y a pleno sol), 0,53×. El subtítulo «con vista a la piscina
+              y al jardín.» va sobre el deck claro: máscara de letras blancas junto a su borde oscuro y el mismo parche
+              limpio que la piscina. (Reemplaza a la toma del parque a contraluz de la parte 1, cuadros 357–462: lechosa,
+              con destello y blanda.)
+  9,25–12,50  la aérea limpia (aerea-clean.png) con un empuje lento; el límite del predio en oro #C9A66B (halo suave) se
               dibuja a sí mismo desde el portón en 1,6 s y queda.
   12,50–13,50 la aérea se funde en la maqueta 3D cenital, ALINEADA (la cámara del visor se resuelve cuadro a cuadro para
               que el polígono de data.js caiga sobre el contorno dorado; la aérea se deforma con la similitud medida):
@@ -38,6 +45,18 @@ Opciones: --video DIR (con parte1.mov y parte2b.mov) --work DIR --aerial aerea-c
   aerea-clean.png y aerial-align.json los deja photo-clean.py (aérea limpia y graduada sin contorno, 1280×725, y los
   vértices del polígono medido en sus píxeles). El render 3D requiere el servidor local del repo (python3 -m http.server
   8765 desde la raíz) y Playwright (ver film-frames.js).
+  Codificación: H.264 (preset slow, yuv420p, +faststart) y VP9 (crf, b:v 0) sin audio; el crf sube solo hasta que cada
+  archivo grande pesa ≤ 3,5 MB y el móvil (854×480) ≤ 1,6 MB (hoy: mp4 crf 28, webm crf 42, móvil crf 29); póster =
+  primer cuadro, JPG progresivo ≤ 200 KB. La verificación compara último→primer cuadro con la mediana entre vecinos.
+Ejemplo completo (W = carpeta de trabajo; V = carpeta con parte1.mov y parte2b.mov; A = aérea limpia y su JSON):
+  export PW_SR_MODELS=<carpeta con realesr-general-x4v3.pth y realesr-general-wdn-x4v3.pth>
+  python film-build.py clean --video V --work W
+  for i in 0 1 2 3; do python film-build.py sr --work W --threads 1 --part $i/4 & done; wait
+  python film-build.py shots --work W
+  python film-build.py plan --work W --aerial A/aerea-clean.png --align A/aerial-align.json
+  flock /tmp/pw-render.lock node film-frames.js W
+  python film-build.py compose --work W --aerial A/aerea-clean.png --align A/aerial-align.json
+  python film-build.py encode --work W --assets ../../assets --stills out
 Requiere el venv con PyTorch, opencv-contrib (xphoto), numpy y Pillow; ffmpeg/ffprobe en el PATH. Determinista.
 """
 import argparse
@@ -71,18 +90,18 @@ GOLD = np.array([0x6B, 0xA6, 0xC9], np.float32)   # #C9A66B en BGR
 
 # tomas de video: cuadros fuente (n desde 0, 30 fps), escena de gradación, recorte en la fuente (x, y, w, h)
 SHOTS = {
-    'casa':    dict(video='parte1.mov',  first=3,   last=89,  scene='casa',    crop=(0, 2, 960, 540)),
+    'casa':    dict(video='parte1.mov',  first=3,   last=89,  scene='casa',    crop=(0, 2, 960, 540), retime=True),
     'porton':  dict(video='parte1.mov',  first=93,  last=122, scene='porton',  crop=(0, 2, 960, 540), retime=True),
     'piscina': dict(video='parte2b.mov', first=165, last=225, scene='piscina', crop=(0, 2, 960, 540)),
-    'parque':  dict(video='parte1.mov',  first=357, last=462, scene='parque',  crop=(100, 0, 761, 428)),
+    'jardin':  dict(video='parte2b.mov', first=60,  last=111, scene='piscina', crop=(0, 2, 960, 540), retime=True),
 }
 # línea de tiempo (segundos de película): tramo visible [a, b] de cada toma, fundidos de 0,5 s
 XF = 0.5
 TL = {
     'casa':    (0.00, 3.25),     # + pre-roll 16,50–17,00 (los primeros 0,5 s de la toma, fundidos sobre la maqueta)
-    'porton':  (2.75, 4.45),
-    'piscina': (3.95, 6.75),
-    'parque':  (6.25, 9.75),
+    'porton':  (2.75, 5.00),
+    'piscina': (4.50, 7.00),
+    'jardin':  (6.50, 9.75),
     'aerea':   (9.25, 13.50),
     'maqueta': (12.50, 17.00),
 }
@@ -225,9 +244,45 @@ def clean_piscina(src, dst, log):
     log['piscina'] = {'deriva_px_cuadro_225': drift, 'mascara_px': int((mask > 0).sum())}
 
 
+def deck_subtitle_mask(img, box, dil=6):
+    """Subtítulo blanco sobre un fondo claro (el deck): solo cuenta el blanco puro que toca el borde oscuro de las letras
+    (el travertino al sol también es claro y poco saturado); dilatado para cubrir borde, sombra y sangrado de croma."""
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    x0, y0, x1, y1 = box
+    white = ((hsv[..., 2] >= 225) & (hsv[..., 1] <= 35)).astype(np.uint8)
+    edge = cv2.dilate((hsv[..., 2] < 95).astype(np.uint8), np.ones((5, 5), np.uint8))
+    core = np.zeros(img.shape[:2], np.uint8)
+    core[y0:y1, x0:x1] = (white & edge)[y0:y1, x0:x1] * 255
+    core = pc.drop_small(core, 4)
+    m = cv2.dilate(core, pc.E(dil)); m |= np.roll(np.roll(m, 2, 0), 2, 1)
+    return pc.fill_holes(cv2.morphologyEx(m, cv2.MORPH_CLOSE, pc.E(4)))
+
+
+def clean_jardin(src, dst, log):
+    fr = pc.Frames(src)
+    s = SHOTS['jardin']
+    box = (280, 408, 684, 454)                                  # «con vista a la piscina y al jardín.» sobre el deck
+    ref_i = 80
+    merged = merge_plate(fr, ref_i, range(s['first'], s['last'] + 1), box)
+    m = deck_subtitle_mask(fr(ref_i), box)
+    plate = pc.shiftmap_fill(merged, m, (150, 330, 820, merged.shape[0]))
+    hh, ww = plate.shape[:2]
+    mask = cv2.dilate(m, pc.E(2))
+    bgmask = np.full((hh, ww), 255, np.uint8); bgmask[box[1] - 10:box[3] + 10, box[0] - 10:box[2] + 10] = 0
+    cv2.imwrite(os.path.join(dst, '_mask.png'), mask); cv2.imwrite(os.path.join(dst, '_plate.png'), plate)
+    init = None; drift = None
+    for i in range(s['first'], s['last'] + 1):
+        Hm = ecc(plate, fr(i), bgmask, init); init = Hm
+        pw = cv2.warpPerspective(plate, Hm, (ww, hh), flags=cv2.INTER_LANCZOS4, borderMode=cv2.BORDER_REFLECT)
+        cv2.imwrite(os.path.join(dst, '%04d.png' % i), patch_in(fr(i), pw, mask))
+        t = Hm @ np.array([480, 272, 1.0]); drift = [round(t[0] / t[2] - 480, 2), round(t[1] / t[2] - 272, 2)]
+    log['jardin'] = {'deriva_px_ultimo_cuadro': drift, 'mascara_px': int((mask > 0).sum())}
+
+
 def stage_clean(a):
     log = {}
-    for name, s in SHOTS.items():
+    for name in (a.only.split(',') if a.only else list(SHOTS)):
+        s = SHOTS[name]
         src = os.path.join(a.work, 'src', name)
         lo, hi = s['first'], s['last']
         if name == 'casa':
@@ -240,11 +295,15 @@ def stage_clean(a):
             clean_casa(src, dst, log)
         elif name == 'piscina':
             clean_piscina(src, dst, log)
+        elif name == 'jardin':
+            clean_jardin(src, dst, log)
         else:
             for i in range(s['first'], s['last'] + 1):
                 shutil.copyfile(os.path.join(src, '%04d.png' % i), os.path.join(dst, '%04d.png' % i))
         print(name, 'limpio', log.get(name, ''), flush=True)
-    json.dump(log, open(os.path.join(a.work, 'clean-log.json'), 'w'), indent=1)
+    path = os.path.join(a.work, 'clean-log.json')
+    old = json.load(open(path)) if os.path.exists(path) else {}
+    old.update(log); json.dump(old, open(path, 'w'), indent=1)
 
 
 # ---------------------------------------------------------------- escalado con IA
@@ -280,13 +339,18 @@ def stage_sr(a):
 _DIS = None
 
 
-def flow(a, b):
+def flow(a, b, smooth=0.0):
+    """Flujo óptico DIS a media resolución. smooth > 0: mediana + gaussiana (en px de media resolución), para quedarse
+    con el movimiento de cámara y no con el temblor de hojas y pasto (que en la interpolación deja manchas)."""
     global _DIS
     if _DIS is None:
         _DIS = cv2.DISOpticalFlow_create(cv2.DISOPTICAL_FLOW_PRESET_MEDIUM)
     ga = cv2.resize(cv2.cvtColor(a, cv2.COLOR_BGR2GRAY), (W // 2, H // 2), interpolation=cv2.INTER_AREA)
     gb = cv2.resize(cv2.cvtColor(b, cv2.COLOR_BGR2GRAY), (W // 2, H // 2), interpolation=cv2.INTER_AREA)
     f = _DIS.calc(ga, gb, None)
+    if smooth:
+        f = np.dstack([cv2.medianBlur(np.ascontiguousarray(f[..., c]), 5) for c in range(2)])
+        f = cv2.GaussianBlur(f, (0, 0), smooth)
     return cv2.resize(f, (W, H), interpolation=cv2.INTER_LINEAR) * 2.0
 
 
@@ -296,7 +360,7 @@ def interp(a, b, t):
         return a
     if t > 0.98:
         return b
-    fab, fba = flow(a, b), flow(b, a)
+    fab, fba = flow(a, b, 6.0), flow(b, a, 6.0)
     gx, gy = np.meshgrid(np.arange(W, dtype=np.float32), np.arange(H, dtype=np.float32))
     wa = cv2.remap(a, gx - t * fab[..., 0], gy - t * fab[..., 1], cv2.INTER_CUBIC, borderMode=cv2.BORDER_REFLECT)
     wb = cv2.remap(b, gx - (1 - t) * fba[..., 0], gy - (1 - t) * fba[..., 1], cv2.INTER_CUBIC, borderMode=cv2.BORDER_REFLECT)
@@ -508,14 +572,15 @@ def stage_compose(a):
     k3 = sorted(int(x) for x in proj)
     last3 = k3[-1]
     rows = []
-    for k in range(NFR):
+    todo = [int(x) for x in a.frames.split(',')] if a.frames else range(NFR)
+    for k in todo:
         t = ftime(k)
         layers = []                                                         # (imagen, alfa de entrada)
 
         def vid(name):
             p = os.path.join(a.work, 'shots', name, 'k%04d.png' % k)
             return cv2.imread(p) if os.path.exists(p) else None
-        for name in ('casa', 'porton', 'piscina', 'parque'):
+        for name in SHOTS:
             a0, b0 = TL[name]
             if a0 - 1e-9 <= t <= b0 + 1e-9:
                 fr = vid(name); assert fr is not None, (name, k)
@@ -588,17 +653,17 @@ def stage_encode(a):
     src = os.path.join(a.work, 'out', 'f%04d.png')
     base = os.path.join(a.assets, 'trianon-film')
     res = {}
-    for crf in (a.crf, a.crf + 2, a.crf + 4):
+    for crf in range(a.crf, a.crf + 6):
         run(['ffmpeg', '-v', 'error', '-y', '-framerate', str(FPS), '-i', src, '-an', '-c:v', 'libx264', '-preset', 'slow', '-crf', str(crf),
              '-profile:v', 'high', '-pix_fmt', 'yuv420p', '-g', '48', '-movflags', '+faststart', base + '.mp4'])
         if os.path.getsize(base + '.mp4') <= 3.5 * 1024 * 1024:
             res['mp4_crf'] = crf; break
-    for crf in (a.crf_vp9, a.crf_vp9 + 3, a.crf_vp9 + 6):
+    for crf in range(a.crf_vp9, a.crf_vp9 + 12, 2):
         run(['ffmpeg', '-v', 'error', '-y', '-framerate', str(FPS), '-i', src, '-an', '-c:v', 'libvpx-vp9', '-crf', str(crf), '-b:v', '0',
              '-deadline', 'good', '-cpu-used', '1', '-row-mt', '1', '-g', '48', '-pix_fmt', 'yuv420p', base + '.webm'])
         if os.path.getsize(base + '.webm') <= 3.5 * 1024 * 1024:
             res['webm_crf'] = crf; break
-    for crf in (a.crf + 1, a.crf + 3, a.crf + 5):
+    for crf in range(a.crf + 1, a.crf + 7):
         run(['ffmpeg', '-v', 'error', '-y', '-framerate', str(FPS), '-i', src, '-an', '-vf', 'scale=854:480:flags=lanczos', '-c:v', 'libx264',
              '-preset', 'slow', '-crf', str(crf), '-profile:v', 'high', '-pix_fmt', 'yuv420p', '-g', '48', '-movflags', '+faststart', base + '-movil.mp4'])
         if os.path.getsize(base + '-movil.mp4') <= 1.6 * 1024 * 1024:
@@ -627,7 +692,7 @@ def stage_encode(a):
     # ocho cuadros representativos del mp4 codificado (para revisar alineación, nitidez y ritmo)
     if a.stills:
         os.makedirs(a.stills, exist_ok=True)
-        marks = [('1-casa', 1.5), ('2-porton', 3.6), ('3-piscina', 5.4), ('4-parque', 8.0), ('5-aerea', 10.6),
+        marks = [('1-casa', 1.5), ('2-porton', 3.9), ('3-piscina', 5.75), ('4-jardin', 8.1), ('5-aerea', 10.6),
                  ('6-fundido', 13.0), ('7-inclinacion', 14.9), ('8-maqueta', 16.4)]
         arr, _ = decode_frames(base + '.mp4', [])
         for nm, ts in marks:
@@ -644,7 +709,7 @@ def main():
     ap.add_argument('--data', default=os.path.join(REPO, 'le-petit-trianon', 'maqueta', 'data.js'))
     ap.add_argument('--threads', type=int, default=4); ap.add_argument('--tile', type=int, default=544)
     ap.add_argument('--only', default=''); ap.add_argument('--part', default='0/1')
-    ap.add_argument('--stills', default='')
+    ap.add_argument('--stills', default=''); ap.add_argument('--frames', default='')
     ap.add_argument('--crf', type=int, default=26); ap.add_argument('--crf-vp9', type=int, default=36)
     a = ap.parse_args()
     os.makedirs(a.work, exist_ok=True)
