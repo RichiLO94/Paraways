@@ -593,7 +593,7 @@
     const label = api.textPlane(D.meta.proyecto.toUpperCase(), { font: 'serif', size: 64, weight: 600, color: '#F2EDE0', bg: '#0B1738', padding: 26, radius: 6, width: 6.4, letterSpacing: 6, border: '#B8935A', borderWidth: 2 });
     label.position.set(sign.position.x, sign.position.y + 0.15, sign.position.z + 0.26); group.add(label);
 
-    /* Casa modelo: volúmenes con revoque; pileta con venecitas, agua animada y deck de madera. */
+    /* Casa existente: volúmenes con revoque; pileta con venecitas, agua animada y deck de madera. */
     D.house.volumes.forEach(v => {
       const w = v.x1 - v.x0, d = v.y1 - v.y0;
       if (v.pergola) { place(api.box(w, 0.25, d, 'deck'), (v.x0 + v.x1) / 2, (v.y0 + v.y1) / 2, v.h * 2 - 0.25, 0); return; }

@@ -1,7 +1,7 @@
-/* Paraways · Le Petit Trianon — PW.architecture (v4.1 · casa modelo de una sola planta según el render de la arquitecta,
+/* Paraways · Le Petit Trianon — PW.architecture (v4.1 · casa existente de una sola planta según el render de la arquitecta,
    corregida con los hallazgos de los jueces: alero delgado, tarima chica, sin remate oscuro, escala 3,1 m, puerta 2,15)
    Edificaciones y mobiliario en escala real, apoyados en PW.terrain.elevation():
-   casa modelo del lote 1 (huella de PW_DATA.house.volumes): volúmenes de UNA planta con losa plana y parapeto claro
+   casa existente del lote 1 (huella de PW_DATA.house.volumes): volúmenes de UNA planta con losa plana y parapeto claro
    (cuerpo principal 3,1 + 0,3; alas 3,2–3,3 + 0,25), revoque greige cálido texturado con zócalo un tono más oscuro,
    acentos en antracita gris ('alero': losa de entrada de 0,15 m sobre dos parantes de 0,10, pérgola de la cochera,
    sombrerete) y antracita oscura ('carpinteria': marcos, puerta doble de 2,15 m con vidrio oscuro arriba y panel ciego
@@ -236,7 +236,7 @@
         : { revoque: true, plinto: true, losa: true, madera: true, deck: true, piedra: true, hierro: true, piedraClara: true, varas: true, tela: true, carpinteria: true, alero: true, planta: true };
       const receiveList = { adoquin: true, piedraClara: true, madera: true, deck: true, revoque: true, plinto: true, losa: true, piedra: true, rejilla: true, poolTile: true, carpinteria: true, alero: true, cortina: true };
 
-      /* ================================================================== (1) CASA MODELO · lote 1 (una sola planta) */
+      /* ================================================================== (1) CASA EXISTENTE · lote 1 (una sola planta) */
       const H = D.house, vols = H.volumes || [];
       const byName = n => vols.find(v => v.name.indexOf(n) === 0);
       const vPrincipal = byName('cuerpo principal'), vEste = byName('ala este'), vCochera = byName('ala norte'),
