@@ -1,17 +1,20 @@
-"""Fotos del sitio con escalado por IA: toma los maestros limpios y graduados de photo-clean.py, arma la piscina desde
-la parte 2 del video y exporta las JPG del contrato a 1920 px (y -800) con Real-ESRGAN x4plus.
+"""Fotos del sitio con escalado por IA: toma los maestros limpios y graduados de photo-clean.py, arma la piscina y el
+parque desde el video y exporta las JPG del contrato a 1920 px (y -800) con Real-ESRGAN x4plus.
 
 Uso:
-  PW_SR_MODELS=<carpeta de pesos> python sr-photos.py <carpeta de trabajo> <parte2b.mov> <carpeta assets> [escena ...]
+  PW_SR_MODELS=<carpeta de pesos> python sr-photos.py <carpeta de trabajo> <carpeta de video> <carpeta assets> [escena ...]
     <carpeta de trabajo>  la de photo-clean.py (lee *-limpia-graduada.png y aerial-align.json)
-    <parte2b.mov>         segunda mitad de la parte 2 del video (piscina con jacuzzi y la casa detrás, cuadros 165–215)
+    <carpeta de video>    con parte1.mov (casa, portón, parque, aérea) y parte2b.mov (piscina con jacuzzi y la casa detrás)
     <carpeta assets>      destino: trianon-foto-{casa,porton,parque,piscina}.jpg, trianon-aerea.jpg y sus -800.jpg
     [escena ...]          opcional: casa porton parque piscina aerea (por defecto, las cinco)
 
 Método: maestro a resolución de origen (960×544) → Real-ESRGAN x4plus (3840 px) → reducción a 1920 y 800 px con área,
 enfoque muy suave y grano finísimo (el modelo ya devuelve bordes nítidos). La piscina: promedio robusto de los cuadros
 185–215 registrados sobre el 203 (cámara casi quieta) y relleno Shift-Map del subtítulo «Hermosa piscina con jacuzzi.»
-sobre el césped. La aérea recibe el límite del predio en dorado después del escalado, a la resolución final.
+sobre el césped. El parque: cuadro 240 de la parte 1 (el más nítido del video: árboles altos, césped y el sendero),
+promedio robusto de 236–244 y encuadre 16:9 por encima del subtítulo y sin el vehículo estacionado a la izquierda, sin
+relleno (el cuadro 332 que usa photo-clean.py está movido y el escalado le marca manchas en el follaje). La aérea
+recibe el límite del predio en dorado después del escalado, a la resolución final.
 Requiere el venv con PyTorch, OpenCV contrib, numpy y Pillow (ver BRIEF y upscale.py).
 """
 import importlib.util
@@ -69,6 +72,28 @@ def piscina_master(video, work):
     return pc.grade(pc.denoise(out, pc.DENOISE['piscina']), **pc.PRESETS['piscina'])
 
 
+def parque_master(video, work):
+    folder = os.path.join(work, 'fpq')
+    pc.extract_frames(video, range(236, 245), folder)
+    fr = pc.Frames(folder)
+    ref = fr(240)
+    Hh, W = ref.shape[:2]
+    box = (175, 420, 790, 476)                                   # «Amplia propiedad con casa y parque…»
+    mask = np.full((Hh, W), 255, np.uint8); mask[box[1] - 10:box[3] + 10, box[0] - 10:box[2] + 10] = 0
+    frames, valids = [], []
+    for i in (236, 238, 239, 241, 242, 244):                    # los más nítidos del tramo
+        w, inside = pc.align_to(ref, fr(i), mask)
+        v = (inside > 0).astype(np.float32); v[box[1]:box[3], box[0]:box[2]] = 0
+        frames.append(w); valids.append(v)
+    img = pc.robust_merge(ref, frames, valids, 5.0)
+    y1, x0, x1 = 408, 170, 890                                  # 720×408 = 1920×1088 exacto: sobre el subtítulo, sin el vehículo
+    out = img[:y1, x0:x1].copy()
+    cv2.imwrite(os.path.join(work, 'parque-video-limpia.png'), out)
+    # cuadro de pleno sol, no el 332 con bruma: sombras menos levantadas y algo más de contraste que el preset 'parque'
+    return pc.grade(pc.denoise(out, pc.DENOISE['parque']), exposure=1.0, gamma=1.0, warm=0.9, green=1.08,
+                    lift=0.015, contrast=0.15)
+
+
 def finish_from_sr(sr_bgr, width, grain, seed=7):
     h = round(sr_bgr.shape[0] * width / sr_bgr.shape[1])
     small = cv2.resize(sr_bgr, (width, h), interpolation=cv2.INTER_AREA)
@@ -88,8 +113,10 @@ def save(rgb, path, max_kb):
 def main():
     if len(sys.argv) < 4:
         print(__doc__); return 1
-    work, video2b, assets = sys.argv[1:4]
+    work, videos, assets = sys.argv[1:4]
     scenes = sys.argv[4:] or ['casa', 'porton', 'parque', 'piscina', 'aerea']
+    built = {'piscina': lambda: piscina_master(os.path.join(videos, 'parte2b.mov'), work),
+             'parque': lambda: parque_master(os.path.join(videos, 'parte1.mov'), work)}
     models = os.environ.get('PW_SR_MODELS', os.path.join(HERE, 'models'))
     import torch
     torch.set_num_threads(os.cpu_count() or 4)
@@ -98,10 +125,10 @@ def main():
              'piscina': 'trianon-foto-piscina', 'aerea': 'trianon-aerea'}
     report = {}
     for s in scenes:
-        master = piscina_master(video2b, work) if s == 'piscina' else cv2.imread(os.path.join(work, f'{s}-limpia-graduada.png'))
+        master = built[s]() if s in built else cv2.imread(os.path.join(work, f'{s}-limpia-graduada.png'))
         assert master is not None, s
         sr_path = os.path.join(work, f'{s}-sr-x4.png')
-        if os.path.exists(sr_path) and s != 'piscina':
+        if os.path.exists(sr_path) and s not in built:
             sr = cv2.imread(sr_path)
         else:
             sr = up.upscale(net, scale, master, tile=256); cv2.imwrite(sr_path, sr)
