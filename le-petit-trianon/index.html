@@ -29,7 +29,7 @@
     <link rel="preload" as="image" href="/assets/trianon-film-poster.jpg" fetchpriority="high" />
     <link rel="stylesheet" href="/styles.css" />
     <link rel="stylesheet" href="/le-petit-trianon/trianon.css" />
-    <noscript><style>.reveal, .line-up, .lpt2-hero .line span { opacity: 1; transform: none; filter: none; } h2 em::after { transform: scaleX(1); } .lpt-stage__status { display: none; }</style></noscript>
+    <noscript><style>.reveal, .line-up, .lpt2-hero .line > span { opacity: 1; transform: none; filter: none; } h2 em::after { transform: scaleX(1); } .lpt-stage__status { display: none; }</style></noscript>
     <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
     <script defer src="/_vercel/insights/script.js"></script>
     <script type="application/ld+json">
@@ -59,7 +59,7 @@
           "@type": "Place",
           "@id": "https://paraways.com/le-petit-trianon/#place",
           "name": "Le Petit Trianon",
-          "description": "Siete parcelas en una propiedad existente de San Bernardino, departamento de Cordillera, Paraguay: portón de entrada, casa construida, piscina con jacuzzi y parque arbolado, sobre un predio de 5.468,82 m² según título y mensura georreferenciada.",
+          "description": "Siete parcelas en una propiedad existente de San Bernardino, departamento de Cordillera, Paraguay: portón de entrada, casa construida, piscina con jacuzzi y parque arbolado. Predio de 5.468,82 m² según título.",
           "geo": { "@type": "GeoCoordinates", "latitude": -25.333181, "longitude": -57.256733 },
           "address": { "@type": "PostalAddress", "addressLocality": "San Bernardino", "addressRegion": "Cordillera", "addressCountry": "PY" },
           "containedInPlace": { "@type": "City", "name": "San Bernardino", "containedInPlace": { "@type": "Country", "name": "Paraguay" } },
@@ -67,6 +67,7 @@
             "https://paraways.com/assets/trianon-foto-casa.jpg",
             "https://paraways.com/assets/trianon-foto-porton.jpg",
             "https://paraways.com/assets/trianon-foto-piscina.jpg",
+            "https://paraways.com/assets/trianon-foto-parque.jpg",
             "https://paraways.com/assets/trianon-aerea.jpg"
           ],
           "url": "https://paraways.com/le-petit-trianon/"
@@ -99,39 +100,42 @@
         </nav>
       </div>
 
-      <div class="wrap lpt2-hero__copy">
-        <p class="eyebrow gold line-up">LE PETIT TRIANON · SAN BERNARDINO · PARAGUAY</p>
-        <h1>
-          <span class="line"><span>Tu parcela en San Bernardino.</span></span>
-          <span class="line"><span><em>Tu residencia permanente en Paraguay.</em></span></span>
-        </h1>
-        <p class="lpt2-hero__lead line-up">Siete parcelas en una propiedad que ya existe —portón, casa, piscina con jacuzzi y parque—, dentro del Investor Pass. Del resto nos ocupamos nosotros.</p>
-        <div class="hero-actions line-up">
-          <a class="cta" href="https://wa.me/595993474309?text=Hola%2C%20vi%20Le%20Petit%20Trianon%20en%20paraways.com%20y%20quiero%20recibir%20la%20oferta%20completa%3A%20parcela%2C%20Investor%20Pass%20y%20gestiones." target="_blank" rel="noopener" data-hero-cta data-wa-from="trianon-hero">Recibir la oferta completa <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="quiet-link" href="#propiedad">Ver la propiedad <span class="arw down"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M3.5 8.5 8 13l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+      <div class="wrap lpt2-hero__main">
+        <div class="lpt2-hero__copy">
+          <p class="eyebrow gold line-up">LE PETIT TRIANON · SAN BERNARDINO · PARAGUAY</p>
+          <h1>
+            <span class="line"><span>Tu parcela en San&nbsp;Bernardino.</span></span>
+            <span class="line"><span><em>Tu residencia permanente en&nbsp;Paraguay.</em></span></span>
+          </h1>
+          <p class="lpt2-hero__lead line-up">Siete parcelas en una propiedad que ya existe —portón, casa, piscina con jacuzzi y parque—, dentro del Investor Pass. Del resto nos ocupamos nosotros.</p>
+          <div class="hero-actions line-up">
+            <a class="cta" href="https://wa.me/595993474309?text=Hola%2C%20vi%20Le%20Petit%20Trianon%20en%20paraways.com%20y%20quiero%20recibir%20la%20oferta%20completa%3A%20parcela%2C%20Investor%20Pass%20y%20gestiones." target="_blank" rel="noopener" data-hero-cta data-wa-from="trianon-hero">Recibir la oferta completa <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+            <a class="quiet-link" href="#propiedad">Ver la propiedad <span class="arw down"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M3.5 8.5 8 13l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </div>
         </div>
+
+        <figure class="lpt2-film line-up" data-lpt2-film-host>
+          <div class="lpt2-film__frame">
+            <video class="lpt2-film__video" autoplay muted loop playsinline preload="metadata" poster="/assets/trianon-film-poster.jpg" aria-hidden="true" tabindex="-1" disablepictureinpicture data-lpt2-film>
+              <source data-src="/assets/trianon-film.webm" type="video/webm" data-film="escritorio" />
+              <source data-src="/assets/trianon-film.mp4" type="video/mp4" data-film="escritorio" />
+              <source data-src="/assets/trianon-film-movil.mp4" type="video/mp4" data-film="movil" />
+            </video>
+          </div>
+          <figcaption class="lpt2-film__bar">
+            <span class="lpt2-film__label">Fotos y video de la propiedad · maqueta 3D</span>
+            <button type="button" class="lpt2-film__toggle" aria-pressed="false" hidden data-lpt2-film-toggle><svg viewBox="0 0 16 16" aria-hidden="true"><path class="lpt2-i-pause" d="M5.5 3.5v9M10.5 3.5v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="lpt2-i-play" d="M5.5 3.6v8.8L12.4 8z" fill="currentColor"/></svg></button>
+          </figcaption>
+        </figure>
       </div>
 
-      <figure class="lpt2-film">
-        <div class="lpt2-film__frame">
-          <video class="lpt2-film__video" muted loop playsinline preload="none" poster="/assets/trianon-film-poster.jpg" aria-hidden="true" tabindex="-1" disablepictureinpicture data-lpt2-film>
-            <source data-src="/assets/trianon-film.webm" type="video/webm" data-film="escritorio" />
-            <source data-src="/assets/trianon-film.mp4" type="video/mp4" data-film="escritorio" />
-            <source data-src="/assets/trianon-film-movil.mp4" type="video/mp4" data-film="movil" />
-          </video>
-        </div>
-        <figcaption class="lpt2-film__label">Fotos de la propiedad · maqueta 3D</figcaption>
-      </figure>
-
-      <div class="lpt2-hero__band">
-        <div class="wrap">
-          <ol class="lpt2-oferta" aria-label="La oferta en cuatro líneas">
-            <li><span class="lpt2-oferta__n" aria-hidden="true">01</span><b>Tu parcela, dentro del Investor Pass</b><span>Inversión inmobiliaria desde USD 200.000.</span></li>
-            <li><span class="lpt2-oferta__n" aria-hidden="true">02</span><b>Acompañamiento completo</b><span>Residencia permanente, cédula, alta fiscal y cuenta bancaria.</span></li>
-            <li><span class="lpt2-oferta__n" aria-hidden="true">03</span><b>Una sola oferta, un solo precio</b><span>Parcela y gestiones juntas, con precio cerrado y por escrito.</span></li>
-            <li><span class="lpt2-oferta__n" aria-hidden="true">04</span><b>Unos meses</b><span>Plazo estimado para tus documentos, con cronograma por escrito.</span></li>
-          </ol>
-        </div>
+      <div class="wrap lpt2-hero__offer line-up">
+        <ol class="lpt2-oferta" aria-label="La oferta en cuatro líneas">
+          <li><span class="lpt2-oferta__n" aria-hidden="true">01</span><b>Tu parcela, dentro del Investor&nbsp;Pass</b><span>Inversión inmobiliaria desde USD&nbsp;200.000.</span></li>
+          <li><span class="lpt2-oferta__n" aria-hidden="true">02</span><b>Acompañamiento completo</b><span>Residencia permanente, cédula, alta fiscal y cuenta bancaria.</span></li>
+          <li><span class="lpt2-oferta__n" aria-hidden="true">03</span><b>Una sola oferta, un solo precio</b><span>Parcela y gestiones juntas, con precio cerrado y por escrito.</span></li>
+          <li><span class="lpt2-oferta__n" aria-hidden="true">04</span><b>Unos meses</b><span>Plazo estimado para tus documentos, con cronograma por escrito.</span></li>
+        </ol>
       </div>
     </header>
 
@@ -142,32 +146,38 @@
           <span class="marginalia" aria-hidden="true">I</span>
           <p class="eyebrow">I · LA PROPIEDAD, HOY</p>
           <h2 class="reveal">No es un proyecto en papel.<br /><em>Ya existe.</em></h2>
-          <p class="section-lead reveal">Portón de entrada, casa construida, piscina con jacuzzi y un parque arbolado de 5.468 m² en San Bernardino, la ciudad del lago.</p>
+          <p class="section-lead reveal">Portón de entrada, casa construida, piscina con jacuzzi y un parque arbolado de 5.468&nbsp;m² en San Bernardino, la ciudad del lago.</p>
 
-          <div class="lpt2-gal reveal" data-lpt2-gal>
+          <div class="lpt2-gal reveal">
             <figure class="lpt2-ph lpt2-ph--casa">
               <a href="/assets/trianon-foto-casa.jpg" data-lpt2-photo>
-                <img src="/assets/trianon-foto-casa.jpg" srcset="/assets/trianon-foto-casa-800.jpg 800w, /assets/trianon-foto-casa.jpg 1440w" sizes="(max-width: 720px) 88vw, 700px" width="1440" height="816" decoding="async" alt="La casa de Le Petit Trianon, ya construida: una sola planta de muros claros y techo plano, con faroles en la fachada y una galería de entrada, rodeada de césped y árboles altos." />
+                <img src="/assets/trianon-foto-casa.jpg" srcset="/assets/trianon-foto-casa-800.jpg 800w, /assets/trianon-foto-casa.jpg 1280w" sizes="(max-width: 720px) 88vw, (max-width: 1023px) 88vw, 840px" width="1280" height="725" decoding="async" alt="La casa de Le Petit Trianon, ya construida: una sola planta con muros color arena, faroles en la fachada y puerta de madera, frente a un césped con canteros y árboles altos." />
               </a>
               <figcaption><b>La casa, ya construida</b> · <i>parcela 1</i></figcaption>
             </figure>
             <figure class="lpt2-ph lpt2-ph--porton">
               <a href="/assets/trianon-foto-porton.jpg" data-lpt2-photo>
-                <img src="/assets/trianon-foto-porton.jpg" srcset="/assets/trianon-foto-porton-800.jpg 800w, /assets/trianon-foto-porton.jpg 1440w" sizes="(max-width: 720px) 88vw, 420px" width="1440" height="816" loading="lazy" decoding="async" alt="El portón de entrada de Le Petit Trianon: pilares de piedra con faroles, muros curvos color crema y rejas de hierro abiertas hacia un camino entre árboles." />
+                <img src="/assets/trianon-foto-porton.jpg" srcset="/assets/trianon-foto-porton-800.jpg 800w, /assets/trianon-foto-porton.jpg 1280w" sizes="(max-width: 720px) 88vw, (max-width: 1023px) 44vw, 420px" width="1280" height="725" loading="lazy" decoding="async" alt="El portón de entrada de Le Petit Trianon: pilares de piedra con faroles, muros curvos color crema y rejas de hierro, con un camino entre los árboles." />
               </a>
               <figcaption><b>El portón de entrada</b></figcaption>
             </figure>
             <figure class="lpt2-ph lpt2-ph--piscina">
               <a href="/assets/trianon-foto-piscina.jpg" data-lpt2-photo>
-                <img src="/assets/trianon-foto-piscina.jpg" srcset="/assets/trianon-foto-piscina-800.jpg 800w, /assets/trianon-foto-piscina.jpg 1440w" sizes="(max-width: 720px) 88vw, 420px" width="1440" height="816" loading="lazy" decoding="async" alt="La piscina con jacuzzi de Le Petit Trianon: agua azul con borde de piedra clara, rodeada de césped, plantas y árboles altos." />
+                <img src="/assets/trianon-foto-piscina.jpg" srcset="/assets/trianon-foto-piscina-800.jpg 800w, /assets/trianon-foto-piscina.jpg 1280w" sizes="(max-width: 720px) 88vw, (max-width: 1023px) 44vw, 420px" width="1280" height="550" loading="lazy" decoding="async" alt="La piscina con jacuzzi de Le Petit Trianon, con su solárium de piedra clara, en un jardín de césped con plantas y árboles altos." />
               </a>
               <figcaption><b>Piscina con jacuzzi y jardín</b></figcaption>
             </figure>
+            <figure class="lpt2-ph lpt2-ph--parque">
+              <a href="/assets/trianon-foto-parque.jpg" data-lpt2-photo>
+                <img src="/assets/trianon-foto-parque.jpg" srcset="/assets/trianon-foto-parque-800.jpg 800w, /assets/trianon-foto-parque.jpg 1280w" sizes="(max-width: 720px) 88vw, 50vw" width="1280" height="725" loading="lazy" decoding="async" alt="El parque arbolado de Le Petit Trianon: césped amplio y árboles altos, con palmeras al fondo." />
+              </a>
+              <figcaption><b>El parque arbolado</b></figcaption>
+            </figure>
             <figure class="lpt2-ph lpt2-ph--aerea">
               <a href="/assets/trianon-aerea.jpg" data-lpt2-photo>
-                <img src="/assets/trianon-aerea.jpg" srcset="/assets/trianon-aerea-800.jpg 800w, /assets/trianon-aerea.jpg 1440w" sizes="(max-width: 720px) 88vw, 1120px" width="1440" height="816" loading="lazy" decoding="async" alt="Vista aérea de Le Petit Trianon entre la arboleda de San Bernardino, junto a la ruta, con el límite medido del predio dibujado en dorado." />
+                <img src="/assets/trianon-aerea.jpg" srcset="/assets/trianon-aerea-800.jpg 800w, /assets/trianon-aerea.jpg 1280w" sizes="(max-width: 720px) 88vw, 50vw" width="1280" height="725" loading="lazy" decoding="async" alt="Vista aérea de Le Petit Trianon entre la arboleda de San Bernardino, junto a la ruta, con el límite del predio dibujado en dorado." />
               </a>
-              <figcaption><b>Vista aérea</b> · en dorado, el límite medido del predio</figcaption>
+              <figcaption><b>Vista aérea</b> · en dorado, el límite del predio</figcaption>
             </figure>
           </div>
 
@@ -187,12 +197,12 @@
           <div class="lpt2-cols reveal">
             <div class="lpt2-col">
               <h3>Lo que compras</h3>
-              <p>Una de las siete parcelas, de 399 a 726 m², en un predio cerrado con portón y calle empedrada. Escritura pública a tu nombre, inscripta en los Registros Públicos.</p>
+              <p>Una de las siete parcelas, de 399 a 726&nbsp;m², en un predio cerrado con portón y calle empedrada. Escritura pública a tu nombre, inscripta en los Registros Públicos.</p>
             </div>
             <div class="lpt2-col">
               <h3>Lo que incluye</h3>
               <ul class="lpt2-dash">
-                <li>Tu inversión, preparada para el Investor Pass (categoría inmobiliaria, desde USD 200.000)</li>
+                <li>Tu inversión, preparada para el Investor Pass (categoría inmobiliaria, desde USD&nbsp;200.000)</li>
                 <li>Residencia permanente directa, ante SUACE y Migraciones</li>
                 <li>Cédula paraguaya de 10 años, con tu familia incluida</li>
                 <li>RUC y alta fiscal ante la DNIT</li>
@@ -219,7 +229,7 @@
           <span class="marginalia" aria-hidden="true">III</span>
           <p class="eyebrow">III · LA MAQUETA 3D</p>
           <h2 class="reveal">Elige tu parcela<br /><em>en tres dimensiones.</em></h2>
-          <p class="section-lead reveal">Construida sobre el plano de la arquitecta y la mensura del título. Gírala, cambia la luz y toca una parcela para ver su ficha.</p>
+          <p class="section-lead reveal">Construida sobre el plano del fraccionamiento. Gírala, cambia la luz y toca una parcela para ver su ficha.</p>
         </div>
 
         <figure class="lpt-stage" id="escena" data-lpt-stage aria-label="Maqueta 3D de Le Petit Trianon">
@@ -243,8 +253,11 @@
             <p class="lpt-stage__status" role="status" aria-live="polite"></p>
           </div>
           <figcaption class="lpt-stage__plinth">
-            <p class="lpt-stage__note">Superficies calculadas sobre la mensura georreferenciada. Las medidas definitivas son las del título.</p>
-            <a class="quiet-link lpt-stage__full" href="/le-petit-trianon/maqueta/?lang=es" target="_blank" rel="noopener" data-lpt-full>Pantalla completa <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+            <p class="lpt-stage__note">Las medidas definitivas son las del título.</p>
+            <span class="lpt-stage__links">
+              <a class="quiet-link" href="/le-petit-trianon/maqueta/nota-tecnica/" target="_blank" rel="noopener">Cómo se construyó la maqueta <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+              <a class="quiet-link lpt-stage__full" href="/le-petit-trianon/maqueta/?lang=es" target="_blank" rel="noopener" data-lpt-full>Pantalla completa <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+            </span>
           </figcaption>
         </figure>
 
@@ -325,10 +338,10 @@
         <div class="wrap">
           <span class="marginalia" aria-hidden="true">V</span>
           <p class="eyebrow">V · POR QUÉ CONFIAR</p>
-          <h2 class="reveal">Real, medido<br /><em>y por escrito.</em></h2>
+          <h2 class="reveal">Real, claro<br /><em>y por escrito.</em></h2>
           <ul class="lpt2-trust reveal">
             <li><h3>Una propiedad real</h3><p>Portón, casa, piscina y parque que puedes visitar antes de decidir.</p></li>
-            <li><h3>Medida al centímetro</h3><p>El límite del predio es el de la mensura georreferenciada del título (GNSS RTK, 05-06-2026).</p><a class="quiet-link" href="/le-petit-trianon/maqueta/nota-tecnica/" target="_blank" rel="noopener">Nota técnica <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+            <li><h3>Proyecto de la Arquitecta Lolia Lima</h3><p>La casa existente y el plano de las siete parcelas.</p></li>
             <li><h3>Un equipo jurídico propio</h3><p>Abogados matriculados en Asunción presentan y responden tu expediente, en tu idioma.</p></li>
           </ul>
         </div>
@@ -346,7 +359,7 @@
             </details>
             <details>
               <summary>¿La parcela me da la residencia permanente?</summary>
-              <p class="faq-a">Como inversión inmobiliaria desde USD 200.000, destinada a renta o valorización, tu compra puede encuadrarse en el Investor Pass: residencia permanente directa y cédula de 10 años. El uso exclusivamente personal no califica. La decisión final es de SUACE y Migraciones; lo evaluamos contigo antes de que compres, gratis y por escrito.</p>
+              <p class="faq-a">Como inversión inmobiliaria desde USD&nbsp;200.000, destinada a renta o valorización, tu compra puede encuadrarse en el Investor Pass: residencia permanente directa y cédula de 10 años. El uso exclusivamente personal no califica. La decisión final es de SUACE y Migraciones; lo evaluamos contigo antes de que compres, gratis y por escrito.</p>
             </details>
             <details>
               <summary>¿Qué incluye el precio?</summary>
@@ -370,7 +383,7 @@
 
       <!-- VII · Conversemos -->
       <section id="consulta" class="contact section lpt2-cierre" data-fab-stop>
-        <img class="lpt2-cierre__bg" src="/assets/trianon-foto-porton.jpg" srcset="/assets/trianon-foto-porton-800.jpg 800w, /assets/trianon-foto-porton.jpg 1440w" sizes="(max-width: 720px) 100vw, 70vw" width="1440" height="816" loading="lazy" decoding="async" alt="" />
+        <img class="lpt2-cierre__bg" src="/assets/trianon-foto-porton.jpg" srcset="/assets/trianon-foto-porton-800.jpg 800w, /assets/trianon-foto-porton.jpg 1280w" sizes="(max-width: 900px) 100vw, 72vw" width="1280" height="725" loading="lazy" decoding="async" alt="" />
         <div class="constellation" aria-hidden="true"></div>
         <div class="wrap">
           <span class="marginalia" aria-hidden="true">VII</span>
@@ -387,7 +400,6 @@
           <div class="contact-options lpt2-cierre__cta">
             <a class="whatsapp-link" href="https://wa.me/595993474309?text=Hola%2C%20vi%20Le%20Petit%20Trianon%20en%20paraways.com%20y%20quiero%20recibir%20la%20oferta%20completa." target="_blank" rel="noopener" data-wa-from="trianon-contact" data-lpt-wa>Escribir por WhatsApp <span class="arw"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 12.5 12.5 3.5M5.5 3.5h7v7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           </div>
-          <p class="lpt-preview" aria-live="polite"><span class="lpt-preview__k">Tu mensaje</span><q data-lpt-preview>Hola, vi Le Petit Trianon en paraways.com y quiero recibir la oferta completa.</q></p>
 
           <p class="fine-print">No envíes documentos sensibles en este primer contacto.</p>
           <p class="lpt2-firma">el equipo de Paraways</p>
@@ -402,7 +414,7 @@
         <a href="mailto:ricardo@paraways.com">ricardo@paraways.com</a>
         <span class="coords">25°16′S · 57°38′O</span>
         <p class="disclaimer">Paraways ofrece servicios de gestión y coordinación legal. La información publicada es general y no constituye asesoría individualizada hasta la firma del contrato de servicios. Plazos y resultados sujetos al procesamiento de los organismos competentes (Migraciones, Identificaciones, DNIT, entidades bancarias).</p>
-        <p class="disclaimer">Fotografías de la propiedad existente. Maqueta 3D sobre el plano de fraccionamiento de la arquitecta y la mensura georreferenciada del título (GNSS RTK, UTM 21S, 05-06-2026); las medidas definitivas son las del título. La información sobre residencia por inversión es general: la elegibilidad y el otorgamiento son decisión de SUACE y Migraciones, y los plazos indicados son estimados.</p>
+        <p class="disclaimer">Fotografías y video de la propiedad existente. Maqueta 3D sobre el plano de fraccionamiento; las medidas definitivas son las del título. La información sobre residencia por inversión es general: la elegibilidad y el otorgamiento son decisión de SUACE y Migraciones, y los plazos indicados son estimados.</p>
       </div>
     </footer>
 
@@ -418,7 +430,8 @@
       "fab": { "text": "Hola, vengo de la sección {s} de la página de Le Petit Trianon en paraways.com y quiero recibir la oferta completa." },
       "sections": { "inicio": "Inicio", "propiedad": "La propiedad", "oferta": "La oferta", "maqueta": "La maqueta", "proceso": "Cómo funciona", "confianza": "Por qué confiar", "preguntas": "Preguntas", "consulta": "Contacto" },
       "stage": { "title": "Maqueta 3D interactiva de Le Petit Trianon", "loading": "Cargando la maqueta 3D…", "ready": "La maqueta está abierta: arrastra para girar, toca una parcela para ver su ficha.", "switching": "Cambiando la vista…" },
-      "gallery": { "label": "Fotos de la propiedad", "close": "Cerrar", "prev": "Foto anterior", "next": "Foto siguiente", "count": "{i} de {n}" }
+      "gallery": { "label": "Fotos de la propiedad", "close": "Cerrar", "prev": "Foto anterior", "next": "Foto siguiente", "count": "{i} de {n}" },
+      "film": { "pause": "Pausar el video", "play": "Reproducir el video" }
     }
     </script>
     <script src="/script.js"></script>

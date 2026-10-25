@@ -2,6 +2,9 @@
    Uso: node og-render.js <carpeta de salida> [idiomas=es,pt,en,fr]
    Requiere el servidor local del repo (python3 -m http.server 8765 desde la raíz) y red para Google Fonts
    (si no hay red, Chromium usa las Newsreader/Inter/JetBrains Mono instaladas en el sistema).
+   El fondo es la foto real de la casa (assets/trianon-foto-casa.jpg): las capturas salen en 24 bits (~830 KB);
+   para publicarlas, pasarlas por png-optimize.py (paleta 256 con libimagequant, ≈280 KB):
+     python3.12 -I png-optimize.py <salida>/og-trianon-es.png ../../assets/og-trianon-es.png
    Ejecutar siempre envuelto en: flock /tmp/pw-render.lock node og-render.js … */
 const fs = require('fs');
 const { chromium } = require('playwright');
@@ -17,6 +20,7 @@ fs.mkdirSync(dir, { recursive: true });
     const errs = []; p.on('pageerror', e => errs.push('pageerror: ' + e.message));
     await p.goto(`${URL}?lang=${lang}`, { waitUntil: 'load' });
     await p.evaluate(() => document.fonts.ready);
+    await p.waitForFunction(() => [...document.images].every(i => i.complete && i.naturalWidth > 0));
     await p.waitForTimeout(600);
     const fonts = await p.evaluate(() => ['Newsreader', 'Inter', 'JetBrains Mono'].map(f => f + ':' + document.fonts.check('16px "' + f + '"')));
     const out = `${dir}/og-trianon-${lang}.png`;

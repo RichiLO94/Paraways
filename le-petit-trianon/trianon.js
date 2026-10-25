@@ -4,13 +4,14 @@
 
    1. La película del hero: la fuente se elige por el ancho ANTES de cargar (escritorio:
       webm/mp4 1280×720; ≤ 720 px: mp4 854×480). Sin JS, con prefers-reduced-motion o con
-      ahorro de datos queda el póster. Se pausa fuera de pantalla y con la pestaña oculta.
+      ahorro de datos queda el póster. Se pausa fuera de pantalla, con la pestaña oculta y
+      a pedido (botón bajo el marco, etiquetas desde #pw-i18n → film).
    2. Galería: cada foto abre un <dialog> con flechas, Esc y foco devuelto; sin JS (o sin
       <dialog>) el enlace abre la imagen. Etiquetas en el idioma de la página (#pw-i18n → gallery).
    3. La maqueta: «Explorar la maqueta 3D» y los enlaces con data-maqueta insertan el visor
       (iframe) en el marco en escritorio — nunca sin un gesto —; en móvil y sin JS el enlace
       abre el visor a pantalla completa. Loop del marco solo en escritorio y sin reduced-motion.
-   4. Chips del cierre: reescriben el mensaje prellenado del WhatsApp y lo muestran en claro. */
+   4. Chips del cierre: reescriben el mensaje prellenado del WhatsApp. */
 (function () {
   'use strict';
 
@@ -36,10 +37,14 @@
   (function film() {
     var video = document.querySelector('[data-lpt2-film]');
     if (!video) return;
-    var host = video.closest ? video.closest('.lpt2-film') : video.parentNode;
+    var host = video.closest ? video.closest('[data-lpt2-film-host]') : null;
+    var toggle = document.querySelector('[data-lpt2-film-toggle]');
+    var F = I18N.film || {};
+    var LABEL = { pause: F.pause || 'Pausar el video', play: F.play || 'Reproducir el video' };
     var saveData = navigator.connection && navigator.connection.saveData;
     if (reduced.matches || saveData) return; /* queda el póster */
 
+    /* La fuente se elige por el ancho ANTES de cargar: ninguna <source> tiene src en el HTML. */
     var mobile = !desktop.matches;
     var sources = video.querySelectorAll('source[data-src]');
     var chosen = [];
@@ -54,37 +59,55 @@
     }
     if (!chosen.length) return;
 
-    var failed = false, inView = true, played = false;
+    var failed = false, inView = true, played = false, userPaused = false;
     var sync = function () {
       if (failed) return;
-      if (inView && !document.hidden && !reduced.matches) {
+      if (inView && !document.hidden && !reduced.matches && !userPaused) {
         var p = video.play();
         if (p && p.catch) p.catch(function () { /* autoplay bloqueado: queda el póster */ });
       } else if (!video.paused) {
         video.pause();
       }
     };
+    var setToggle = function () {
+      if (!toggle) return;
+      toggle.setAttribute('aria-pressed', userPaused ? 'true' : 'false');
+      toggle.setAttribute('aria-label', userPaused ? LABEL.play : LABEL.pause);
+    };
     chosen[chosen.length - 1].addEventListener('error', function () {
       failed = true;
       if (host) host.classList.add('is-poster');
+      if (toggle) toggle.hidden = true;
     });
     video.addEventListener('playing', function () {
       if (host) host.classList.add('is-playing');
+      if (toggle) toggle.hidden = false;
       if (!played) { played = true; track('trianon_film', mobile ? 'movil' : 'escritorio'); }
     });
+    /* Pausa a pedido (WCAG 2.2.2): el bucle se detiene y queda detenido hasta que se reanude. */
+    if (toggle) {
+      setToggle();
+      toggle.addEventListener('click', function () {
+        userPaused = !userPaused;
+        setToggle();
+        sync();
+      });
+    }
     video.muted = true;
     video.defaultMuted = true;
-    video.setAttribute('preload', 'auto');
     video.load();
 
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) {
-        inView = entries[0].isIntersecting;
+        inView = entries[entries.length - 1].isIntersecting; /* la última entrada es la vigente */
         sync();
       }, { threshold: 0.1 }).observe(video.parentNode);
     }
     document.addEventListener('visibilitychange', sync);
-    onChange(reduced, sync);
+    onChange(reduced, function () {
+      if (reduced.matches && toggle) toggle.hidden = true;
+      sync();
+    });
     sync();
   })();
 
@@ -147,7 +170,7 @@
       img.classList.add('is-loading');
       img.onload = function () { img.classList.remove('is-loading'); };
       if (it.srcset) img.setAttribute('srcset', it.srcset); else img.removeAttribute('srcset');
-      img.setAttribute('sizes', '100vw');
+      img.setAttribute('sizes', 'min(1280px, 100vw)');
       img.setAttribute('src', it.href);
       img.setAttribute('alt', it.alt);
       capEl.innerHTML = it.cap;
@@ -235,7 +258,7 @@
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) {
         if (!video.parentNode) return;
-        if (entries[0].isIntersecting && !document.hidden) { var p = video.play(); if (p && p.catch) p.catch(function () {}); }
+        if (entries[entries.length - 1].isIntersecting && !document.hidden) { var p = video.play(); if (p && p.catch) p.catch(function () {}); }
         else video.pause();
       }, { threshold: 0 }).observe(media);
     }
@@ -323,18 +346,15 @@
   syncRoles();
   onChange(desktop, syncRoles);
 
-  /* ── 4. Chips del cierre: el mensaje, en claro, antes de enviarlo ── */
+  /* ── 4. Chips del cierre: reescriben el mensaje prellenado ── */
   (function chips() {
     var link = document.querySelector('[data-lpt-wa]');
     var buttons = document.querySelectorAll('.lpt-chips [data-wa-text]');
-    var preview = document.querySelector('[data-lpt-preview]');
     if (!link || !buttons.length) return;
     var defaultHref = link.getAttribute('href');
     var base = defaultHref.split('?')[0];
-    var defaultText = preview ? preview.textContent : '';
     var apply = function (text) {
       link.setAttribute('href', text ? base + '?text=' + encodeURIComponent(text) : defaultHref);
-      if (preview) preview.textContent = text || defaultText;
     };
     Array.prototype.forEach.call(buttons, function (b) {
       b.addEventListener('click', function () {
