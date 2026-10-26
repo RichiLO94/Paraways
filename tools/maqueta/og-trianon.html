@@ -51,9 +51,9 @@
     (function () {
       var T = {
         es: { eyebrow: 'San Bernardino · Paraguay · Investor Pass', sub: 'Tu lote y la construcción de tu\u00a0casa, dentro del Investor\u00a0Pass', site: 'paraways.com/le-petit-trianon' },
-        pt: { eyebrow: 'San Bernardino · Paraguai · Investor Pass', sub: 'Seu lote com casa em San\u00a0Bernardino, dentro do Investor\u00a0Pass', site: 'paraways.com/pt/le-petit-trianon' },
-        en: { eyebrow: 'San Bernardino · Paraguay · Investor Pass', sub: 'Your plot and house in San\u00a0Bernardino, under the Investor\u00a0Pass', site: 'paraways.com/en/le-petit-trianon' },
-        fr: { eyebrow: 'San Bernardino · Paraguay · Investor Pass', sub: 'Votre parcelle avec maison à San\u00a0Bernardino, dans le cadre de l’Investor\u00a0Pass', site: 'paraways.com/fr/le-petit-trianon' }
+        pt: { eyebrow: 'San Bernardino · Paraguai · Investor Pass', sub: 'Seu lote e a construção da sua\u00a0casa, dentro do Investor\u00a0Pass', site: 'paraways.com/pt/le-petit-trianon' },
+        en: { eyebrow: 'San Bernardino · Paraguay · Investor Pass', sub: 'Your plot and the construction of\u00a0your\u00a0house, under the Investor\u00a0Pass', site: 'paraways.com/en/le-petit-trianon' },
+        fr: { eyebrow: 'San Bernardino · Paraguay · Investor Pass', sub: 'Votre parcelle et la\u00a0construction de votre\u00a0maison, dans\u00a0le\u00a0cadre de l’Investor\u00a0Pass', site: 'paraways.com/fr/le-petit-trianon' }
       };
       var lang = (new URLSearchParams(location.search).get('lang') || 'es').toLowerCase();
       var t = T[lang] || T.es; document.documentElement.lang = lang;

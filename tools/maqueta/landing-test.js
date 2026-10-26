@@ -41,10 +41,13 @@ const BANNED = /ya existe|ya construida|proyecto en papel|já existe|já constru
 const BANNED_A4 = /\bprivad[oa]s?\b|\bprivately\b|en privé|\bem dia\b|en règle|lista para alquilar|pronta para alugar|ready to (?:let|rent)|prête à louer/i;
 /* Copy por idioma de la Actualización 4: «con casa», crédito satelital y el umbral que no va pegado al Investor Pass. */
 const A4 = {
-  es: { conCasa: /lote y (?:la construcción de )?tu casa/i, sat: /Imagen satelital: Google/, umbral: /dentro del Investor Pass,?\s+desde/i, retirados: /\bparcelas?\b|fraccionamiento|alta fiscal|cul-de-sac|casa nueva/i },
-  pt: { conCasa: /lote com casa/i, sat: /Imagem de satélite: Google/, umbral: /dentro do Investor Pass,?\s+a partir de/i },
-  en: { conCasa: /plot and house/i, sat: /Satellite image: Google/, umbral: /with(?:in)? the Investor Pass,?\s+from/i },
-  fr: { conCasa: /parcelle avec maison/i, sat: /Image satellite : Google/, umbral: /Investor Pass,?\s+dès/i },
+  es: { conCasa: /lote y (?:la construcción de )?tu casa/i, sat: /Imagen satelital: Google/, umbral: /dentro del Investor Pass,?\s+desde/i, retirados: /\bparcelas?\b|fraccionamiento|alta fiscal|cul-de-sac|casa nueva/i, retiradosTxt: '«parcela», «fraccionamiento», «alta fiscal», «cul-de-sac» ni «casa nueva»' },
+  /* PT/EN/FR alineados con el ES (WORDING 4.1): «seu lote e sua casa» / «o lote e a construção da sua casa» y equivalentes.
+     «lote com casa», «plot with a house» y «parcelle avec maison» se leen como una casa ya construida y quedan retirados, igual que
+     los términos que afirman un régimen legal no verificado (WORDING 3.2) y, en EN/FR, «lot» (la página dice «plot» / «parcelle»). */
+  pt: { conCasa: /lote e (?:a construção da )?sua casa/i, sat: /Imagem de satélite: Google/, umbral: /dentro do Investor Pass,?\s+a partir de/i, retirados: /lote com casa|loteamento|condom[ií]nio|escritura imediata/i, retiradosTxt: '«lote com casa», «loteamento», «condomínio» ni «escritura imediata»' },
+  en: { conCasa: /plot and (?:the construction of )?your house/i, sat: /Satellite image: Google/, umbral: /with(?:in)? the Investor Pass,?\s+from/i, retirados: /plot with a house|\bsubdivision\b|\bgated\b|\blots?\b/i, retiradosTxt: '«plot with a house», «subdivision», «gated» ni «lot»' },
+  fr: { conCasa: /parcelle et (?:la construction de )?votre maison/i, sat: /Image satellite : Google/, umbral: /Investor Pass,?\s+dès/i, retirados: /parcelle avec maison|lotissement|résidence fermée|\blots?\b/i, retiradosTxt: '«parcelle avec maison», «lotissement», «résidence fermée» ni «lot»' },
 }[LANG];
 const LAUNCH = { executablePath: '/opt/pw-browsers/chromium', args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--autoplay-policy=no-user-gesture-required'] };
 const VIEWS = [[1440, 900, 'desktop'], [390, 844, 'mobile']];
@@ -181,10 +184,11 @@ const VIEWS = [[1440, 900, 'desktop'], [390, 844, 'mobile']];
       a4.texts.forEach(([where, t]) => { [BANNED, BANNED_A4].forEach((re) => { const m = re.exec(t || ''); if (m) hits.push(`${where}: «${m[0]}» en «${(t || '').slice(Math.max(0, m.index - 40), m.index + 40).replace(/\s+/g, ' ')}»`); }); });
       check('sin frases retiradas (texto visible, alt, title, aria-label, figcaption, metas, JSON-LD, #pw-i18n, WhatsApp)', hits.length, 0);
       if (hits.length) note('frases retiradas encontradas', hits.slice(0, 12));
-      /* ES: términos retirados en la revisión de jerga local («lote», no «parcela»; «plano del proyecto»; «RUC»; «sin salida»; «lote y construcción de tu casa», no «casa nueva») */
+      /* Términos retirados por idioma. ES: revisión de jerga local («lote», no «parcela»; «plano del proyecto»; «RUC»; «sin salida»;
+         «lote y construcción de tu casa», no «casa nueva»). PT/EN/FR: el producto como en el ES, sin «lote com casa» y equivalentes. */
       if (A4.retirados) {
         const viejos = a4.texts.filter(([, t]) => A4.retirados.test(t || '')).map(([w, t]) => `${w}: «${A4.retirados.exec(t)[0]}»`);
-        check('ES: sin «parcela», «fraccionamiento», «alta fiscal», «cul-de-sac» ni «casa nueva»', viejos.length, 0);
+        check(`${LANG.toUpperCase()}: sin ${A4.retiradosTxt}`, viejos.length, 0);
         if (viejos.length) note('términos retirados encontrados', viejos.slice(0, 12));
       }
       check('la línea 01 de la oferta dice «con casa»', A4.conCasa.test(a4.oferta1), true);

@@ -1,6 +1,8 @@
 /* Prueba de la capa v3 en las cuatro homes (banda Le Petit Trianon, nav, tarjeta Inmobiliaria, formulario, FAB).
    Banda v2: foto real de la casa (trianon-foto-casa.jpg 1920×1088 con srcset de la -800), pie «foto de la propiedad»,
-   mensaje «lote y construcción de tu casa, dentro del Investor Pass» y sin las frases retiradas («ya existe», «ya construida», …).
+   mensaje «lote y construcción de tu casa, dentro del Investor Pass» (PT/EN/FR: «seu lote e sua casa», «your plot and your house»,
+   «votre parcelle et votre maison»), pie «… la casa del lote 1» y equivalentes, sin las frases retiradas («ya existe», «ya construida», …)
+   ni los términos retirados por idioma («lote com casa», «plot with a house», «parcelle avec maison», …).
    Uso: NODE_PATH=/opt/node22/lib/node_modules flock /tmp/pw-render.lock node home-banda-test.js [es,pt,en,fr]
    A 1440×900 y 390×844 por idioma: cero errores de consola (ignora el 404 de /_vercel/insights/script.js; las
    fallas de red de Google Fonts se listan aparte como avisos de entorno), nav en una sola línea a 1440 px,
@@ -18,12 +20,12 @@ const OUT = path.join(__dirname, 'out');
 fs.mkdirSync(OUT, { recursive: true });
 const IGNORE = /_vercel\/insights\/script\.js/;
 const ENV_NET = /fonts\.googleapis\.com|fonts\.gstatic\.com/;
-/* Copy v2 por idioma: pie de la foto, «con casa» en el h2 y en el enlace de la tarjeta, CTA. */
+/* Copy v2 por idioma: pie de la foto, «con casa» en el h2 y en el enlace de la tarjeta, CTA y términos retirados (banda y enlace). */
 const V2 = {
-  es: { cap: 'FOTO DE LA PROPIEDAD · LA CASA DEL LOTE 1', conCasa: /lote y (?:la construcción de )?tu casa/i, cta: 'Ver Le Petit Trianon' },
-  pt: { cap: 'FOTO DA PROPRIEDADE · A CASA', conCasa: /lote com casa/i, cta: 'Ver o Le Petit Trianon' },
-  en: { cap: 'PHOTO OF THE PROPERTY · THE HOUSE', conCasa: /plot and house/i, cta: 'View Le Petit Trianon' },
-  fr: { cap: 'PHOTO DE LA PROPRIÉTÉ · LA MAISON', conCasa: /parcelle avec maison/i, cta: 'Voir Le Petit Trianon' },
+  es: { cap: 'FOTO DE LA PROPIEDAD · LA CASA DEL LOTE 1', conCasa: /lote y (?:la construcción de )?tu casa/i, cta: 'Ver Le Petit Trianon', retirados: /\bparcelas?\b|casa nueva|lote con casa/i },
+  pt: { cap: 'FOTO DA PROPRIEDADE · A CASA DO LOTE 1', conCasa: /lote e (?:a construção da )?sua casa/i, cta: 'Ver o Le Petit Trianon', retirados: /lote com casa|loteamento|condom[ií]nio/i },
+  en: { cap: 'PHOTO OF THE PROPERTY · THE HOUSE ON PLOT 1', conCasa: /plot and (?:the construction of )?your house/i, cta: 'View Le Petit Trianon', retirados: /plot with a house|plot and house|\bsubdivision\b|\bgated\b|\blots?\b/i },
+  fr: { cap: 'PHOTO DE LA PROPRIÉTÉ · LA MAISON DE LA PARCELLE 1', conCasa: /parcelle et (?:la construction de )?votre maison/i, cta: 'Voir Le Petit Trianon', retirados: /parcelle avec maison|lotissement|résidence fermée|\blots?\b/i },
 };
 /* Frases retiradas en la v2 (en la banda y en el enlace de la tarjeta, incluidos alt y pies). */
 const BANNED = /ya existe|ya construida|proyecto en papel|já existe|já construída|already exists|already built|on paper|existe déjà|déjà construite|sur plan|mensura|medição|survey|relevé|casa modelo|show home|maison témoin|en regla|barrio cerrado|frente al lago|vista al lago/i;
@@ -88,7 +90,7 @@ const BANNED = /ya existe|ya construida|proyecto en papel|já existe|já constru
         return {
           band: !!band, bandClass: band && band.className, prevId,
           img: band && (() => { const i = band.querySelector('img'); return i && { src: i.getAttribute('src'), srcset: i.getAttribute('srcset') || '', sizes: i.getAttribute('sizes') || '', w: i.getAttribute('width'), h: i.getAttribute('height'), loading: i.getAttribute('loading'), alt: (i.getAttribute('alt') || '').length, altText: i.getAttribute('alt') || '' }; })(),
-          cap: band && band.querySelector('figcaption') && band.querySelector('figcaption').textContent.trim(),
+          cap: band && band.querySelector('figcaption') && band.querySelector('figcaption').textContent.replace(/\s+/g, ' ').trim(),
           h2: band && band.querySelector('h2') && band.querySelector('h2').textContent.replace(/\s+/g, ' ').trim(),
           bandText: band && (band.textContent + ' ' + Array.from(band.querySelectorAll('[alt],[aria-label],[title]')).map((e) => [e.getAttribute('alt'), e.getAttribute('aria-label'), e.getAttribute('title')].join(' ')).join(' ')).replace(/\s+/g, ' '),
           h2em: !!(band && band.querySelector('h2 em')), eyebrow: !!(band && band.querySelector('.eyebrow')),
@@ -105,6 +107,7 @@ const BANNED = /ya existe|ya construida|proyecto en papel|já existe|já constru
       check(`${label}: pie de la foto (v2)`, dom.cap, V2[lang].cap);
       check(`${label}: h2 con «con casa» (v2)`, V2[lang].conCasa.test(dom.h2 || ''), true);
       check(`${label}: sin frases retiradas en la banda (texto, alt, aria-label)`, (dom.bandText.match(BANNED) || [null])[0], null);
+      check(`${label}: sin términos retirados del idioma en la banda ni en el enlace de la tarjeta`, ((dom.bandText + ' ' + (dom.ipLink ? dom.ipLink.text : '')).match(V2[lang].retirados) || [null])[0], null);
       check(`${label}: eyebrow + h2 con em`, dom.eyebrow && dom.h2em, true);
       check(`${label}: CTA .cta hacia la página del idioma`, dom.cta && dom.cta.href, route + 'le-petit-trianon/');
       check(`${label}: texto del CTA (v2)`, dom.cta && dom.cta.text, V2[lang].cta);

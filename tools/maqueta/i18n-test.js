@@ -3,7 +3,8 @@
    Carga el visor con ?lang=pt|en|fr&lote=3, comprueba <html lang>, <title>, la ficha (título, superficie, frente, CTA y texto de
    WhatsApp en el idioma), la cabecera (superficie del predio con el separador de miles del idioma), la marca (página del
    desarrollo del idioma; con embed=1 el inicio del sitio en _top), que en EN no quede ninguna palabra en español a la vista,
-   que no vuelvan «loteamento», «subdivision» ni «lotissement» (WORDING 3.2), y los parámetros view= y light=. Deja capturas en out/visor-{pt,en,fr}.png (1440×900, lote 3 abierto). */
+   que no vuelvan «loteamento», «subdivision» ni «lotissement» (WORDING 3.2) ni «lote com casa», «plot with a house» o «parcelle avec
+   maison» (WORDING 4.1), que la ficha cierre con la oferta global «lote, casa, Investor Pass e trâmites» y equivalentes, y los parámetros view= y light=. Deja capturas en out/visor-{pt,en,fr}.png (1440×900, lote 3 abierto). */
 const { chromium } = require('playwright');
 const path = require('path');
 const OUT = path.join(__dirname, 'out');
@@ -15,7 +16,13 @@ const EXPECT = {
   fr: { title: 'Lot 3', area: '633,90' + NN + 'm²', front: '≈ 19,9' + NN + 'm', sup: '5' + NN + '468,82' + NN + 'm²', cta: 'Se renseigner sur le lot 3', wa: 'Bonjour, j’ai vu le lot 3 du Petit Trianon (San Bernardino) sur la maquette 3D', doc: 'Le Petit Trianon · Maquette 3D', page: '/fr/le-petit-trianon/', home: '/fr/', toolbar: 'Maquette', close: 'Fermer la fiche (Échap)' },
 };
 /* palabras españolas que no deben quedar a la vista en EN (los nombres propios Ruta San Bernardino – Pirayú y UTM 21S no cuentan) */
-/* ficha «Para qué sirve»: el umbral es la inversión (lote + construcción de la casa), nunca el precio del lote solo */
+/* ficha «Para qué sirve»: el umbral es la inversión (lote + construcción de la casa), nunca el precio del lote solo; la cola nombra
+   la oferta global como el ES («—lote, casa, Investor Pass y gestiones—»), sin «lote com casa» y equivalentes */
+const USE_TAIL = {
+  pt: /a oferta global — lote, casa, Investor Pass e trâmites\.$/,
+  en: /the full offer on WhatsApp — plot, house, Investor Pass and formalities\.$/,
+  fr: /l’offre globale — parcelle, maison, Investor Pass et démarches\.$/,
+};
 const USE = {
   pt: /construção da sua casa, o investimento a partir de US\$\u00A0200\.000, destinado a renda ou valorização/,
   en: /construction of your house, an investment from USD\u00A0200,000, held for rental or appreciation/,
@@ -23,7 +30,7 @@ const USE = {
 };
 /* términos retirados (WORDING 3.2): nombran un régimen legal (loteamento de la Lei 6.766/79, lotissement con permis d'aménager,
    subdivision plan ≈ plat aprobado) y afirmarían una aprobación municipal pendiente; se dice «planta do projeto», «site plan», «plan du projet» */
-const RETIRED = { pt: /loteamento/i, en: /subdivision/i, fr: /lotissement/i };
+const RETIRED = { pt: /loteamento|lote com casa/i, en: /subdivision|plot with a house/i, fr: /lotissement|parcelle avec maison/i };
 const SPANISH = /(^|[^\p{L}])(Lote|lotes|Superficie|superficie|calle|Cerrar|Ayuda|Vista|Luz|Vegetación|Cotas|Leyenda|Maqueta|maqueta|Plano|plano|Atardecer|Noche|Día|Parque|Bosque|portón|portero|seleccionado|mensura|Frente|Lados|Consultar|Acercarme|Pedir|Dentro|teclas|elegir|cerrar|veredas|tacuaral|césped|empedrada|norte|según)(?![\p{L}])/u;
 const results = [];
 const check = (name, ok, detail) => { results.push({ name, ok: !!ok }); console.log((ok ? 'ok   ' : 'FALLO ') + name + (ok ? '' : ' → ' + JSON.stringify(detail))); };
@@ -70,10 +77,11 @@ const check = (name, ok, detail) => { results.push({ name, ok: !!ok }); console.
     check(lang + ': marca → página del desarrollo del idioma, misma pestaña', got.brandHref === E.page && got.brandTarget === null, { href: got.brandHref, target: got.brandTarget });
     check(lang + ': barra y aria-labels en el idioma', got.firstTb === E.toolbar && got.closeAria === E.close && !/Maqueta 3D de/.test(got.canvasAria), { tb: got.firstTb, close: got.closeAria, canvas: got.canvasAria });
     check(lang + ': ficha «para qué sirve» con el umbral de la inversión (lote + casa), no del lote solo', USE[lang].test(got.use) && !/(lote|lot|plot|parcelle)\s+(pode integrar|can be included|peut entrer)/i.test(got.use), got.use);
+    check(lang + ': ficha «para qué sirve» cierra con la oferta global como el ES (lote, casa, Investor Pass y gestiones)', USE_TAIL[lang].test(got.use.trim()), got.use);
     {
       const hay = [['diccionario', got.dictText], ['texto visible', got.bodyText], ['aria-label/title', got.attrs], ['WhatsApp', got.hrefs], ['descripción', got.desc]];
       const hit = hay.find(([, s]) => RETIRED[lang].test(s));
-      check(lang + ': sin «' + RETIRED[lang].source + '» (diccionario, texto visible, aria-label/title, WhatsApp, descripción)', !hit, hit && hit[0] + ': ' + hit[1].match(new RegExp('.{0,50}' + RETIRED[lang].source + '.{0,50}', 'i'))[0]);
+      check(lang + ': sin «' + RETIRED[lang].source + '» (diccionario, texto visible, aria-label/title, WhatsApp, descripción)', !hit, hit && hit[0] + ': ' + hit[1].match(new RegExp('.{0,50}(?:' + RETIRED[lang].source + ').{0,50}', 'i'))[0]);
     }
     if (lang === 'en') {
       const lw = got.bodyText.match(/\blots?\b/i);
