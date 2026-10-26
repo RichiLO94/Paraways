@@ -24,7 +24,7 @@ Guion (1280×720, 24 fps, 17,0 s = 408 cuadros, bucle sin corte, SIN pista de au
               que el polígono de data.js caiga sobre el contorno dorado; la aérea se deforma con la similitud medida):
               primero se disuelve lo de alrededor en la página marfil, después el interior del predio.
   13,50–16,30 la cámara 3D se inclina desde la cenital hasta el encuadre de la vista Maqueta (luz Atardecer); el oro se
-              retira y aparecen los discos numerados de las siete parcelas; 16,30–16,50 quieta.
+              retira y aparecen los discos numerados de los siete lotes; 16,30–16,50 quieta.
   16,50–17,00 fundido a la casa (sus primeros cuadros, que preceden al cuadro 0): el bucle no tiene corte.
   Fundidos de 0,5 s centrados en cada corte. Real-ESRGAN (general, denoise 0,5; upscale.py) sobre los cuadros ya limpios,
   reducción por área a 1280×720, reducción de ruido temporal (vecinos ±2 alineados por flujo, pesos robustos: sin
@@ -110,7 +110,7 @@ DRAW = (9.75, 11.35)                        # el límite dorado se dibuja
 DISSOLVE = (12.50, 13.50)                   # aérea → maqueta cenital
 TILT = (13.50, 16.30)                       # inclinación a la vista Maqueta
 LINE_OUT = (13.55, 14.25)                   # el oro se retira al empezar a inclinar
-DISCS_IN = (14.90, 15.90)                   # discos numerados de las parcelas
+DISCS_IN = (14.90, 15.90)                   # discos numerados de los lotes
 PUSH_S = 0.16                               # empuje de la aérea: escala final 1,16 (desacelera hasta el fin del fundido)
 
 

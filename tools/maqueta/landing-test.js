@@ -41,7 +41,7 @@ const BANNED = /ya existe|ya construida|proyecto en papel|já existe|já constru
 const BANNED_A4 = /\bprivad[oa]s?\b|\bprivately\b|en privé|\bem dia\b|en règle|lista para alquilar|pronta para alugar|ready to (?:let|rent)|prête à louer/i;
 /* Copy por idioma de la Actualización 4: «con casa», crédito satelital y el umbral que no va pegado al Investor Pass. */
 const A4 = {
-  es: { conCasa: /parcela con casa/i, sat: /Imagen satelital: Google/, umbral: /dentro del Investor Pass,?\s+desde/i },
+  es: { conCasa: /lote y (?:la construcción de )?tu casa/i, sat: /Imagen satelital: Google/, umbral: /dentro del Investor Pass,?\s+desde/i, retirados: /\bparcelas?\b|fraccionamiento|alta fiscal|cul-de-sac|casa nueva/i },
   pt: { conCasa: /lote com casa/i, sat: /Imagem de satélite: Google/, umbral: /dentro do Investor Pass,?\s+a partir de/i },
   en: { conCasa: /plot and house/i, sat: /Satellite image: Google/, umbral: /with(?:in)? the Investor Pass,?\s+from/i },
   fr: { conCasa: /parcelle avec maison/i, sat: /Image satellite : Google/, umbral: /Investor Pass,?\s+dès/i },
@@ -181,6 +181,12 @@ const VIEWS = [[1440, 900, 'desktop'], [390, 844, 'mobile']];
       a4.texts.forEach(([where, t]) => { [BANNED, BANNED_A4].forEach((re) => { const m = re.exec(t || ''); if (m) hits.push(`${where}: «${m[0]}» en «${(t || '').slice(Math.max(0, m.index - 40), m.index + 40).replace(/\s+/g, ' ')}»`); }); });
       check('sin frases retiradas (texto visible, alt, title, aria-label, figcaption, metas, JSON-LD, #pw-i18n, WhatsApp)', hits.length, 0);
       if (hits.length) note('frases retiradas encontradas', hits.slice(0, 12));
+      /* ES: términos retirados en la revisión de jerga local («lote», no «parcela»; «plano del proyecto»; «RUC»; «sin salida»; «lote y construcción de tu casa», no «casa nueva») */
+      if (A4.retirados) {
+        const viejos = a4.texts.filter(([, t]) => A4.retirados.test(t || '')).map(([w, t]) => `${w}: «${A4.retirados.exec(t)[0]}»`);
+        check('ES: sin «parcela», «fraccionamiento», «alta fiscal», «cul-de-sac» ni «casa nueva»', viejos.length, 0);
+        if (viejos.length) note('términos retirados encontrados', viejos.slice(0, 12));
+      }
       check('la línea 01 de la oferta dice «con casa»', A4.conCasa.test(a4.oferta1), true);
       note('línea 01 de la oferta', a4.oferta1);
       const imgBad = a4.imgs.filter((im) => {
@@ -363,7 +369,7 @@ const VIEWS = [[1440, 900, 'desktop'], [390, 844, 'mobile']];
       }
       await p.evaluate(() => document.querySelector('.lpt2-lotes [data-maqueta="lote=3&view=lote"]').click());
       await p.waitForTimeout(500);
-      check('desktop: «Ver en la maqueta» de la parcela 3 recarga el iframe', await p.evaluate(() => document.querySelector('.lpt-stage iframe').getAttribute('src')), `/le-petit-trianon/maqueta/?lang=${LANG}&embed=1&lote=3&view=lote`);
+      check('desktop: «Ver en la maqueta» del lote 3 recarga el iframe', await p.evaluate(() => document.querySelector('.lpt-stage iframe').getAttribute('src')), `/le-petit-trianon/maqueta/?lang=${LANG}&embed=1&lote=3&view=lote`);
       check('desktop: «Pantalla completa» sigue los parámetros', await p.evaluate(() => document.querySelector('[data-lpt-full]').getAttribute('href')), `/le-petit-trianon/maqueta/?lang=${LANG}&lote=3&view=lote`);
       check('desktop: la fila 3 queda marcada', await p.evaluate(() => document.querySelector('.lpt2-lotes tr.is-current [data-maqueta]')?.getAttribute('data-maqueta')), 'lote=3&view=lote');
       try { await p.waitForFunction(() => document.querySelector('.lpt-stage').classList.contains('is-ready'), null, { timeout: 60000 }); } catch (e) { results.push({ name: 'desktop: el visor cargó en el iframe', ok: false, got: e.message.split('\n')[0] }); }

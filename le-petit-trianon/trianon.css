@@ -302,7 +302,7 @@ html.lpt2-lock { overflow: hidden; }
 .lpt2-maqueta .quiet-link span { color: var(--gold); }
 .lpt2-maqueta .quiet-link:hover { color: var(--gold); border-color: var(--gold); }
 
-/* Las siete parcelas: tabla compacta */
+/* Los siete lotes: tabla compacta */
 .lpt2-lotes { width: 100%; margin-top: clamp(52px, 8vh, 80px); border-collapse: collapse; font-variant-numeric: tabular-nums; }
 .lpt2-lotes th, .lpt2-lotes td { text-align: left; vertical-align: middle; }
 .lpt2-lotes thead th {
@@ -492,7 +492,7 @@ html.lpt2-lock { overflow: hidden; }
   .lpt-stage__open-text b { font-size: 14px; }
   .lpt-stage__full { display: none !important; }
 
-  /* Tabla de parcelas: cada fila, una tarjeta de dos líneas (número, superficie y frente; debajo, las acciones
+  /* Tabla de lotes: cada fila, una tarjeta de dos líneas (número, superficie y frente; debajo, las acciones
      a todo el ancho). La columna del número es ancha para que «con la casa» se lea a 10,5 px. */
   .lpt2-lotes, .lpt2-lotes tbody { display: block; }
   .lpt2-lotes thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

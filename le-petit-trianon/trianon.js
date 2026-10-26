@@ -253,7 +253,7 @@
   var STAGE = {
     title: S.title || 'Maqueta 3D interactiva de Le Petit Trianon',
     loading: S.loading || 'Cargando la maqueta 3D…',
-    ready: S.ready || 'La maqueta está abierta: arrastra para girar, toca una parcela para ver su ficha.',
+    ready: S.ready || 'La maqueta está abierta: arrastra para girar, toca un lote para ver su ficha.',
     switching: S.switching || 'Cambiando la vista…'
   };
   var viewerUrl = function (params, embed) {

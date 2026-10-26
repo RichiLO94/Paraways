@@ -275,7 +275,7 @@
 .pw-nowebgl-box p { margin: 0; font-size: 14px; line-height: 1.6; max-width: 420px; }
 .pw-nowebgl-box .pw-map-svg { width: min(100%, 360px); }
 .pw-nowebgl-box .pw-chips { position: static; transform: none; }
-.pw-nowebgl-box .pw-cta { width: 100%; max-width: 360px; }
+.pw-nowebgl-box .pw-cta { width: 100%; max-width: 360px; color: #fff; }   /* gana a «.pw-ui a { color: inherit }» */
 
 /* ── noche: las barras pasan a vidrio medianoche, oro intacto ── */
 .pw-ui[data-light="noche"] {

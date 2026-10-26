@@ -1,6 +1,6 @@
 # Le Petit Trianon · maqueta 3D
 
-Visor interactivo del fraccionamiento **Le Petit Trianon** (siete lotes en San Bernardino, departamento de Cordillera, Paraguay), construido sobre el plano de fraccionamiento de la Arquitecta Lolia Lima y la mensura georreferenciada del título. Es una sub-app autónoma de paraways.com: HTML, CSS y JavaScript clásico, una copia local de three.js y ningún paso de build. Se sirve en `/le-petit-trianon/maqueta/` y la página del desarrollo (`/le-petit-trianon/`) la embebe en un iframe.
+Visor interactivo de **Le Petit Trianon** (siete lotes en San Bernardino, departamento de Cordillera, Paraguay), construido sobre el plano del proyecto de la Arquitecta Lolia Lima y la mensura georreferenciada del título. Es una sub-app autónoma de paraways.com: HTML, CSS y JavaScript clásico, una copia local de three.js y ningún paso de build. Se sirve en `/le-petit-trianon/maqueta/` y la página del desarrollo (`/le-petit-trianon/`) la embebe en un iframe.
 
 Este archivo explica cómo correrla, probarla y editarla. El detalle técnico de cada módulo y de los datos está en [`CONTRACT.md`](CONTRACT.md); léelo antes de tocar un módulo.
 

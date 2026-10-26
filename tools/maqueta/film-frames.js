@@ -8,7 +8,7 @@
    - Cuadros «tilt»: interpolación (u ya suavizado por film-build.py) desde la última cenital hasta la pose de la vista
      Maqueta del visor con el encuadre del póster (setView('maqueta') + el ajuste «fit» de poster.js con márgenes 0,12/0,15:
      theta 0,62, phi 0,87, losa centrada), theta por el giro corto, distancia en escala logarítmica y el objetivo
-     resuelto para que el centro del predio recorra la pantalla en línea recta (sin vaivén). Discos numerados de las parcelas con la opacidad pedida (0 → 1).
+     resuelto para que el centro del predio recorra la pantalla en línea recta (sin vaivén). Discos numerados de los lotes con la opacidad pedida (0 → 1).
    Luz Atardecer (?light=atardecer), modo diorama (página marfil), sin textos apoyados en el suelo (rótulos de ruta y del
    norte), bucle del visor detenido (PW.app.pause) y PW.app.settle() antes de cada captura, como poster.js y loop-frames.js.
    Requiere el servidor local del repo (python3 -m http.server 8765 desde la raíz) y Playwright con Chromium. */

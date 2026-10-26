@@ -1,6 +1,6 @@
 /* Prueba de la capa v3 en las cuatro homes (banda Le Petit Trianon, nav, tarjeta Inmobiliaria, formulario, FAB).
    Banda v2: foto real de la casa (trianon-foto-casa.jpg 1920×1088 con srcset de la -800), pie «foto de la propiedad»,
-   mensaje «parcela con casa, dentro del Investor Pass» y sin las frases retiradas («ya existe», «ya construida», …).
+   mensaje «lote y construcción de tu casa, dentro del Investor Pass» y sin las frases retiradas («ya existe», «ya construida», …).
    Uso: NODE_PATH=/opt/node22/lib/node_modules flock /tmp/pw-render.lock node home-banda-test.js [es,pt,en,fr]
    A 1440×900 y 390×844 por idioma: cero errores de consola (ignora el 404 de /_vercel/insights/script.js; las
    fallas de red de Google Fonts se listan aparte como avisos de entorno), nav en una sola línea a 1440 px,
@@ -20,7 +20,7 @@ const IGNORE = /_vercel\/insights\/script\.js/;
 const ENV_NET = /fonts\.googleapis\.com|fonts\.gstatic\.com/;
 /* Copy v2 por idioma: pie de la foto, «con casa» en el h2 y en el enlace de la tarjeta, CTA. */
 const V2 = {
-  es: { cap: 'FOTO DE LA PROPIEDAD · LA CASA', conCasa: /parcela con casa/i, cta: 'Ver Le Petit Trianon' },
+  es: { cap: 'FOTO DE LA PROPIEDAD · LA CASA DEL LOTE 1', conCasa: /lote y (?:la construcción de )?tu casa/i, cta: 'Ver Le Petit Trianon' },
   pt: { cap: 'FOTO DA PROPRIEDADE · A CASA', conCasa: /lote com casa/i, cta: 'Ver o Le Petit Trianon' },
   en: { cap: 'PHOTO OF THE PROPERTY · THE HOUSE', conCasa: /plot and house/i, cta: 'View Le Petit Trianon' },
   fr: { cap: 'PHOTO DE LA PROPRIÉTÉ · LA MAISON', conCasa: /parcelle avec maison/i, cta: 'Voir Le Petit Trianon' },

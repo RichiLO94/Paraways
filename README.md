@@ -20,7 +20,7 @@ Landing de paraways.com — residencia temporaria, cédula, RUC y cuenta bancari
 
 ## Le Petit Trianon
 
-Fraccionamiento de siete lotes en San Bernardino (departamento de Cordillera) presentado con fotos y video reales de la propiedad, combinados con una maqueta 3D sobre el plano de fraccionamiento. La página del desarrollo (`/le-petit-trianon/` y sus idiomas) muestra un póster y, tras un gesto del visitante, embebe el visor en un iframe (`/le-petit-trianon/maqueta/?lang=xx&embed=1`); en móvil abre el visor a pantalla completa.
+Desarrollo de siete lotes en San Bernardino (departamento de Cordillera) presentado con fotos y video reales de la propiedad, combinados con una maqueta 3D sobre el plano del proyecto. La página del desarrollo (`/le-petit-trianon/` y sus idiomas) muestra un póster y, tras un gesto del visitante, embebe el visor en un iframe (`/le-petit-trianon/maqueta/?lang=xx&embed=1`); en móvil abre el visor a pantalla completa.
 
 Todo lo necesario para correr, probar y editar el visor (estructura de módulos, parámetros de URL, datos, textos en cuatro idiomas, pruebas con Playwright, presupuesto de rendimiento, reglas de contenido, licencias e integración en el sitio) está en [`le-petit-trianon/maqueta/README.md`](le-petit-trianon/maqueta/README.md); el contrato técnico de módulos y datos, en [`le-petit-trianon/maqueta/CONTRACT.md`](le-petit-trianon/maqueta/CONTRACT.md).
 
